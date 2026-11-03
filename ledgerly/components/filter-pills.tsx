@@ -16,7 +16,7 @@ export function FilterPills({
     <div className="flex flex-wrap gap-1.5">
       {items.map((item) => {
         const params = new URLSearchParams();
-        if (item.id !== "ALL") params.set("state", item.id);
+        if (item.id !== "ALL") params.set("status", item.id);
         if (extra?.q) params.set("q", extra.q);
         const href = params.toString() ? `${pathname}?${params}` : pathname;
         const active = value === item.id;
