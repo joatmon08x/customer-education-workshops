@@ -15,15 +15,15 @@
   --indigo-page: #c7d2fe;
   --indigo-page-soft: #e0e7ff;
   --ink: #111827;
-  --ink-soft: #6b7280;
+  --ink-soft: #5f6b80;
   --paper: #f7f7fb;
   --paper-elevated: #ffffff;
   --line: #e5e7eb;
-  --success: #059669;
+  --success: #047857;
   --success-soft: #d1fae5;
-  --warning: #d97706;
+  --warning: #a8460a;
   --warning-soft: #fef3c7;
-  --danger: #dc2626;
+  --danger: #b91c1c;
   --danger-soft: #fee2e2;
 
   --background: var(--paper);
@@ -92,7 +92,7 @@
   --success-soft: #064e3b;
   --warning: #fbbf24;
   --warning-soft: #78350f;
-  --danger: #f87171;
+  --danger: #fca5a5;
   --danger-soft: #7f1d1d;
 
   --background: var(--paper);
