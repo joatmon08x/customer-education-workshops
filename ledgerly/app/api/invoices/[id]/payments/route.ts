@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isPaymentMethod, recordFullPayment } from "@/lib/payments";
+import { isPaymentMethod, readPostedAmountCents, recordFullPayment } from "@/lib/payments";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,7 +18,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     );
   }
 
-  const result = await recordFullPayment(id, method);
+  const posted = readPostedAmountCents(body);
+  if (!posted.ok) {
+    return NextResponse.json({ error: posted.error }, { status: 400 });
+  }
+
+  const result = await recordFullPayment(id, method, posted.amountCents);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }

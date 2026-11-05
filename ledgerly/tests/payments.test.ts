@@ -6,6 +6,7 @@ import {
   ACTIVITY_STATUS_RECORDED,
   ACTIVITY_TYPE_PAYMENT_RECORDED,
   outstandingBalanceCents,
+  recordPaymentConfirmCopy,
 } from "@/lib/payments";
 import { prisma } from "@/lib/prisma";
 
@@ -117,7 +118,20 @@ describe("POST /api/invoices/[id]/payments", () => {
     expect(await prisma.activity.count({ where: { invoiceId: paidInvoiceId } })).toBe(0);
   });
 
-  it("ignores a client-supplied amount and still records the outstanding balance", async () => {
+  it("records when amountCents equals the outstanding balance", async () => {
+    await restoreOverdueInvoice();
+
+    const response = await postPayment(
+      paymentRequest({ method: "check", amountCents: 9900 }),
+      params(overdueInvoiceId),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.payment.amountCents).toBe(9900);
+  });
+
+  it("returns 400 and stores nothing when amountCents is not the outstanding balance", async () => {
     await restoreOverdueInvoice();
 
     const response = await postPayment(
@@ -125,8 +139,26 @@ describe("POST /api/invoices/[id]/payments", () => {
       params(overdueInvoiceId),
     );
 
-    expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body.payment.amountCents).toBe(9900);
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: "Amount must equal the outstanding balance",
+    });
+
+    const invoice = await prisma.invoice.findUniqueOrThrow({
+      where: { id: overdueInvoiceId },
+      include: { payments: true },
+    });
+    expect(invoice.status).toBe("OVERDUE");
+    expect(invoice.paidOn).toBeNull();
+    expect(invoice.payments).toHaveLength(0);
+    expect(await prisma.activity.count({ where: { invoiceId: overdueInvoiceId } })).toBe(0);
+  });
+});
+
+describe("recordPaymentConfirmCopy", () => {
+  it("offers only the outstanding balance", () => {
+    expect(recordPaymentConfirmCopy(9900, "INV-1047")).toBe(
+      "Record $99.00 payment against INV-1047?",
+    );
   });
 });
