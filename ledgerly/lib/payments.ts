@@ -1,6 +1,6 @@
 import { DEMO_AS_OF } from "@/lib/clock";
 import { DEMO_OPERATOR } from "@/lib/demo-session";
-import { sumCents } from "@/lib/money";
+import { formatUsd, sumCents } from "@/lib/money";
 import { prisma } from "@/lib/prisma";
 
 export const PAYMENT_METHODS = ["check", "ach", "card_on_file", "cash"] as const;
@@ -42,7 +42,28 @@ export function paymentMethodLabel(method: string): string {
   return method;
 }
 
-export async function recordFullPayment(invoiceId: string, method: PaymentMethod) {
+export function recordPaymentConfirmCopy(amountCents: number, invoiceNumber: string): string {
+  return `Record ${formatUsd(amountCents)} payment against ${invoiceNumber}?`;
+}
+
+export function readPostedAmountCents(
+  body: unknown,
+): { ok: true; amountCents?: number } | { ok: false; error: string } {
+  if (!body || typeof body !== "object" || !("amountCents" in body)) {
+    return { ok: true };
+  }
+  const value = (body as { amountCents: unknown }).amountCents;
+  if (typeof value !== "number" || !Number.isInteger(value)) {
+    return { ok: false, error: "amountCents must be an integer" };
+  }
+  return { ok: true, amountCents: value };
+}
+
+export async function recordFullPayment(
+  invoiceId: string,
+  method: PaymentMethod,
+  postedAmountCents?: number,
+) {
   const invoice = await prisma.invoice.findUnique({
     where: { id: invoiceId },
     include: { payments: true },
@@ -54,6 +75,13 @@ export async function recordFullPayment(invoiceId: string, method: PaymentMethod
   const amountCents = outstandingBalanceCents(invoice);
   if (amountCents <= 0) {
     return { ok: false as const, status: 400 as const, error: "Outstanding balance is 0" };
+  }
+  if (postedAmountCents !== undefined && postedAmountCents !== amountCents) {
+    return {
+      ok: false as const,
+      status: 400 as const,
+      error: "Amount must equal the outstanding balance",
+    };
   }
 
   const paymentId = `pay_${crypto.randomUUID()}`;

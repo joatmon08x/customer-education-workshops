@@ -4,8 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { formatUsd } from "@/lib/money";
-import { PAYMENT_METHODS, PAYMENT_METHOD_LABEL, type PaymentMethod } from "@/lib/payments";
+import {
+  PAYMENT_METHODS,
+  PAYMENT_METHOD_LABEL,
+  recordPaymentConfirmCopy,
+  type PaymentMethod,
+} from "@/lib/payments";
 import { cn } from "@/lib/utils";
 
 const selectClassName = cn(
@@ -26,7 +30,7 @@ export function RecordPaymentForm({ invoiceId, invoiceNumber, amountCents }: Rec
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const confirmCopy = `Record ${formatUsd(amountCents)} payment against ${invoiceNumber}?`;
+  const confirmCopy = recordPaymentConfirmCopy(amountCents, invoiceNumber);
 
   async function submit() {
     setPending(true);
@@ -35,7 +39,7 @@ export function RecordPaymentForm({ invoiceId, invoiceNumber, amountCents }: Rec
       const response = await fetch(`/api/invoices/${invoiceId}/payments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ method }),
+        body: JSON.stringify({ method, amountCents }),
       });
       if (!response.ok) {
         const body = (await response.json().catch(() => null)) as { error?: string } | null;
