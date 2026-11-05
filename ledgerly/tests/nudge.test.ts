@@ -5,9 +5,11 @@ import { formatDate } from "@/lib/dates";
 import { DEMO_OPERATOR } from "@/lib/demo-session";
 import { formatUsd } from "@/lib/money";
 import {
+  ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_SENT,
   ACTIVITY_TYPE_NUDGE_SENT,
   NUDGE_CHANNEL_EMAIL,
+  isNudgeEmailAddress,
   nudgeTemplate,
 } from "@/lib/nudge";
 import { prisma } from "@/lib/prisma";
@@ -27,18 +29,36 @@ function nudgeRequest(invoiceId: string, body?: unknown) {
 
 const overdueInvoiceId = "inv_1043";
 const paidInvoiceId = "inv_1042";
+const overdueCustomerId = "cus_quarrypine";
+const seededEmail = "accounts@cobaltgoods.example";
 
 async function restoreNudge(invoiceId: string) {
   await prisma.activity.deleteMany({
     where: { invoiceId, type: ACTIVITY_TYPE_NUDGE_SENT },
   });
   if (invoiceId === overdueInvoiceId) {
+    await prisma.customer.update({
+      where: { id: overdueCustomerId },
+      data: { email: seededEmail },
+    });
     await prisma.invoice.update({
       where: { id: overdueInvoiceId },
       data: { status: "OVERDUE", paidOn: null },
     });
   }
 }
+
+describe("isNudgeEmailAddress", () => {
+  it("rejects missing values and strings that are not email addresses", () => {
+    expect(isNudgeEmailAddress(undefined)).toBe(false);
+    expect(isNudgeEmailAddress(null)).toBe(false);
+    expect(isNudgeEmailAddress("")).toBe(false);
+    expect(isNudgeEmailAddress("   ")).toBe(false);
+    expect(isNudgeEmailAddress("not-an-email")).toBe(false);
+    expect(isNudgeEmailAddress("billing.example")).toBe(false);
+    expect(isNudgeEmailAddress(seededEmail)).toBe(true);
+  });
+});
 
 describe("nudgeTemplate", () => {
   it("names the invoice number, outstanding balance, and due date", () => {
@@ -103,6 +123,45 @@ describe("POST /api/invoices/[id]/nudge", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({ error: "Invoice is not overdue" });
     expect(await prisma.activity.count({ where: { invoiceId: paidInvoiceId } })).toBe(before);
+  });
+
+  it("logs NUDGE_SENT as failed when the customer email is missing", async () => {
+    await restoreNudge(overdueInvoiceId);
+    await prisma.customer.update({
+      where: { id: overdueCustomerId },
+      data: { email: "" },
+    });
+
+    const response = await postNudge(nudgeRequest(overdueInvoiceId), params(overdueInvoiceId));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.activity).toMatchObject({
+      type: ACTIVITY_TYPE_NUDGE_SENT,
+      status: ACTIVITY_STATUS_FAILED,
+      channel: NUDGE_CHANNEL_EMAIL,
+      actorName: DEMO_OPERATOR.name,
+    });
+
+    const stored = await prisma.activity.findFirst({
+      where: { invoiceId: overdueInvoiceId, type: ACTIVITY_TYPE_NUDGE_SENT },
+    });
+    expect(stored?.status).toBe(ACTIVITY_STATUS_FAILED);
+  });
+
+  it("logs NUDGE_SENT as failed when the customer email is not an address", async () => {
+    await restoreNudge(overdueInvoiceId);
+    await prisma.customer.update({
+      where: { id: overdueCustomerId },
+      data: { email: "not-an-email" },
+    });
+
+    const response = await postNudge(nudgeRequest(overdueInvoiceId), params(overdueInvoiceId));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.activity.status).toBe(ACTIVITY_STATUS_FAILED);
+    expect(body.activity.type).toBe(ACTIVITY_TYPE_NUDGE_SENT);
   });
 
   it("ignores a client-supplied body and still uses the fixed template", async () => {
