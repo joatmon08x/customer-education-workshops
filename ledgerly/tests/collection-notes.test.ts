@@ -1,7 +1,12 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { POST as postNote } from "@/app/api/customers/[id]/notes/route";
+import { PATCH as patchNote } from "@/app/api/notes/[id]/route";
 import { DEMO_AS_OF } from "@/lib/clock";
-import { ACTIVITY_STATUS_ADDED, ACTIVITY_TYPE_NOTE_ADDED } from "@/lib/collection-notes";
+import {
+  ACTIVITY_STATUS_ADDED,
+  ACTIVITY_TYPE_NOTE_ADDED,
+  NOTE_EDIT_WINDOW_MS,
+} from "@/lib/collection-notes";
 import { DEMO_OPERATOR } from "@/lib/demo-session";
 import { prisma } from "@/lib/prisma";
 
@@ -14,6 +19,14 @@ const params = (id: string) => ({ params: Promise.resolve({ id }) });
 function noteRequest(body: unknown, id = customerId) {
   return new Request(`http://localhost/api/customers/${id}/notes`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+function patchRequest(id: string, body: unknown) {
+  return new Request(`http://localhost/api/notes/${id}`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
@@ -103,5 +116,66 @@ describe("POST /api/customers/[id]/notes", () => {
       params(customerId),
     );
     expect(rejected.status).toBe(400);
+  });
+});
+
+describe("PATCH /api/notes/[id]", () => {
+  afterEach(async () => {
+    await restoreNotes();
+  });
+
+  it("saves a new body while Avery Quinn is inside the 15-minute window", async () => {
+    await restoreNotes();
+    const created = await postNote(noteRequest({ body: "Promise to pay Friday." }), params(customerId));
+    const { note } = await created.json();
+
+    const response = await patchNote(
+      patchRequest(note.id, { body: "Promise to pay Monday.", authorName: "Morgan Blake" }),
+      params(note.id),
+    );
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload.note.body).toBe("Promise to pay Monday.");
+    expect(payload.note.authorName).toBe(DEMO_OPERATOR.name);
+
+    const stored = await prisma.collectionNote.findUniqueOrThrow({ where: { id: note.id } });
+    expect(stored.body).toBe("Promise to pay Monday.");
+    expect(stored.authorName).toBe(DEMO_OPERATOR.name);
+  });
+
+  it("returns 403 when the note is older than 15 minutes and leaves the body", async () => {
+    await restoreNotes();
+    const created = await postNote(noteRequest({ body: "Left a voicemail." }), params(customerId));
+    const { note } = await created.json();
+    await prisma.collectionNote.update({
+      where: { id: note.id },
+      data: { createdAt: new Date(Date.now() - NOTE_EDIT_WINDOW_MS - 1_000) },
+    });
+
+    const response = await patchNote(patchRequest(note.id, { body: "Changed after the window." }), params(note.id));
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({ error: "Note can no longer be edited" });
+    const stored = await prisma.collectionNote.findUniqueOrThrow({ where: { id: note.id } });
+    expect(stored.body).toBe("Left a voicemail.");
+  });
+
+  it("returns 403 when the author is not Avery Quinn and leaves the body", async () => {
+    await restoreNotes();
+    const created = await postNote(noteRequest({ body: "Avery's original note." }), params(customerId));
+    const { note } = await created.json();
+    await prisma.collectionNote.update({
+      where: { id: note.id },
+      data: { authorName: "Morgan Blake" },
+    });
+
+    const response = await patchNote(patchRequest(note.id, { body: "Someone else edited this." }), params(note.id));
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({ error: "Note can no longer be edited" });
+    const stored = await prisma.collectionNote.findUniqueOrThrow({ where: { id: note.id } });
+    expect(stored.body).toBe("Avery's original note.");
+    expect(stored.authorName).toBe("Morgan Blake");
   });
 });

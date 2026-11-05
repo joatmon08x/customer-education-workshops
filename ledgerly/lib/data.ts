@@ -179,6 +179,7 @@ export async function getCustomerAccount(id: string) {
         include: { invoice: { select: { number: true } } },
         orderBy: { createdAt: "desc" },
       },
+      collectionNotes: { orderBy: { createdAt: "desc" } },
     },
   });
   if (!customer) return null;
@@ -194,6 +195,7 @@ export async function getCustomerAccount(id: string) {
     overdueBook: overdueBookForAccount(customer.invoices, customer.id),
     invoices: customer.invoices.map((invoice) => ({ id: invoice.id, number: invoice.number })),
     activities: customer.activities,
+    collectionNotes: customer.collectionNotes,
   };
 }
 
