@@ -11,8 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getCustomerAccounts } from "@/lib/data";
-import { formatUsd } from "@/lib/money";
-import { isPlanId, planLabel, planPriceCents } from "@/lib/plans";
+import { formatPlanAmount, planWithPrice } from "@/lib/plans";
 
 export const metadata = {
   title: "Customers",
@@ -21,7 +20,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function CustomersPage() {
-  const accounts = (await getCustomerAccounts()).filter((account) => isPlanId(account.plan));
+  const accounts = await getCustomerAccounts();
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -59,11 +58,11 @@ export default async function CustomersPage() {
                       </Link>
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {planLabel(account.plan)} · {formatUsd(planPriceCents(account.plan))}
+                      {planWithPrice(account.plan)}
                     </TableCell>
                     <TableCell className="text-right tabular-nums">{account.overdueCount}</TableCell>
                     <TableCell className="text-right font-medium tabular-nums">
-                      {formatUsd(account.overdueBalanceCents)}
+                      {formatPlanAmount(account.plan, account.overdueBalanceCents)}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -17,10 +17,9 @@ import {
 import { isCollectionNoteEditable, matchNotesToActivities } from "@/lib/collection-notes";
 import { getCustomerAccount } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
-import { formatUsd } from "@/lib/money";
 import { ACTIVITY_STATUS_FAILED } from "@/lib/nudge";
 import { paymentMethodLabel } from "@/lib/payments";
-import { isPlanId, planLabel, planPriceCents } from "@/lib/plans";
+import { formatPlanAmount, maskPlanAmountIn, planDisplayName, planWithPrice } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +33,6 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   const { id } = await params;
   const account = await getCustomerAccount(id);
   if (!account) notFound();
-  if (!isPlanId(account.plan)) notFound();
 
   const mostPastDueInvoiceId = account.overdueBook[0]?.id;
   const hasOverdue = account.overdueBook.length > 0;
@@ -45,7 +43,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
       <PageHeader
         eyebrow="Account"
         title={account.name}
-        description={`${planLabel(account.plan)} · ${formatUsd(planPriceCents(account.plan))} · last activity ${account.lastActivity}`}
+        description={`${planWithPrice(account.plan)} · last activity ${account.lastActivity}`}
         actions={
           <SendNudgeButton
             invoiceId={mostPastDueInvoiceId}
@@ -62,7 +60,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
         </CardHeader>
         <CardContent className="space-y-1 text-sm">
           <p>{account.email}</p>
-          <p className="text-muted-foreground">Plan on file: {planLabel(account.plan)}</p>
+          <p className="text-muted-foreground">Plan on file: {planDisplayName(account.plan)}</p>
         </CardContent>
       </Card>
 
@@ -101,7 +99,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                   <TableCell className="text-muted-foreground">{formatDate(invoice.dueOn)}</TableCell>
                   <TableCell className="text-right tabular-nums">{invoice.daysPastDue}</TableCell>
                   <TableCell className="text-right font-medium tabular-nums">
-                    {formatUsd(invoice.outstandingCents)}
+                    {formatPlanAmount(account.plan, invoice.outstandingCents)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{invoice.lastActivity}</TableCell>
                   <TableCell className="text-right">
@@ -144,7 +142,9 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
           ) : (
             <ul className="space-y-3">
               {activityRows.map(({ activity, note }) => {
-                const body = note?.body ?? activity.body;
+                const body =
+                  note?.body ??
+                  (activity.body ? maskPlanAmountIn(account.plan, activity.body, activity.amountCents) : null);
                 return (
                   <li key={activity.id} className="flex flex-col gap-0.5">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -154,7 +154,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                     <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
                       <span>
                         {[
-                          activity.amountCents != null ? formatUsd(activity.amountCents) : null,
+                          activity.amountCents != null ? formatPlanAmount(account.plan, activity.amountCents) : null,
                           activity.method ? paymentMethodLabel(activity.method) : activity.channel,
                           activity.actorName,
                           activity.invoice?.number,
