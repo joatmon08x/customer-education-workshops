@@ -1,3 +1,5 @@
+import { formatUsd } from "@/lib/money";
+
 export const PLAN_IDS = ["STARTER", "GROWTH", "SCALE"] as const;
 
 export type PlanId = (typeof PLAN_IDS)[number];
@@ -34,4 +36,31 @@ export function planLabel(plan: string): string {
     throw new Error(`Unknown plan "${plan}".`);
   }
   return PLAN_LABEL[plan];
+}
+
+export const AMOUNTS_MASKED_LABEL = "Upgrade to view amounts";
+
+/** Dollar figures show only on the paid catalog. Data entry (payment confirm) is the exception. */
+export function amountsVisible(plan: string): boolean {
+  return isPlanId(plan);
+}
+
+export function formatPlanAmount(plan: string, cents: number): string {
+  return amountsVisible(plan) ? formatUsd(cents) : AMOUNTS_MASKED_LABEL;
+}
+
+/** Masks a formatted amount inside generated copy, such as a Nudge body. */
+export function maskPlanAmountIn(plan: string, text: string, cents: number | null): string {
+  if (amountsVisible(plan) || cents == null) return text;
+  return text.replaceAll(formatUsd(cents), AMOUNTS_MASKED_LABEL);
+}
+
+export function planDisplayName(plan: string): string {
+  return isPlanId(plan) ? PLAN_LABEL[plan] : plan;
+}
+
+export function planWithPrice(plan: string): string {
+  return isPlanId(plan)
+    ? `${PLAN_LABEL[plan]} · ${formatUsd(PLAN_PRICE_CENTS[plan])}`
+    : `${plan} · ${AMOUNTS_MASKED_LABEL}`;
 }

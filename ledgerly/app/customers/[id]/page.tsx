@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CollectionNoteEdit } from "@/app/customers/[id]/collection-note-edit";
+import { CollectionNoteForm } from "@/app/customers/[id]/collection-note-form";
 import { SendNudgeButton } from "@/app/customers/[id]/send-nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -12,12 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { isCollectionNoteEditable, matchNotesToActivities } from "@/lib/collection-notes";
 import { getCustomerAccount } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
-import { formatUsd } from "@/lib/money";
 import { ACTIVITY_STATUS_FAILED } from "@/lib/nudge";
 import { paymentMethodLabel } from "@/lib/payments";
-import { isPlanId, planLabel, planPriceCents } from "@/lib/plans";
+import { formatPlanAmount, maskPlanAmountIn, planDisplayName, planWithPrice } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
@@ -31,17 +33,17 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   const { id } = await params;
   const account = await getCustomerAccount(id);
   if (!account) notFound();
-  if (!isPlanId(account.plan)) notFound();
 
   const mostPastDueInvoiceId = account.overdueBook[0]?.id;
   const hasOverdue = account.overdueBook.length > 0;
+  const activityRows = matchNotesToActivities(account.activities, account.collectionNotes);
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <PageHeader
         eyebrow="Account"
         title={account.name}
-        description={`${planLabel(account.plan)} · ${formatUsd(planPriceCents(account.plan))} · last activity ${account.lastActivity}`}
+        description={`${planWithPrice(account.plan)} · last activity ${account.lastActivity}`}
         actions={
           <SendNudgeButton
             invoiceId={mostPastDueInvoiceId}
@@ -58,7 +60,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
         </CardHeader>
         <CardContent className="space-y-1 text-sm">
           <p>{account.email}</p>
-          <p className="text-muted-foreground">Plan on file: {planLabel(account.plan)}</p>
+          <p className="text-muted-foreground">Plan on file: {planDisplayName(account.plan)}</p>
         </CardContent>
       </Card>
 
@@ -97,7 +99,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                   <TableCell className="text-muted-foreground">{formatDate(invoice.dueOn)}</TableCell>
                   <TableCell className="text-right tabular-nums">{invoice.daysPastDue}</TableCell>
                   <TableCell className="text-right font-medium tabular-nums">
-                    {formatUsd(invoice.outstandingCents)}
+                    {formatPlanAmount(account.plan, invoice.outstandingCents)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{invoice.lastActivity}</TableCell>
                   <TableCell className="text-right">
@@ -121,6 +123,16 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
 
       <Card>
         <CardHeader>
+          <CardTitle>Collection note</CardTitle>
+          <CardDescription>Saved notes land first on this account’s activity feed.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CollectionNoteForm customerId={account.id} invoices={account.invoices} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Activity</CardTitle>
           <CardDescription>Collections history for this account. Newest first.</CardDescription>
         </CardHeader>
@@ -129,31 +141,40 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
             <p className="text-muted-foreground">—</p>
           ) : (
             <ul className="space-y-3">
-              {account.activities.map((activity) => (
-                <li key={activity.id} className="flex flex-col gap-0.5">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="font-medium">{activity.type}</span>
-                    <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
-                  </div>
-                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
-                    <span>
-                      {[
-                        activity.amountCents != null ? formatUsd(activity.amountCents) : null,
-                        activity.method ? paymentMethodLabel(activity.method) : activity.channel,
-                        activity.actorName,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </span>
-                    {activity.status === ACTIVITY_STATUS_FAILED ? (
-                      <Badge variant="danger">{ACTIVITY_STATUS_FAILED}</Badge>
-                    ) : (
-                      <span>{activity.status}</span>
-                    )}
-                  </p>
-                  {activity.body ? <p>{activity.body}</p> : null}
-                </li>
-              ))}
+              {activityRows.map(({ activity, note }) => {
+                const body =
+                  note?.body ??
+                  (activity.body ? maskPlanAmountIn(account.plan, activity.body, activity.amountCents) : null);
+                return (
+                  <li key={activity.id} className="flex flex-col gap-0.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-medium">{activity.type}</span>
+                      <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
+                    </div>
+                    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
+                      <span>
+                        {[
+                          activity.amountCents != null ? formatPlanAmount(account.plan, activity.amountCents) : null,
+                          activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                          activity.actorName,
+                          activity.invoice?.number,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                      {activity.status === ACTIVITY_STATUS_FAILED ? (
+                        <Badge variant="danger">{ACTIVITY_STATUS_FAILED}</Badge>
+                      ) : (
+                        <span>{activity.status}</span>
+                      )}
+                    </p>
+                    {body ? <p>{body}</p> : null}
+                    {note && isCollectionNoteEditable(note) ? (
+                      <CollectionNoteEdit noteId={note.id} body={note.body} />
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>

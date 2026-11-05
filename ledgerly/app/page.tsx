@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, CalendarRange, CircleDollarSign, FileText, TrendingUp } from "lucide-react";
+import { AlertTriangle, CalendarRange, CircleDollarSign, FileText, Inbox, TrendingUp } from "lucide-react";
 import { DisputeDonut } from "@/components/charts/dispute-donut";
 import { RevenueChart } from "@/components/charts/revenue-chart";
 import { InvoiceTable } from "@/components/invoice-table";
@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboard } from "@/lib/data";
 import { formatUsd } from "@/lib/money";
+import { AMOUNTS_MASKED_LABEL } from "@/lib/plans";
 
 export const metadata = {
   title: "Dashboard",
@@ -65,6 +66,14 @@ export default async function DashboardPage() {
           change={kpis.collectedChange}
           icon={CircleDollarSign}
           tone="success"
+        />
+        <KpiCard
+          label="Collections"
+          value={kpis.overdueAmountsVisible ? formatUsd(kpis.overdueBalanceCents) : AMOUNTS_MASKED_LABEL}
+          hint={`${kpis.overdueInvoiceCount} overdue invoices · ${kpis.activitiesToday} today · ${kpis.activitiesLast7Days} last 7 days`}
+          icon={Inbox}
+          tone="indigo"
+          valueTone="danger"
         />
       </section>
 

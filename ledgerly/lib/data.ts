@@ -3,6 +3,7 @@ import {
   DASHBOARD_WINDOWS,
   catalogMrrCents,
   collectedCents,
+  collectionsTotals,
   disputeBreakdown,
   disputeCentsAt,
   openCentsAt,
@@ -34,10 +35,11 @@ const disputeInclude = {
 } as const;
 
 export async function getDashboard() {
-  const [invoices, disputes, customers] = await Promise.all([
+  const [invoices, disputes, customers, activities] = await Promise.all([
     prisma.invoice.findMany({ include: invoiceInclude, orderBy: { issuedOn: "desc" } }),
     prisma.dispute.findMany({ include: disputeInclude, orderBy: { openedOn: "desc" } }),
     prisma.customer.findMany(),
+    prisma.activity.findMany(),
   ]);
 
   const { currentStart, currentEnd, priorStart, priorEnd } = DASHBOARD_WINDOWS;
@@ -77,6 +79,7 @@ export async function getDashboard() {
       disputeChange: percentChange(disputeCurrent, disputePrior),
       reviewCount: needsReview.length,
       openDisputeCount: openDisputes.length,
+      ...collectionsTotals(invoices, activities),
     },
   };
 }
@@ -174,8 +177,12 @@ export async function getCustomerAccount(id: string) {
   const customer = await prisma.customer.findUnique({
     where: { id },
     include: {
-      invoices: { include: { payments: true } },
-      activities: { orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }] },
+      invoices: { include: { payments: true }, orderBy: { issuedOn: "desc" } },
+      activities: {
+        include: { invoice: { select: { number: true } } },
+        orderBy: { createdAt: "desc" },
+      },
+      collectionNotes: { orderBy: { createdAt: "desc" } },
     },
   });
   if (!customer) return null;
@@ -189,7 +196,9 @@ export async function getCustomerAccount(id: string) {
     plan: customer.plan,
     lastActivity: latestActivity ? formatDate(latestActivity.occurredOn) : lastActivityLabel(),
     overdueBook: overdueBookForAccount(customer.invoices, customer.id),
+    invoices: customer.invoices.map((invoice) => ({ id: invoice.id, number: invoice.number })),
     activities: customer.activities,
+    collectionNotes: customer.collectionNotes,
   };
 }
 
