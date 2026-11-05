@@ -8,6 +8,7 @@ import {
   FileText,
   Inbox,
   LayoutDashboard,
+  Users,
   Menu,
   Scale,
   Search,
@@ -23,6 +24,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/customers", label: "Customers", icon: Users },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/collections", label: "Collections", icon: Inbox },
   { href: "/disputes", label: "Disputes", icon: Scale },

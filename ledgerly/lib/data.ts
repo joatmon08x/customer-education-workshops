@@ -9,6 +9,11 @@ import {
   percentChange,
   revenueSeries,
 } from "@/lib/dashboard";
+import {
+  lastActivityLabel,
+  overdueBalanceCents,
+  overdueBookForAccount,
+} from "@/lib/overdue-book";
 import type { DisputeStatus, InvoiceStatus } from "@/lib/status";
 
 const invoiceInclude = {
@@ -143,6 +148,42 @@ export async function getOpenDisputeNotices() {
 
 export async function getWorkspace() {
   return prisma.workspace.findUniqueOrThrow({ where: { id: "ws_fieldnote" } });
+}
+
+export async function getCustomerAccounts() {
+  const customers = await prisma.customer.findMany({
+    include: { invoices: true },
+    orderBy: { name: "asc" },
+  });
+
+  return customers.map((customer) => {
+    const overdueBook = overdueBookForAccount(customer.invoices, customer.id);
+    return {
+      id: customer.id,
+      name: customer.name,
+      plan: customer.plan,
+      overdueCount: overdueBook.length,
+      overdueBalanceCents: overdueBalanceCents(overdueBook),
+    };
+  });
+}
+
+export async function getCustomerAccount(id: string) {
+  const customer = await prisma.customer.findUnique({
+    where: { id },
+    include: { invoices: true },
+  });
+  if (!customer) return null;
+
+  return {
+    id: customer.id,
+    name: customer.name,
+    contactName: customer.contactName,
+    email: customer.email,
+    plan: customer.plan,
+    lastActivity: lastActivityLabel(),
+    overdueBook: overdueBookForAccount(customer.invoices, customer.id),
+  };
 }
 
 export function isInvoiceStatus(value: string): value is InvoiceStatus {
