@@ -30,12 +30,18 @@ export function SendNudgeButton({
     setError(null);
     try {
       const response = await fetch(`/api/invoices/${invoiceId}/nudge`, { method: "POST" });
+      const body = (await response.json().catch(() => null)) as {
+        error?: string;
+        activity?: { status?: string };
+      } | null;
       if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as { error?: string } | null;
         setError(body?.error ?? "Nudge was not sent.");
         return;
       }
       router.refresh();
+      if (body?.activity?.status === "failed") {
+        setError("Nudge could not be emailed.");
+      }
     } catch {
       setError("Nudge was not sent.");
     } finally {
