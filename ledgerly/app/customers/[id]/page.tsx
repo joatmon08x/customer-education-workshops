@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CollectionNoteForm } from "@/app/customers/[id]/collection-note-form";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -98,6 +99,16 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
 
       <Card>
         <CardHeader>
+          <CardTitle>Collection note</CardTitle>
+          <CardDescription>Saved notes land first on this account’s activity feed.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CollectionNoteForm customerId={account.id} invoices={account.invoices} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Activity</CardTitle>
           <CardDescription>Collections history for this account. Newest first.</CardDescription>
         </CardHeader>
@@ -118,10 +129,12 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                       activity.method ? paymentMethodLabel(activity.method) : activity.channel,
                       activity.actorName,
                       activity.status,
+                      activity.invoice?.number,
                     ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
+                  {activity.body ? <p>{activity.body}</p> : null}
                 </li>
               ))}
             </ul>
