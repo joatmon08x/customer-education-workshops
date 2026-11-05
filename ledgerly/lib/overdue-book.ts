@@ -1,6 +1,7 @@
 import { DEMO_AS_OF } from "@/lib/clock";
 import { daysBetween } from "@/lib/dates";
 import { sumCents } from "@/lib/money";
+import { outstandingBalanceCents } from "@/lib/payments";
 
 export const NO_ACTIVITY = "—";
 
@@ -12,6 +13,7 @@ export type OverdueBookInvoice = {
   issuedOn: Date;
   dueOn: Date;
   totalCents: number;
+  payments?: { amountCents: number }[];
 };
 
 export type OverdueBookRow = {
@@ -41,7 +43,7 @@ export function overdueBookForAccount(
       issuedOn: invoice.issuedOn,
       dueOn: invoice.dueOn,
       daysPastDue: Math.max(0, daysBetween(asOf, invoice.dueOn)),
-      outstandingCents: invoice.totalCents,
+      outstandingCents: outstandingBalanceCents(invoice),
       lastActivity: lastActivityLabel(),
     }))
     .sort((left, right) => right.daysPastDue - left.daysPastDue);

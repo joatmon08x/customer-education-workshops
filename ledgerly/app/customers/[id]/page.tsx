@@ -13,6 +13,7 @@ import {
 import { getCustomerAccount } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel, planPriceCents } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
@@ -92,6 +93,39 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
           {account.overdueBook.length === 0 ? (
             <p className="px-5 pt-2 text-sm text-muted-foreground">No overdue invoices.</p>
           ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Activity</CardTitle>
+          <CardDescription>Collections history for this account. Newest first.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          {account.activities.length === 0 ? (
+            <p className="text-muted-foreground">—</p>
+          ) : (
+            <ul className="space-y-3">
+              {account.activities.map((activity) => (
+                <li key={activity.id} className="flex flex-col gap-0.5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="font-medium">{activity.type}</span>
+                    <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    {[
+                      activity.amountCents != null ? formatUsd(activity.amountCents) : null,
+                      activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                      activity.actorName,
+                      activity.status,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>

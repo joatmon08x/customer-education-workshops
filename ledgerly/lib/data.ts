@@ -9,6 +9,7 @@ import {
   percentChange,
   revenueSeries,
 } from "@/lib/dashboard";
+import { formatDate } from "@/lib/dates";
 import {
   lastActivityLabel,
   overdueBalanceCents,
@@ -20,6 +21,7 @@ const invoiceInclude = {
   customer: true,
   lines: true,
   disputes: true,
+  payments: { orderBy: { recordedAt: "desc" as const } },
 } as const;
 
 const disputeInclude = {
@@ -171,18 +173,23 @@ export async function getCustomerAccounts() {
 export async function getCustomerAccount(id: string) {
   const customer = await prisma.customer.findUnique({
     where: { id },
-    include: { invoices: true },
+    include: {
+      invoices: { include: { payments: true } },
+      activities: { orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }] },
+    },
   });
   if (!customer) return null;
 
+  const latestActivity = customer.activities[0];
   return {
     id: customer.id,
     name: customer.name,
     contactName: customer.contactName,
     email: customer.email,
     plan: customer.plan,
-    lastActivity: lastActivityLabel(),
+    lastActivity: latestActivity ? formatDate(latestActivity.occurredOn) : lastActivityLabel(),
     overdueBook: overdueBookForAccount(customer.invoices, customer.id),
+    activities: customer.activities,
   };
 }
 
