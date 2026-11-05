@@ -1,5 +1,6 @@
 import { DEMO_AS_OF, DEMO_PRIOR_END, DEMO_PRIOR_START, DEMO_WINDOW_START } from "@/lib/clock";
 import { sumCents } from "@/lib/money";
+import { outstandingBalanceCents } from "@/lib/payments";
 import { planPriceCents } from "@/lib/plans";
 
 type InvoiceLike = {
@@ -80,6 +81,41 @@ export function revenueSeries(invoices: InvoiceLike[], start: Date, end: Date) {
   }
 
   return points;
+}
+
+const DAY_MS = 86_400_000;
+const COLLECTIONS_ACTIVITY_WINDOW_DAYS = 7;
+
+function utcDayKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+export function collectionsWeekStart(asOf: Date = DEMO_AS_OF) {
+  return new Date(asOf.getTime() - (COLLECTIONS_ACTIVITY_WINDOW_DAYS - 1) * DAY_MS);
+}
+
+export function collectionsTotals(
+  invoices: {
+    status: string;
+    totalCents: number;
+    payments?: { amountCents: number }[];
+  }[],
+  activities: { occurredOn: Date }[],
+  asOf: Date = DEMO_AS_OF,
+) {
+  const overdue = invoices.filter((invoice) => invoice.status === "OVERDUE");
+  const asOfDay = utcDayKey(asOf);
+  const weekStartDay = utcDayKey(collectionsWeekStart(asOf));
+
+  return {
+    overdueBalanceCents: sumCents(overdue.map((invoice) => outstandingBalanceCents(invoice))),
+    overdueInvoiceCount: overdue.length,
+    activitiesToday: activities.filter((activity) => utcDayKey(activity.occurredOn) === asOfDay).length,
+    activitiesLast7Days: activities.filter((activity) => {
+      const day = utcDayKey(activity.occurredOn);
+      return day >= weekStartDay && day <= asOfDay;
+    }).length,
+  };
 }
 
 export function disputeBreakdown(disputes: DisputeLike[]) {
