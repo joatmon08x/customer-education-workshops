@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SendNudgeButton } from "@/app/customers/[id]/send-nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -30,12 +31,22 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   if (!account) notFound();
   if (!isPlanId(account.plan)) notFound();
 
+  const mostPastDueInvoiceId = account.overdueBook[0]?.id;
+  const hasOverdue = account.overdueBook.length > 0;
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <PageHeader
         eyebrow="Account"
         title={account.name}
         description={`${planLabel(account.plan)} · ${formatUsd(planPriceCents(account.plan))} · last activity ${account.lastActivity}`}
+        actions={
+          <SendNudgeButton
+            invoiceId={mostPastDueInvoiceId}
+            disabled={!hasOverdue}
+            aria-label="Nudge most past due invoice"
+          />
+        }
       />
 
       <Card>
@@ -66,6 +77,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                 <TableHead className="text-right">Days past due</TableHead>
                 <TableHead className="text-right">Outstanding</TableHead>
                 <TableHead>Last activity</TableHead>
+                <TableHead className="text-right">Nudge</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,6 +98,15 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                     {formatUsd(invoice.outstandingCents)}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{invoice.lastActivity}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end">
+                      <SendNudgeButton
+                        invoiceId={invoice.id}
+                        size="sm"
+                        aria-label={`Nudge ${invoice.number}`}
+                      />
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -122,6 +143,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
+                  {activity.body ? <p>{activity.body}</p> : null}
                 </li>
               ))}
             </ul>
