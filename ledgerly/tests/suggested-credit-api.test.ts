@@ -1,8 +1,8 @@
 /**
  * Regression cover for the v2 migration.
  *
- * The client still selects the deprecated v1 endpoint, so this fails until the
- * call site moves to v2. Keep the legacy route available for compatibility.
+ * The client must select the current v2 endpoint. Keep the legacy v1 route
+ * available for compatibility.
  */
 import { describe, expect, it } from "vitest";
 import { suggestedCreditPath } from "@/lib/disputes/suggested-credit-api";
