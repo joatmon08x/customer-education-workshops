@@ -22,7 +22,7 @@ export const PROJECT_AGENTS = [
   {
     name: "preflight-checker",
     path: ".cursor/agents/preflight-checker.md",
-    when: "Before a 101, 201, or 301 session. Reports pass / fail / blocked per track dependency. readonly: false so it can run shell probes; its instructions forbid edits, install, seed, stage-linear, and mcp_auth unless asked to remediate.",
+    when: "Before a 101, 201, 301, or 401 session. Reports pass / fail / blocked per track dependency. readonly: false so it can run shell probes; its instructions forbid edits, install, seed, stage-linear, and mcp_auth unless asked to remediate.",
   },
 ] as const;
 

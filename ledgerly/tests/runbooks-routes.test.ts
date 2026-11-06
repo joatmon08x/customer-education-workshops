@@ -19,6 +19,10 @@ describe("runbooks catalog hrefs", () => {
     expect(runbookSectionHref("301", "orchestrate-agents")).toBe(
       "runbooks.html?track=301#301-orchestrate-agents",
     );
+    expect(runbookTrackHref("401")).toBe("runbooks.html?track=401");
+    expect(runbookSectionHref("401", "what-tasks-do-you-delegate")).toBe(
+      "runbooks.html?track=401#401-what-tasks-do-you-delegate",
+    );
   });
 });
 

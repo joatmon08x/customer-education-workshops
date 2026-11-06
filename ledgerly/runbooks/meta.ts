@@ -1,12 +1,13 @@
 /**
- * Grok Build runbooks as they appear in runbooks.html and in the README.
- * The 101, 201, and 301 tracks are shipped; their beats are the source of truth.
+ * Grok Build runbooks as they appear in runbooks.html, runbooks.canvas.tsx, and the README.
+ * The 101, 201, 301, and 401 tracks are shipped; their beats are the source of truth.
  */
 
 export * from "@/runbooks/types";
 export { RUNBOOK_SECTIONS_101 } from "@/runbooks/beats/101";
 export { RUNBOOK_SECTIONS_201 } from "@/runbooks/beats/201";
 export { RUNBOOK_SECTIONS_301 } from "@/runbooks/beats/301";
+export { RUNBOOK_SECTIONS_401 } from "@/runbooks/beats/401";
 export { PROJECT_AGENTS, PROJECT_SKILLS } from "@/runbooks/agents";
 export {
   RUNBOOK_TRACKS,

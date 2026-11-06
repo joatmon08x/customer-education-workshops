@@ -1,32 +1,38 @@
 # Ledgerly demo howto
 
-Presenter run-of-show for the **101**, **201**, and **301** tracks, not a course. Every step stands on its own, so you can start anywhere. You still review each result before it ships.
+Presenter run-of-show for the **101**, **201**, **301**, and **401** tracks, not a course. Every step stands on its own, so you can start anywhere. You still review each result before it ships.
 
 Ledgerly is a small, fictional demo app. It exists to give Grok Build enablement steps a visible surface: code to read, a UI to inspect, a scoped error to fix, and tests to verify. The data is synthetic. Avery Quinn is the operator, the only plan prices are Starter **$49**, Growth **$99**, and Scale **$249**, and the clock is frozen at **23 August 2026** so every run is repeatable.
 
-The pastes below match the copy-paste blocks in `runbooks.html`. `start-ledgerly` renders that file in a Cursor Canvas. The Catalog menu switches tracks. `runbooks.html?track=201` selects 201 and `runbooks.html?track=301` selects 301 when the file is opened on its own. Each beat is independent; jump directly to any step.
+The pastes below match the copy-paste blocks in the native Runbooks canvas. Run `present-runbooks` to open it. `start-ledgerly` starts the app and opens the same canvas. Catalog tabs switch tracks. `runbooks.html` is a fallback if the canvas cannot open. Each beat is independent; jump directly to any step.
 
 ## Jump menu
 
-The 101 track has three sections. Open `runbooks.html` in the Canvas and copy a card for any beat.
+The 101 track has three sections. Open the Runbooks canvas and copy a card for any beat.
 
 1. **What is Grok Build?** — [Ask](#ask), [Plan](#plan), [Build in Agent mode](#build-in-agent-mode), [Debug](#debug), check the models
 2. **How do you work with an agent?** — allowlist, verify the email feature, redact, stop, interrupt and steer, continue to the end, review diffs, restore from a checkpoint
 3. **How do you govern an agent?** — [create a rule](#create-a-rule), create a skill, [Canvas](#canvas), [MCP / Figma](#mcp--figma)
 
-The 201 track has four sections. Open `runbooks.html?track=201` and copy a card for any beat.
+The 201 track has four sections. Run `present-runbooks`, click **201**, and copy a card for any beat.
 
 1. **How do you manage context?** Rename agents, Ask DDD, check each agent's context window, ask across chats
 2. **How do you standardize agents?** [create-api skill](#create-api-skill), promote it
 3. **How do you connect external tools?** [Linear team](#choose-the-linear-team-manual), Linear MCP, list open issues, import plugin from disk
 4. **How do you parallelize a task?** — [open a new agent](#open-the-plan), resolve-dispute plan, `/multitask`, Canvas subagent progress, ledgerly-reviewer check
 
-The 301 track has four sections. Open `runbooks.html?track=301` and copy a card for any beat. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the browser.
+The 301 track has four sections. Run `present-runbooks`, click **301**, and copy a card for any beat. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas.
 
 1. **How do you orchestrate agents?** Open a local agent, create accessibility-manual-reviewer, use a cost-efficient model, optionally move to a Cloud Agent, `/multitask` the audit
 2. **How do you go from plan to code?** Optionally start a Project, list collections issues, plan and build, `/side`, consolidate into a PR
 3. **How do you scale review?** Feature branch, change reviewer subagent, highest-risk slice
 4. **How do you share ownership safely?** Shift findings left, optional Reviewer automation, files that might conflict
+
+The 401 track has three sections. Run `present-runbooks`, click **401**, and copy a card for any beat.
+
+1. **What tasks do you delegate?** Rewrite the dispute cap issue, sort the backlog, keep one issue synchronous
+2. **How do you delegate asynchronous work?** Cloud environment, three parallel Cloud Agents, web check, review the PR
+3. **How do you direct larger work?** Start a Project, hand the coordinator the collections command center, plan, build, track progress
 
 ---
 
@@ -58,11 +64,11 @@ npx prisma db seed
 npm run dev
 ```
 
-Open **http://localhost:43173**. Or ask an agent to run the `start-ledgerly` skill — it starts on 43173, seeds only when the database is empty, and opens `runbooks.html` in a Cursor Canvas.
+Open **http://localhost:43173**. Or ask an agent to run the `start-ledgerly` skill — it starts on 43173, seeds only when the database is empty, and opens the native Runbooks canvas.
 
 Check shipped state:
 
-- `npm test` is **1 failed / 32 passed**; the sole failure is `tests/suggested-credit-api.test.ts`
+- `npm test` is **1 failed / 33 passed**; the sole failure is `tests/suggested-credit-api.test.ts`
 - [http://127.0.0.1:43173/disputes/dsp_1043](http://127.0.0.1:43173/disputes/dsp_1043) shows **Suggested credit $400.00** in red, above the Scale price of **$249**
 - The deprecated v1 route returns the $400 claim; v2, the domain helper, and the seed store the correct $249 credit
 - Accept credit / Decline are disabled — that unfinished resolution UI is separate from the planted API-version error
@@ -231,12 +237,12 @@ Create three slides in Figma Slides outlining how I used Grok Build to develop a
 ```text
 Run npm test and report which tests passed and which failed. Do not edit any files.
 
-On a clean tree, npm test is 1 failed / 32 passed. The sole red test is tests/suggested-credit-api.test.ts because the client intentionally selects deprecated v1. Do not change the test, either route, or the seed.
+On a clean tree, npm test is 1 failed / 33 passed. The sole red test is tests/suggested-credit-api.test.ts because the client intentionally selects deprecated v1. Do not change the test, either route, or the seed.
 ```
 
 **If the client migration ran:** `tests/suggested-credit-api.test.ts` should be green and dsp_1043 should show **$249** from v2, with both routes intact.
 
-**If no migration ran:** `npm test` should remain **1 failed / 32 passed**. That is shipped state, not failed setup.
+**If no migration ran:** `npm test` should remain **1 failed / 33 passed**. That is shipped state, not failed setup.
 
 **Land:** A green check is evidence, not permission to merge. The presenter remains accountable.
 
@@ -256,13 +262,13 @@ npm run demo:reset
 
 **Then:** complete only the script's reported Figma, Cursor user-rule, Linear, or cloud-agent actions. The script resets files, recorded rules and skills, Canvas files, local demo branches, demo worktrees, SQLite, and port 43173. Cloud agent runs stay manual.
 
-**Shipped state again:** suggested credit **$400.00** from v1 on dsp_1043, v2 and stored credit **$249.00**, suite **1 failed / 32 passed**, status pills still writing `state=`.
+**Shipped state again:** suggested credit **$400.00** from v1 on dsp_1043, v2 and stored credit **$249.00**, suite **1 failed / 33 passed**, status pills still writing `state=`.
 
 ---
 
 ## The 201 track
 
-Open `runbooks.html?track=201`. Four section tabs match the Outline Show headings. Copy a card; Do text and prompts are on the card.
+Run `present-runbooks` and click **201**. Four section headings match the Outline Show headings. Copy a card; Do text and prompts are on the card.
 
 ### How do you manage context?
 
@@ -341,7 +347,7 @@ ledgerly-reviewer check my work
 
 ## The 301 track
 
-Open `runbooks.html?track=301`. Four section tabs match the Outline Show headings. Copy a card; Do text and prompts are on the card. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the browser. Optional beats are listed on the feature checklist.
+Run `present-runbooks` and click **301**. Four section headings match the Outline Show headings. Copy a card; Do text and prompts are on the card. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. Optional beats are listed on the feature checklist.
 
 ### How do you orchestrate agents?
 

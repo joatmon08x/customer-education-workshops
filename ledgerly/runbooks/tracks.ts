@@ -1,6 +1,7 @@
 import { RUNBOOK_SECTIONS_101 } from "@/runbooks/beats/101";
 import { RUNBOOK_SECTIONS_201 } from "@/runbooks/beats/201";
 import { RUNBOOK_SECTIONS_301 } from "@/runbooks/beats/301";
+import { RUNBOOK_SECTIONS_401 } from "@/runbooks/beats/401";
 import type { DemoSection, DemoTrack } from "@/runbooks/types";
 
 export const RUNBOOK_TRACKS = [
@@ -24,6 +25,13 @@ export const RUNBOOK_TRACKS = [
     description:
       "You will orchestrate work across agents, tasks, and coworkers: break tasks down for multiple agents, take a plan through parallel agents to a reviewable PR, scale review when several streams finish, and share ownership safely.",
     sections: RUNBOOK_SECTIONS_301,
+  },
+  {
+    id: "401" as const,
+    title: "401",
+    description:
+      "You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.",
+    sections: RUNBOOK_SECTIONS_401,
   },
 ] as const satisfies readonly {
   id: DemoTrack;

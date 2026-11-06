@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **201 track** — Runbooks track `201` / `RUNBOOK_SECTIONS_201` is on main for CE workshop demos (Outline Show beats, Linear staging, disk plugin) but is not a formal release in this cut.
 - **301 track.** Runbooks track `301` / `RUNBOOK_SECTIONS_301` adds the Outline Show for orchestrating agents, tasks, and coworkers (four sections, 35 beats: 11, 12, 5, 7). Not a formal release in this cut.
+- **401 track.** Runbooks track `401` / `RUNBOOK_SECTIONS_401` adds the Outline Show for delegating to asynchronous agents (three sections, 16 beats: 3, 6, 7). Tabs are the Show-owning headings, not Morning / Midday / Afternoon. Not a formal release in this cut.
 
 ### Added
 

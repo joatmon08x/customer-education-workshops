@@ -1,6 +1,6 @@
 ---
 name: preflight-checker
-description: Preflight checker for Ledgerly demo tracks. Use before a 101, 201, or 301 session (or before a section that needs MCP). Reports pass / fail / blocked per dependency. Does not install, seed, start the server, stage Linear, authenticate MCP, or edit product code unless the operator asks to remediate after the report.
+description: Preflight checker for Ledgerly demo tracks. Use before a 101, 201, 301, or 401 session (or before a section that needs MCP). Reports pass / fail / blocked per dependency. Does not install, seed, start the server, stage Linear, authenticate MCP, or edit product code unless the operator asks to remediate after the report.
 readonly: false
 ---
 
@@ -12,16 +12,16 @@ Catalog prices stay Starter $49 / Growth $99 / Scale $249. Operator is Avery Qui
 
 Before any check:
 
-1. If the invocation includes exactly one of `101`, `201`, `301` (as `track 201`, `track=301`, or a lone track id), pin that track.
-2. Otherwise **stop and ask**: `Which track should I preflight: 101, 201, or 301?` Run zero checks until they answer.
+1. If the invocation includes exactly one of `101`, `201`, `301`, `401` (as `track 201`, `track=401`, or a lone track id), pin that track.
+2. Otherwise **stop and ask**: `Which track should I preflight: 101, 201, 301, or 401?` Run zero checks until they answer.
 3. Do not infer the track from the Canvas sidecar, open browser tab, last chat, or `runbooks.html` query string.
-4. Reject any other id. Do not invent a fourth track.
+4. Reject any other id. Do not invent a fifth track.
 
 Optional features on 301 (Cloud Agents, Projects, Bugbot, Reviewer automation, etc.) are **not** a second identifier. After the track is pinned, list optional-feature deps separately as `optional` — never block the whole track on an unchecked optional feature unless the operator named that feature in the request.
 
 ## 2. Shared baseline (every track)
 
-Run these for `101`, `201`, and `301`. Baseline failures are `blocked` for every track. Name the remediation skill or command without running it (`npm i`, `npx prisma generate`, `npx prisma db seed`, `start-ledgerly`, `npm run demo:reset`).
+Run these for `101`, `201`, `301`, and `401`. Baseline failures are `blocked` for every track. Name the remediation skill or command without running it (`npm i`, `npx prisma generate`, `npx prisma db seed`, `start-ledgerly`, `npm run demo:reset`).
 
 | Check | How | Pass when |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Run these for `101`, `201`, and `301`. Baseline failures are `blocked` for every
 | Prisma client | Probe only — e.g. `node -e "require.resolve('@prisma/client')"` or an import check. Do **not** run `npx prisma generate`. | `@prisma/client` resolves; remediation may name `npx prisma generate` without running it |
 | SQLite seed | same probe as `start-ledgerly` (`customer.count()` via `tsx`) | prints `seeded` (count > 0) |
 | Dev server | `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:43173` | 2xx/3xx |
-| Shipped suite shape | `npm test` (or vitest summary) | **1 failed / 32 passed**; sole red file `tests/suggested-credit-api.test.ts` |
+| Shipped suite shape | `npm test` (or vitest summary) | **1 failed / 33 passed**; sole red file `tests/suggested-credit-api.test.ts` |
 | Planted demo error | When the server is up: GET `/api/v1/disputes/dsp_1043/suggested-credit` (or the dispute page) | Suggested credit still shows the v1 **$400** claim (40000 cents). Do not "fix" it. If the server is down, mark this check blocked with the server failure — do not start the server. |
 | Empty project MCP map | read `.cursor/mcp.json`; confirm no `mcp/` directory | empty `mcpServers` (e.g. `{}` or `{"mcpServers":{}}`) / no `ledgerly-db`; no `mcp/` directory |
 | Project agents present | `test -d .cursor/agents` | directory exists; track matrices below name which agent files are required |
@@ -59,7 +59,7 @@ try {
 | --- | --- | --- |
 | Shared baseline | required | all green |
 | Figma MCP | required for MCP / Figma beat | Figma tools discoverable / auth not `needsAuth` |
-| Canvas capability | required for Canvas beat | agent can use Canvas (`WriteCanvas` / canvas skill available in environment) — report `unknown` if you cannot probe it; do not fake a pass |
+| Canvas capability | required for Canvas beat | agent can write `.canvas.tsx` files (`canvas` skill available in environment) — report `unknown` if you cannot probe it; do not fake a pass |
 | `choose-cursor-workflow` skill | required | `.cursor/skills/choose-cursor-workflow/SKILL.md` exists |
 | `start-ledgerly` skill | required | `.cursor/skills/start-ledgerly/SKILL.md` exists |
 
@@ -95,12 +95,25 @@ Team confirmation rules match `stage-linear`: never assume which team; listing c
 | Projects / Bugbot / Reviewer automation | optional features | same — never hard-block the track |
 | `accessibility-manual-reviewer` | not required pre-session | that file is created mid-track; absence is expected on a clean tree — list under **Skipped** |
 
+### 401 — Cloud Agents and Projects
+
+| Dependency | Kind | Pass when |
+| --- | --- | --- |
+| Shared baseline | required | all green |
+| Linear MCP **or** repo fallback | required (soft) | Linear works **or** `runbooks/linear-field-demos.ts` is readable. If Linear fails, mark Linear `fail` and fallback `pass` with a note to use the repo file — the track is not hard-blocked |
+| Cloud Agents | required | environment can hand off / list cloud agents **and** the Cloud Agent network allowlist permits Prisma engine download and Google font files |
+| Cloud Agent egress: Prisma + fonts hosts | required (tied to Cloud Agents) | Effective egress is allow-all, **or** `allowedDomains` includes **all four** exact hosts: `binaries.prisma.sh`, `prisma.sh`, `pris.ly`, and `fonts.gstatic.com` |
+| Projects | required | Projects appear in the Agents Window (Standard Privacy Mode, plan includes Projects, Enable Projects in team settings) |
+| Collections issue catalog | required | `COLLECTIONS_COMMAND_CENTER_ISSUES` (or equivalent) present in `runbooks/linear-field-demos.ts` |
+| `prd-01-collections-command-center.md` | required for Linear-off fallback | `prds/prd-01-collections-command-center.md` exists |
+| Figma MCP | not required | omit from 401 required list; list under **Skipped** |
+
 ## 4. Report shape
 
 Return a short report, no product edits:
 
 1. **Track** — the pinned id.
-2. **Ready** — `yes` only when every `required` check for that track passed (optional failures do not flip this to no). Soft Linear-or-fallback on 301 counts as required-pass when either side passes.
+2. **Ready** — `yes` only when every `required` check for that track passed (optional failures do not flip this to no). Soft Linear-or-fallback on 301 and 401 counts as required-pass when either side passes.
 3. **Passed** — check name + evidence (command, path, or tool result).
 4. **Blocked / Failed** — check name + evidence + one-line remediation (skill name or doc pointer). Sorted required first, then optional.
 5. **Skipped** — checks not applicable to this track.

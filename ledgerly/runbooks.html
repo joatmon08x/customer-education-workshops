@@ -29,23 +29,18 @@
     .eyebrow { margin: 0; color: var(--indigo); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
     h1 { margin: 0.25rem 0 0.25rem; font-size: 1.5rem; }
     .lede { margin: 0.25rem 0 0; max-width: 48rem; color: var(--ink-soft); font-size: 0.8125rem; }
-    label { display: block; margin: 1.5rem 0 0.375rem; font-size: 0.75rem; font-weight: 500; }
-    select {
-      height: 2.25rem; min-width: 12rem; padding: 0 0.75rem;
-      border: 1px solid var(--line); border-radius: var(--radius);
-      background: var(--paper-elevated); color: var(--ink); font: inherit;
-    }
     h2 { margin: 1.5rem 0 0; font-size: 1.25rem; }
     .tabs { display: flex; gap: 0.5rem; overflow-x: auto; margin: 1rem 0 0.5rem; padding-bottom: 0.25rem; }
-    .tabs a {
+    .tabs a, .tabs button {
       flex-shrink: 0; padding: 0.375rem 0.75rem;
       border: 1px solid var(--line); border-radius: var(--radius);
-      background: var(--paper-elevated); color: var(--ink); text-decoration: none; font-size: 0.8125rem;
+      background: var(--paper-elevated); color: var(--ink); text-decoration: none; font: inherit; font-size: 0.8125rem; cursor: pointer;
     }
-    .tabs a:hover { border-color: var(--indigo); color: var(--indigo); }
+    .tabs a:hover, .tabs button:hover, .tabs button[aria-selected="true"] { border-color: var(--indigo); color: var(--indigo); }
+    .tabs.catalog { margin-top: 1.5rem; }
     section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
     h3 { margin: 0 0 0.75rem; font-size: 1.125rem; }
-    .beats { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+    .beats { display: flex; flex-direction: column; gap: 0.75rem; }
     .beat {
       display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem;
       border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper-elevated);
@@ -82,7 +77,7 @@
       padding: 0; margin: 0 0.25rem 0 0;
       font-size: 0.75rem; font-weight: 500; color: var(--ink);
     }
-    .tabs a, label.feature-option {
+    .tabs a, .tabs button, label.feature-option {
       flex-shrink: 0; display: flex; align-items: center; gap: 0.5rem;
       margin: 0; padding: 0.375rem 0.75rem;
       border: 1px solid var(--line); border-radius: var(--radius);
@@ -101,12 +96,12 @@
     <p class="eyebrow">Demo catalog</p>
     <h1>Runbooks</h1>
     <p class="lede">Choose a track, jump to a section, and copy the next beat into Grok Build. Link a track directly with <code>?track=201</code> or <code>?track=301</code>.</p>
-    <label for="track">Catalog</label>
-    <select id="track">
-          <option value="101">101</option>
-          <option value="201">201</option>
-          <option value="301">301</option>
-    </select>
+    <nav class="tabs catalog" role="tablist" aria-label="Catalog">
+          <button type="button" role="tab" data-catalog="101" aria-selected="false">101</button>
+          <button type="button" role="tab" data-catalog="201" aria-selected="false">201</button>
+          <button type="button" role="tab" data-catalog="301" aria-selected="false">301</button>
+          <button type="button" role="tab" data-catalog="401" aria-selected="false">401</button>
+    </nav>
 
     <div class="track" data-track="101">
       <h2>101</h2>
@@ -979,16 +974,194 @@ You can review tasks in project notes and shared files in context.</p>
         </div>
       </section>
     </div>
+
+    <div class="track" data-track="401">
+      <h2>401</h2>
+      <p class="lede">You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.</p>
+      <nav class="tabs" aria-label="401 sections">
+        <a href="#401-what-tasks-do-you-delegate">What tasks do you delegate?</a>
+        <a href="#401-how-do-you-delegate-asynchronous-work">How do you delegate asynchronous work?</a>
+        <a href="#401-how-do-you-direct-larger-work">How do you direct larger work?</a>
+      </nav>
+      <section id="401-what-tasks-do-you-delegate">
+        <h3>What tasks do you delegate?</h3>
+        <div class="beats">
+        <article class="beat" data-beat="rewrite-dispute-cap">
+          <h4>Rewrite an issue so an agent can finish it unattended.</h4>
+          <p class="say">Before I hand work to Cloud Agents, I need to rewrite an issue so an agent can finish it unattended.</p>
+          <div class="do-box">
+            <ul><li>Go to the Agents Window and start a new local agent.</li></ul>
+          </div>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>Rewrite the dispute cap issue in Linear so a Cloud Agent can finish it alone. Add scope, acceptance criteria, a proving test, and judgment calls.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="sort-backlog-async">
+          <h4>Sort the backlog into synchronous and asynchronous tasks.</h4>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>/ask Which open issues have enough details to delegate to a Cloud Agent? Exclude Collections Command Center issues.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="choose-synchronous-issue">
+          <h4>Choose 1 issue that I need to run with a local agent and check synchronously.</h4>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>/ask Choose 1 issue that I need to run with a local agent and check synchronously.</pre>
+          </div>
+        </article>
+        </div>
+      </section>
+      <section id="401-how-do-you-delegate-asynchronous-work">
+        <h3>How do you delegate asynchronous work?</h3>
+        <div class="beats">
+        <article class="beat" data-beat="check-cloud-environment">
+          <h4>Check the cloud environment.</h4>
+          <p class="say">This Build already installed the repository’s dependencies, so every agent I start today starts ready to run tests.</p>
+          <div class="do-box">
+            <ol><li>Go to https://cursor.com/dashboard/cloud-agents.</li><li>Select the environment for the forked repository.</li></ol>
+          </div>
+        </article>
+        <article class="beat" data-beat="launch-dispute-cap-agent">
+          <h4>Launch Cloud Agents in parallel.</h4>
+          <div class="do-box">
+            <ol><li>In the Agents Window, start a new agent.</li><li>Select Cloud in the dropdown above the agent input.</li></ol>
+          </div>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>Fix the dispute cap issue as written. Run the tests and open a PR with a screenshot of the corrected cap.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="launch-invoice-filter-agent">
+          <h4>Fix the invoice filtering issue as written.</h4>
+          <div class="do-box">
+            <ul><li>Start a new Cloud Agent.</li></ul>
+          </div>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>Fix the invoice filtering issue as written. Run the tests and open a PR.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="launch-contrast-agent">
+          <h4>Fix the failing contrast tests as written.</h4>
+          <div class="do-box">
+            <ul><li>Start a new Cloud Agent.</li></ul>
+          </div>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>Fix the failing contrast tests as written. Run the tests and open a PR.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="check-agents-web">
+          <h4>Check the agents from another surface.</h4>
+          <p class="say">The same agents show up on the web. Stop an agent early if its plan drifts from the issue.</p>
+          <div class="do-box">
+            <ul><li>Go to cursor.com/agents and select one running agent.</li></ul>
+          </div>
+        </article>
+        <article class="beat" data-beat="review-dispute-cap-pr">
+          <h4>Review the finished work.</h4>
+          <p class="say">The screenshot shows the fix before I check out a single line. Next, I review the diff, then merge it or ask the agent for a change.</p>
+          <div class="do-box">
+            <ul><li>Select the finished dispute cap agent and review its artifacts and PR.</li></ul>
+          </div>
+        </article>
+        </div>
+      </section>
+      <section id="401-how-do-you-direct-larger-work">
+        <h3>How do you direct larger work?</h3>
+        <div class="beats">
+        <article class="beat" data-beat="start-project">
+          <h4>Start a Project.</h4>
+          <p class="say">The Project opens as a chat with its coordinator. It keeps building the collections command center tonight, after I close my laptop.</p>
+          <div class="do-box">
+            <ol><li>In the Agents Window, go to Projects in the sidebar and select New Project.</li><li>Enter {{ INSERT COMPANY HERE, default is Ledgerly }} as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.</li><li>Select Create Project.</li></ol>
+          </div>
+        </article>
+        <article class="beat" data-beat="hand-coordinator-goal">
+          <h4>Hand the coordinator a larger goal.</h4>
+          <div class="do-box">
+            <ul><li>Select + in the chat and put the Project agent in Plan mode.</li></ul>
+          </div>
+          <div class="paste">
+            <div class="paste-head">
+              <span>Paste in Grok Build</span>
+              <button type="button" class="copy">Copy</button>
+            </div>
+            <pre>Build the collections command center based on the issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.</pre>
+          </div>
+        </article>
+        <article class="beat" data-beat="review-project-plan">
+          <h4>Review the plan.</h4>
+          <p class="say">The plan shows which tasks run in parallel and which ones wait for another task.
+Every future agent in this Project starts with the plan, so nobody onboards an agent from scratch.</p>
+          <div class="do-box">
+            <ul><li>Review the plan.</li></ul>
+          </div>
+        </article>
+        <article class="beat" data-beat="build-project-plan">
+          <h4>Build the plan.</h4>
+          <p class="say">The Project now creates Cloud Agents for each task and tracks their progress.</p>
+          <div class="do-box">
+            <ul><li>Build the plan.</li></ul>
+          </div>
+        </article>
+        <article class="beat" data-beat="track-project-progress">
+          <h4>Track the progress.</h4>
+          <p class="say">The Project sidebar list the issues and track what is in progress, queued, for review, and done.
+You can choose List or Board view to review what the Project is building.</p>
+          <div class="do-box">
+            <ol><li>Open the Project sidebar in the right panel.</li><li>Select the Board view to review the project on a board.</li></ol>
+          </div>
+        </article>
+        <article class="beat" data-beat="review-shared-context">
+          <h4>Review shared context.</h4>
+          <p class="say">The Project writes the plan file to a shared file library that every Cloud Agent can access. If an agent needs more information, it can access the plan as shared context.</p>
+          <div class="do-box">
+            <ol><li>Select the Library view to review the project’s file changes.</li><li>Open the plan file.</li></ol>
+          </div>
+        </article>
+        <article class="beat" data-beat="let-the-work-run">
+          <h4>Let the work run.</h4>
+          <p class="say">Whatever the coordinator finishes waits in my review queue to check later.</p>
+          <div class="do-box">
+            <ul><li>Show the Cloud Agent working on its own branch.</li></ul>
+          </div>
+        </article>
+        </div>
+      </section>
+    </div>
   </main>
   <script>
     (function () {
-      var select = document.getElementById("track");
+      var catalog = Array.prototype.slice.call(document.querySelectorAll("[data-catalog]"));
       var tracks = Array.prototype.slice.call(document.querySelectorAll(".track"));
       var ids = tracks.map(function (el) { return el.getAttribute("data-track"); });
 
       function show(id, updateUrl) {
         if (ids.indexOf(id) === -1) id = ids[0];
-        select.value = id;
+        catalog.forEach(function (el) {
+          el.setAttribute("aria-selected", el.getAttribute("data-catalog") === id ? "true" : "false");
+        });
         tracks.forEach(function (el) { el.hidden = el.getAttribute("data-track") !== id; });
         document.title = "Runbooks · " + id;
         if (updateUrl) {
@@ -1013,17 +1186,23 @@ You can review tasks in project notes and shared files in context.</p>
         var target = document.getElementById(window.location.hash.slice(1));
         if (target) target.scrollIntoView();
       }
-      select.addEventListener("change", function () { show(select.value, true); });
+      catalog.forEach(function (el) {
+        el.addEventListener("click", function () { show(el.getAttribute("data-catalog"), true); });
+      });
 
       function catalogOptions() {
-        return Array.prototype.map.call(select.options, function (opt) { return opt.value; });
+        return catalog.map(function (el) { return el.getAttribute("data-catalog"); });
+      }
+      function visibleTrack() {
+        var selected = catalog.filter(function (el) { return el.getAttribute("aria-selected") === "true"; })[0];
+        return selected ? selected.getAttribute("data-catalog") : ids[0];
       }
       function postCatalog() {
         if (window.parent === window) return;
         window.parent.postMessage({
           type: "runbooks:catalog",
           options: catalogOptions(),
-          visibleTrack: select.value,
+          visibleTrack: visibleTrack(),
         }, "*");
       }
       function applyFeatures(state) {

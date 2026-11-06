@@ -14,9 +14,9 @@ Fictional billing ops SaaS. Fieldnote Workspace. Operator Avery Quinn. No auth. 
 
 Catalog prices are frozen: Starter **$49**, Growth **$99**, Scale **$249**. Never invent a fourth price, live ARR, or a real customer name.
 
-This is a **Grok Build demo app** with three jumpable tracks: 101, 201, and 301. Runbook beats live in `runbooks/meta.ts` and in `runbooks.html`. `start-ledgerly` renders that file in a Cursor Canvas. Regenerate it with `npm run runbooks:export` whenever beats change — `tests/runbooks.test.ts` fails if it drifts. Open `runbooks.html?track=301` for the 301 track. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the browser. The presenter run-of-show is `demo-howto.md`. Project subagents live in `.cursor/agents/`. Skills live in `.cursor/skills/`. Do not add talk-track or speaker-note skills. Do not reintroduce retired Advanced runbooks without a request.
+This is a **Grok Build demo app** with four jumpable tracks: 101, 201, 301, and 401. Runbook beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Regenerate both files with `npm run runbooks:export` whenever beats change — `tests/runbooks.test.ts` fails if they drift. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. The presenter run-of-show is `demo-howto.md`. Project subagents live in `.cursor/agents/`. Skills live in `.cursor/skills/`. Do not add talk-track or speaker-note skills. Do not reintroduce retired Advanced runbooks without a request.
 
-Before a demo session, invoke `preflight-checker` with the track id (`preflight-checker track 101`, `201`, or `301`). It reports pass / fail / blocked for that track and does not install, seed, start the server, stage Linear, or authenticate MCP. If the track is missing, it asks and runs no checks. `start-ledgerly` is the start step after the report, not a substitute for preflight.
+Before a demo session, invoke `preflight-checker` with the track id (`preflight-checker track 101`, `201`, `301`, or `401`). It reports pass / fail / blocked for that track and does not install, seed, start the server, stage Linear, or authenticate MCP. If the track is missing, it asks and runs no checks. `start-ledgerly` is the start step after the report, not a substitute for preflight.
 
 ## Grok Build Cloud specific instructions
 
@@ -82,7 +82,7 @@ These are intentional. Leave them in place for the demo, and do not ship them ou
 
 Passing tests include `tests/money.test.ts` and `tests/plans.test.ts`. Environment start seeds the database and runs only the passing tests so a red suite cannot mark the machine as failed to boot.
 
-Shipped suite on a clean tree: **1 failed / 32 passed**. The `dsp_1043` page shows v1's $400 result; v2 and the stored credit are correctly capped at $249. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a separate planted UI seam, not a second red test. Do not volunteer it when explaining the app or the failing test; only when the user is on that click path.
+Shipped suite on a clean tree: **1 failed / 33 passed**. The `dsp_1043` page shows v1's $400 result; v2 and the stored credit are correctly capped at $249. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a separate planted UI seam, not a second red test. Do not volunteer it when explaining the app or the failing test; only when the user is on that click path.
 
 WCAG checks live in `tests/a11y/` and run separately with `npm run test:a11y`; `npm test` excludes them, so they do not change the shipped count. They check 4.5:1 text contrast for the token pairs in `app/globals.css` (light and dark) and labels on form controls, buttons, links, and images. The suite is red today on contrast only; label checks pass. Failing pairs: light `--success`, `--warning`, and `--danger` on their `-soft` badge backgrounds; light `--muted-foreground` on `--muted` and on `--indigo-soft`; light `--success` on `--card`; and dark `--danger` on `--danger-soft`. Keep `test:a11y` out of `npm test`, the environment start command, and `scripts/demo-reset.ts`.
 
@@ -113,8 +113,9 @@ Incomplete on purpose:
 | `.cursor/agents/api-instrumenter.md` | `/multitask` worker — one API route |
 | `.cursor/agents/dispute-verifier.md` | `/goal` and `/orchestrate` finish line |
 | `.cursor/agents/change-reviewer.md` | Diff inspection. `readonly: false` so it can run git diff. Instructions forbid edits. High, warning, and suggestion. |
-| `.cursor/agents/preflight-checker.md` | Before a 101 / 201 / 301 session. Track dependency pass / fail / blocked. `readonly: false` for shell probes; no install, seed, or MCP auth unless asked to remediate. |
-| `.cursor/skills/choose-cursor-workflow/` | Walk the 101, 201, or 301 track: modes, models, rules, skills, and finishing one task with an agent |
+| `.cursor/agents/preflight-checker.md` | Before a 101 / 201 / 301 / 401 session. Track dependency pass / fail / blocked. `readonly: false` for shell probes; no install, seed, or MCP auth unless asked to remediate. |
+| `.cursor/skills/present-runbooks/` | Open the native Runbooks canvas with numbered steps for a 101, 201, 301, or 401 walkthrough |
+| `.cursor/skills/choose-cursor-workflow/` | Walk the 101, 201, 301, or 401 track: modes, models, rules, skills, and finishing one task with an agent |
 | `.cursor/skills/stage-linear/` | Reconcile Fieldnote issues on the `ce-field-demos` Linear project. Public and private teams and projects are both valid. |
 | `.cursor/skills/standard-bug-fix/` | `/standard-bug-fix` — pull one ce-field-demos Linear issue and fix only that bug |
 | `.cursor/skills/dispatch-subagents/` | Parallel Task launches |

@@ -43,7 +43,7 @@ export function renderBeatHtml(beat: DemoBeat): string {
   return renderBeat(beat);
 }
 
-type CardBlock =
+export type CardBlock =
   | { kind: "say"; text: string }
   | { kind: "steps"; lines: string[] }
   | { kind: "prompt"; text: string; label: string };
@@ -55,7 +55,7 @@ function doLines(value: string): string[] {
     .filter((line) => line.length > 0);
 }
 
-function cardBlocks(beat: DemoBeat): CardBlock[] {
+export function cardBlocks(beat: DemoBeat): CardBlock[] {
   const blocks: CardBlock[] = [];
   const say = visibleText(beat.say);
   if (say) blocks.push({ kind: "say", text: say });
@@ -183,7 +183,8 @@ function renderTrack(track: (typeof RUNBOOK_TRACKS)[number]): string {
  */
 export function renderRunbooksHtml(): string {
   const options = RUNBOOK_TRACKS.map(
-    (track) => `<option value="${track.id}">${escapeHtml(track.title)}</option>`,
+    (track) =>
+      `<button type="button" role="tab" data-catalog="${track.id}" aria-selected="false">${escapeHtml(track.title)}</button>`,
   ).join("\n          ");
 
   return `<!doctype html>
@@ -217,23 +218,18 @@ export function renderRunbooksHtml(): string {
     .eyebrow { margin: 0; color: var(--indigo); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
     h1 { margin: 0.25rem 0 0.25rem; font-size: 1.5rem; }
     .lede { margin: 0.25rem 0 0; max-width: 48rem; color: var(--ink-soft); font-size: 0.8125rem; }
-    label { display: block; margin: 1.5rem 0 0.375rem; font-size: 0.75rem; font-weight: 500; }
-    select {
-      height: 2.25rem; min-width: 12rem; padding: 0 0.75rem;
-      border: 1px solid var(--line); border-radius: var(--radius);
-      background: var(--paper-elevated); color: var(--ink); font: inherit;
-    }
     h2 { margin: 1.5rem 0 0; font-size: 1.25rem; }
     .tabs { display: flex; gap: 0.5rem; overflow-x: auto; margin: 1rem 0 0.5rem; padding-bottom: 0.25rem; }
-    .tabs a {
+    .tabs a, .tabs button {
       flex-shrink: 0; padding: 0.375rem 0.75rem;
       border: 1px solid var(--line); border-radius: var(--radius);
-      background: var(--paper-elevated); color: var(--ink); text-decoration: none; font-size: 0.8125rem;
+      background: var(--paper-elevated); color: var(--ink); text-decoration: none; font: inherit; font-size: 0.8125rem; cursor: pointer;
     }
-    .tabs a:hover { border-color: var(--indigo); color: var(--indigo); }
+    .tabs a:hover, .tabs button:hover, .tabs button[aria-selected="true"] { border-color: var(--indigo); color: var(--indigo); }
+    .tabs.catalog { margin-top: 1.5rem; }
     section { margin-top: 2.5rem; scroll-margin-top: 1rem; }
     h3 { margin: 0 0 0.75rem; font-size: 1.125rem; }
-    .beats { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+    .beats { display: flex; flex-direction: column; gap: 0.75rem; }
     .beat {
       display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem;
       border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper-elevated);
@@ -270,7 +266,7 @@ export function renderRunbooksHtml(): string {
       padding: 0; margin: 0 0.25rem 0 0;
       font-size: 0.75rem; font-weight: 500; color: var(--ink);
     }
-    .tabs a, label.feature-option {
+    .tabs a, .tabs button, label.feature-option {
       flex-shrink: 0; display: flex; align-items: center; gap: 0.5rem;
       margin: 0; padding: 0.375rem 0.75rem;
       border: 1px solid var(--line); border-radius: var(--radius);
@@ -286,21 +282,22 @@ export function renderRunbooksHtml(): string {
     <p class="eyebrow">Demo catalog</p>
     <h1>Runbooks</h1>
     <p class="lede">Choose a track, jump to a section, and copy the next beat into Grok Build. Link a track directly with <code>?track=201</code> or <code>?track=301</code>.</p>
-    <label for="track">Catalog</label>
-    <select id="track">
+    <nav class="tabs catalog" role="tablist" aria-label="Catalog">
           ${options}
-    </select>
+    </nav>
 ${RUNBOOK_TRACKS.map(renderTrack).join("\n")}
   </main>
   <script>
     (function () {
-      var select = document.getElementById("track");
+      var catalog = Array.prototype.slice.call(document.querySelectorAll("[data-catalog]"));
       var tracks = Array.prototype.slice.call(document.querySelectorAll(".track"));
       var ids = tracks.map(function (el) { return el.getAttribute("data-track"); });
 
       function show(id, updateUrl) {
         if (ids.indexOf(id) === -1) id = ids[0];
-        select.value = id;
+        catalog.forEach(function (el) {
+          el.setAttribute("aria-selected", el.getAttribute("data-catalog") === id ? "true" : "false");
+        });
         tracks.forEach(function (el) { el.hidden = el.getAttribute("data-track") !== id; });
         document.title = "Runbooks · " + id;
         if (updateUrl) {
@@ -325,17 +322,23 @@ ${RUNBOOK_TRACKS.map(renderTrack).join("\n")}
         var target = document.getElementById(window.location.hash.slice(1));
         if (target) target.scrollIntoView();
       }
-      select.addEventListener("change", function () { show(select.value, true); });
+      catalog.forEach(function (el) {
+        el.addEventListener("click", function () { show(el.getAttribute("data-catalog"), true); });
+      });
 
       function catalogOptions() {
-        return Array.prototype.map.call(select.options, function (opt) { return opt.value; });
+        return catalog.map(function (el) { return el.getAttribute("data-catalog"); });
+      }
+      function visibleTrack() {
+        var selected = catalog.filter(function (el) { return el.getAttribute("aria-selected") === "true"; })[0];
+        return selected ? selected.getAttribute("data-catalog") : ids[0];
       }
       function postCatalog() {
         if (window.parent === window) return;
         window.parent.postMessage({
           type: "runbooks:catalog",
           options: catalogOptions(),
-          visibleTrack: select.value,
+          visibleTrack: visibleTrack(),
         }, "*");
       }
       function applyFeatures(state) {

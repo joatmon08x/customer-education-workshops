@@ -2,7 +2,7 @@
 
 Fictional B2B billing ops. Fieldnote Workspace. Operator **Avery Quinn**. Catalog is Starter **$49**, Growth **$99**, Scale **$249**. Demo clock is frozen at **23 August 2026**. Synthetic data only — no real companies.
 
-Use it for the jumpable Grok Build **101**, **201**, and **301** tracks. Copy-paste prompts live in `runbooks.html`. `start-ledgerly` renders that file in a Cursor Canvas. The Catalog menu switches tracks; `runbooks.html?track=201` selects 201 and `runbooks.html?track=301` selects 301 when the file is opened on its own. The presenter run-of-show and speaker notes are `demo-howto.md`.
+Use it for the jumpable Grok Build **101**, **201**, **301**, and **401** tracks. Copy-paste prompts live in `runbooks.html` and in the native Runbooks canvas (`runbooks.canvas.tsx`). `present-runbooks` opens that canvas with numbered steps. `start-ledgerly` starts the app and opens the same canvas. Catalog tabs switch tracks. `runbooks.html` is a fallback if the canvas cannot open. The presenter run-of-show and speaker notes are `demo-howto.md`.
 
 ## Run
 
@@ -12,7 +12,7 @@ Before a demo, open an agent and run the `preflight-checker` subagent with the t
 preflight-checker track 201
 ```
 
-Use `101` or `301` the same way. It reports **Ready** only when every required check for that track passed, and it lists what failed with a remediation (`npm i`, `npx prisma db seed`, `start-ledgerly`, enable the MCP, or `stage-linear` after you confirm the Linear team). It does not install, seed, start the server, stage Linear, or authenticate MCP. If you omit the track, it asks which of `101`, `201`, or `301` and runs no checks. Then bring the app up.
+Use `101`, `301`, or `401` the same way. It reports **Ready** only when every required check for that track passed, and it lists what failed with a remediation (`npm i`, `npx prisma db seed`, `start-ledgerly`, enable the MCP, or `stage-linear` after you confirm the Linear team). It does not install, seed, start the server, stage Linear, or authenticate MCP. If you omit the track, it asks which of `101`, `201`, `301`, or `401` and runs no checks. Then bring the app up.
 
 Node 20. Nothing else global.
 
@@ -23,9 +23,9 @@ npx prisma db seed
 npm run dev
 ```
 
-Open **http://localhost:43173**. Or ask an agent to run the `start-ledgerly` skill — it starts the app on 43173, seeds only when the database is missing or empty, and opens `runbooks.html` in a Cursor Canvas.
+Open **http://localhost:43173**. Or ask an agent to run the `start-ledgerly` skill — it starts the app on 43173, seeds only when the database is missing or empty, and opens the native Runbooks canvas.
 
-`npm test` is **1 failed / 32 passed** on a clean tree — `tests/suggested-credit-api.test.ts` is the planted API-version bug. The UI shows the deprecated v1 result of $400 for `dsp_1043`; v2 and the stored credit correctly cap at the $249 Scale price. Status pills on Invoices and Disputes write `state=` while the pages read `status`, so clicking a filter does not change the list — that is a separate planted UI seam, not a second red test. Reset a demo with `npm run demo:reset` first; `reset-demo-state` only finishes reported MCP cleanup. Use `npm run db:reset` only for data.
+`npm test` is **1 failed / 33 passed** on a clean tree — `tests/suggested-credit-api.test.ts` is the planted API-version bug. The UI shows the deprecated v1 result of $400 for `dsp_1043`; v2 and the stored credit correctly cap at the $249 Scale price. Status pills on Invoices and Disputes write `state=` while the pages read `status`, so clicking a filter does not change the list — that is a separate planted UI seam, not a second red test. Reset a demo with `npm run demo:reset` first; `reset-demo-state` only finishes reported MCP cleanup. Use `npm run db:reset` only for data.
 
 ### Planted demo issues
 
@@ -42,12 +42,12 @@ Dashboard, Invoices, Collections, Disputes, Settings. Extra book accounts are in
 
 | What | Where |
 | --- | --- |
-| Runbook beats | `runbooks.html`, rendered in a Cursor Canvas by `start-ledgerly`. Regenerate with `npm run runbooks:export` after editing `runbooks/beats/` |
+| Runbook beats | `runbooks.html` and `runbooks.canvas.tsx`, opened as a native Cursor Canvas by `present-runbooks` (or `start-ledgerly` after boot). Regenerate with `npm run runbooks:export` after editing `runbooks/beats/` |
 | `/loop` job | `POST` then `GET` `/api/demo/job` (~45s, not written to SQLite) |
 | Agents | `.cursor/agents/` — `ledgerly-reviewer`, `api-instrumenter`, `dispute-verifier`, `change-reviewer`, `preflight-checker` |
 | Skills | `.cursor/skills/` — run the demo, stage Linear, or pick a Cursor workflow |
 | Disk plugin | `plugins/standard-bug-fix/` — add from local repository; `/standard-bug-fix`, Linear MCP |
-| Presenter script | `demo-howto.md`, the 101, 201, and 301 run-of-show |
+| Presenter script | `demo-howto.md`, the 101, 201, 301, and 401 run-of-show |
 
 ## Starter prompts
 
@@ -85,7 +85,7 @@ Restyle the four KPI cards on this dashboard using only the existing design toke
 
 ## The 101 track
 
-Open `runbooks.html` in the Canvas (track 101), copy a card, and paste it in Grok Build. You still review the result.
+Open the Runbooks canvas (track 101), copy a card, and paste it in Grok Build. You still review the result.
 
 1. **What is Grok Build?** — Ask, Plan, Build in Agent mode, Debug, and check the models.
 2. **How do you work with an agent?** — Run Mode allowlist, verify the email feature, redact, stop, interrupt and steer, continue to the end, review diffs, restore from a checkpoint.
@@ -93,7 +93,7 @@ Open `runbooks.html` in the Canvas (track 101), copy a card, and paste it in Gro
 
 ## The 201 track
 
-Open `runbooks.html?track=201`, or switch to 201 with the Catalog menu in the Canvas, copy a card, and paste it in Grok Build. You still review the result.
+Run `present-runbooks` and click **201**, copy a card, and paste it in Grok Build. You still review the result.
 
 1. **How do you manage context?** Rename agents, Ask DDD (whole app vs `@invoice-table.tsx`), check each agent's context window, ask across chats.
 2. **How do you standardize agents?** Personal create-api skill, promote it to the project.
@@ -102,12 +102,20 @@ Open `runbooks.html?track=201`, or switch to 201 with the Catalog menu in the Ca
 
 ## The 301 track
 
-Open `runbooks.html?track=301`, or switch to 301 with the Catalog menu in the Canvas, copy a card, and paste it in Grok Build. You still review the result. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the browser.
+Run `present-runbooks` and click **301**, copy a card, and paste it in Grok Build. You still review the result. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas.
 
 1. **How do you orchestrate agents?** Open a local agent, create accessibility-manual-reviewer, point the subagent at a faster cost-efficient model, optionally move to a Cloud Agent, `/multitask` the audit, and watch the Working tab.
 2. **How do you go from plan to code?** Optionally start and stage a Project, list collections issues, plan and build, `/side`, consolidate into a PR, and fall back to repo issues if Linear MCP is unavailable.
 3. **How do you scale review?** Feature branch, change reviewer subagent, high severity issues, optional Bugbot, highest-risk slice.
 4. **How do you share ownership safely?** Shift findings into a rule, skill, test, subagent, or a person, optional Reviewer automation, and files that might conflict.
+
+## The 401 track
+
+Run `present-runbooks` and click **401**, copy a card, and paste it in Grok Build. You still review the result.
+
+1. **What tasks do you delegate?** Rewrite the dispute cap issue for unattended Cloud Agents, sort the backlog, keep one issue synchronous.
+2. **How do you delegate asynchronous work?** Check the cloud environment, launch three Cloud Agents in parallel, check them on the web, review the finished PR.
+3. **How do you direct larger work?** Start a Project, hand the coordinator the collections command center, review and build the plan, track progress and shared context.
 
 ## Choose the Linear team (manual)
 
@@ -132,8 +140,8 @@ During a fresh setup, create issues sequentially: suggested-credit first, **Clic
 | `api-instrumenter` | One API route per parallel worker. |
 | `dispute-verifier` | Dispute-resolution finish line. No product code. |
 | `change-reviewer` | Diff inspection with `readonly: false` so it can run `git status` and `git diff`. Its instructions forbid edits. Reports Passed, then Incomplete with high, warning, and suggestion findings for sensitive data, hard rollback, missing tests, edited failing tests, scope outside the plan, and new dependencies or shell commands. |
-| `preflight-checker` | Before a 101 / 201 / 301 session. Reports pass / fail / blocked per track dependency. `readonly: false` for shell probes; does not install, seed, stage Linear, or authenticate MCP unless asked to remediate. |
-| `choose-cursor-workflow` | Walk the 101, 201, or 301 track and pick the mode or model. |
+| `preflight-checker` | Before a 101 / 201 / 301 / 401 session. Reports pass / fail / blocked per track dependency. `readonly: false` for shell probes; does not install, seed, stage Linear, or authenticate MCP unless asked to remediate. |
+| `choose-cursor-workflow` | Walk the 101, 201, 301, or 401 track and pick the mode or model. |
 | `stage-linear` | Reconcile Fieldnote issues on the `ce-field-demos` Linear project. Public and private teams and projects are both valid. |
 | `standard-bug-fix` | Pull one ce-field-demos Linear issue, then fix only that bug. |
 | `dispatch-subagents` | Parallel Task launches. |

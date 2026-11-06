@@ -5,12 +5,14 @@ import {
   RUNBOOK_SECTIONS_101,
   RUNBOOK_SECTIONS_201,
   RUNBOOK_SECTIONS_301,
+  RUNBOOK_SECTIONS_401,
   RUNBOOK_TRACKS,
   runbookBeatSequence,
   runbookBeats,
   stripOptionalTags,
   trackOptionalFeatures,
 } from "@/runbooks/meta";
+import { STATIC_CANVAS_PATH, renderRunbooksCanvas } from "@/runbooks/canvas-page";
 import {
   STATIC_RUNBOOKS_PATH,
   beatFeature,
@@ -22,14 +24,16 @@ const root = process.cwd();
 const beats101 = runbookBeats("101");
 const beats201 = runbookBeats("201");
 const beats301 = runbookBeats("301");
+const beats401 = runbookBeats("401");
 
 describe("runbook catalog", () => {
-  it("ships the 101, 201, and 301 tracks", () => {
-    expect(RUNBOOK_TRACKS.map((track) => track.id)).toEqual(["101", "201", "301"]);
+  it("ships the 101, 201, 301, and 401 tracks", () => {
+    expect(RUNBOOK_TRACKS.map((track) => track.id)).toEqual(["101", "201", "301", "401"]);
 
     const track101 = RUNBOOK_TRACKS.find((track) => track.id === "101");
     const track201 = RUNBOOK_TRACKS.find((track) => track.id === "201");
     const track301 = RUNBOOK_TRACKS.find((track) => track.id === "301");
+    const track401 = RUNBOOK_TRACKS.find((track) => track.id === "401");
 
     expect(track101?.description).toBe(
       "You will explore different ways to work in Grok Build, use modes and models for the right tasks, apply rules and skills to ensure consistent quality, and complete at least one task with an agent.",
@@ -39,6 +43,9 @@ describe("runbook catalog", () => {
     );
     expect(track301?.description).toBe(
       "You will orchestrate work across agents, tasks, and coworkers: break tasks down for multiple agents, take a plan through parallel agents to a reviewable PR, scale review when several streams finish, and share ownership safely.",
+    );
+    expect(track401?.description).toBe(
+      "You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.",
     );
 
     for (const track of RUNBOOK_TRACKS) {
@@ -412,7 +419,8 @@ describe("runbook catalog", () => {
     const skill = readFileSync(join(root, ".cursor/skills/choose-cursor-workflow/SKILL.md"), "utf8");
     const track301 = RUNBOOK_TRACKS.find((track) => track.id === "301");
     expect(skill).toContain(track301?.description ?? "");
-    expect(skill).toContain("runbooks.html?track=301");
+    expect(skill).toContain("present-runbooks");
+    expect(skill).toContain("click **301**");
 
     expect(RUNBOOK_SECTIONS_301.map((section) => section.title)).toEqual([
       "How do you orchestrate agents?",
@@ -741,6 +749,172 @@ describe("runbook catalog", () => {
     expect(beats301.filter((entry) => entry.example?.startsWith("/")).every((entry) => /^\/[a-z-]+/.test(entry.example ?? ""))).toBe(true);
   });
 
+  it("keeps the 401 beats intact", () => {
+    const skill = readFileSync(join(root, ".cursor/skills/choose-cursor-workflow/SKILL.md"), "utf8");
+    const track401 = RUNBOOK_TRACKS.find((track) => track.id === "401");
+    expect(skill).toContain(track401?.description ?? "");
+
+    expect(RUNBOOK_SECTIONS_401.map((section) => section.title)).toEqual([
+      "What tasks do you delegate?",
+      "How do you delegate asynchronous work?",
+      "How do you direct larger work?",
+    ]);
+    expect(RUNBOOK_SECTIONS_401.map((section) => section.title).join(" ")).not.toMatch(
+      /Morning|Midday|Afternoon/,
+    );
+    expect(RUNBOOK_SECTIONS_401.map((section) => section.id)).toEqual([
+      "what-tasks-do-you-delegate",
+      "how-do-you-delegate-asynchronous-work",
+      "how-do-you-direct-larger-work",
+    ]);
+    expect(RUNBOOK_SECTIONS_401.map((section) => section.beats.length)).toEqual([3, 6, 7]);
+    expect(runbookBeatSequence("401")).toBe(
+      "Rewrite an issue so an agent can finish it unattended. \u2192 Sort the backlog into synchronous and asynchronous tasks. \u2192 Choose 1 issue that I need to run with a local agent and check synchronously. \u2192 Check the cloud environment. \u2192 Launch Cloud Agents in parallel. \u2192 Fix the invoice filtering issue as written. \u2192 Fix the failing contrast tests as written. \u2192 Check the agents from another surface. \u2192 Review the finished work. \u2192 Start a Project. \u2192 Hand the coordinator a larger goal. \u2192 Review the plan. \u2192 Build the plan. \u2192 Track the progress. \u2192 Review shared context. \u2192 Let the work run.",
+    );
+
+    expect(
+      beats401.map(({ id, title, promptType, detail, example, optional, say, after }) => ({
+        id,
+        title,
+        promptType,
+        detail,
+        example,
+        optional,
+        say,
+        after,
+      })),
+    ).toEqual([
+      {
+        id: "rewrite-dispute-cap",
+        title: "Rewrite an issue so an agent can finish it unattended.",
+        promptType: "adaptable",
+        detail: "Go to the Agents Window and start a new local agent.",
+        example:
+          "Rewrite the dispute cap issue in Linear so a Cloud Agent can finish it alone. Add scope, acceptance criteria, a proving test, and judgment calls.",
+        say: "Before I hand work to Cloud Agents, I need to rewrite an issue so an agent can finish it unattended.",
+      },
+      {
+        id: "sort-backlog-async",
+        title: "Sort the backlog into synchronous and asynchronous tasks.",
+        promptType: "reusable",
+        detail: "",
+        example:
+          "/ask Which open issues have enough details to delegate to a Cloud Agent? Exclude Collections Command Center issues.",
+      },
+      {
+        id: "choose-synchronous-issue",
+        title: "Choose 1 issue that I need to run with a local agent and check synchronously.",
+        promptType: "reusable",
+        detail: "",
+        example: "/ask Choose 1 issue that I need to run with a local agent and check synchronously.",
+      },
+      {
+        id: "check-cloud-environment",
+        title: "Check the cloud environment.",
+        promptType: "none",
+        detail:
+          "Go to https://cursor.com/dashboard/cloud-agents.\nSelect the environment for the forked repository.",
+        say: "This Build already installed the repository’s dependencies, so every agent I start today starts ready to run tests.",
+      },
+      {
+        id: "launch-dispute-cap-agent",
+        title: "Launch Cloud Agents in parallel.",
+        promptType: "adaptable",
+        detail:
+          "In the Agents Window, start a new agent.\nSelect Cloud in the dropdown above the agent input.",
+        example:
+          "Fix the dispute cap issue as written. Run the tests and open a PR with a screenshot of the corrected cap.",
+      },
+      {
+        id: "launch-invoice-filter-agent",
+        title: "Fix the invoice filtering issue as written.",
+        promptType: "adaptable",
+        detail: "Start a new Cloud Agent.",
+        example: "Fix the invoice filtering issue as written. Run the tests and open a PR.",
+      },
+      {
+        id: "launch-contrast-agent",
+        title: "Fix the failing contrast tests as written.",
+        promptType: "adaptable",
+        detail: "Start a new Cloud Agent.",
+        example: "Fix the failing contrast tests as written. Run the tests and open a PR.",
+      },
+      {
+        id: "check-agents-web",
+        title: "Check the agents from another surface.",
+        promptType: "none",
+        detail: "Go to cursor.com/agents and select one running agent.",
+        say: "The same agents show up on the web. Stop an agent early if its plan drifts from the issue.",
+      },
+      {
+        id: "review-dispute-cap-pr",
+        title: "Review the finished work.",
+        promptType: "none",
+        detail: "Select the finished dispute cap agent and review its artifacts and PR.",
+        say: "The screenshot shows the fix before I check out a single line. Next, I review the diff, then merge it or ask the agent for a change.",
+      },
+      {
+        id: "start-project",
+        title: "Start a Project.",
+        promptType: "none",
+        detail:
+          "In the Agents Window, go to Projects in the sidebar and select New Project.\nEnter {{ INSERT COMPANY HERE, default is Ledgerly }} as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.\nSelect Create Project.",
+        say: "The Project opens as a chat with its coordinator. It keeps building the collections command center tonight, after I close my laptop.",
+      },
+      {
+        id: "hand-coordinator-goal",
+        title: "Hand the coordinator a larger goal.",
+        promptType: "adaptable",
+        detail: "Select + in the chat and put the Project agent in Plan mode.",
+        example:
+          "Build the collections command center based on the issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.",
+      },
+      {
+        id: "review-project-plan",
+        title: "Review the plan.",
+        promptType: "none",
+        detail: "Review the plan.",
+        say: "The plan shows which tasks run in parallel and which ones wait for another task.\nEvery future agent in this Project starts with the plan, so nobody onboards an agent from scratch.",
+      },
+      {
+        id: "build-project-plan",
+        title: "Build the plan.",
+        promptType: "none",
+        detail: "Build the plan.",
+        say: "The Project now creates Cloud Agents for each task and tracks their progress.",
+      },
+      {
+        id: "track-project-progress",
+        title: "Track the progress.",
+        promptType: "none",
+        detail:
+          "Open the Project sidebar in the right panel.\nSelect the Board view to review the project on a board.",
+        say: "The Project sidebar list the issues and track what is in progress, queued, for review, and done.\nYou can choose List or Board view to review what the Project is building.",
+      },
+      {
+        id: "review-shared-context",
+        title: "Review shared context.",
+        promptType: "none",
+        detail: "Select the Library view to review the project’s file changes.\nOpen the plan file.",
+        say: "The Project writes the plan file to a shared file library that every Cloud Agent can access. If an agent needs more information, it can access the plan as shared context.",
+      },
+      {
+        id: "let-the-work-run",
+        title: "Let the work run.",
+        promptType: "none",
+        detail: "Show the Cloud Agent working on its own branch.",
+        say: "Whatever the coordinator finishes waits in my review queue to check later.",
+      },
+    ]);
+
+    expect(beats401).toHaveLength(16);
+    expect(beats401.every((entry) => entry.promptType !== undefined)).toBe(true);
+    expect(beats401.every((entry) => entry.optional === undefined)).toBe(true);
+    expect(
+      beats401.filter((entry) => entry.promptType === "none").every((entry) => entry.example === undefined),
+    ).toBe(true);
+  });
+
   it("tags 301 optional beats with the Outline feature and filters them from the track checklist", () => {
     const optionalFeatures = {
       "optional-cloud-command-center": "Cloud Agents",
@@ -759,6 +933,7 @@ describe("runbook catalog", () => {
     );
     expect(beats101.some((entry) => entry.optional)).toBe(false);
     expect(beats201.some((entry) => entry.optional)).toBe(false);
+    expect(beats401.some((entry) => entry.optional)).toBe(false);
     for (const [id, feature] of Object.entries(optionalFeatures)) {
       expect(beats301.find((entry) => entry.id === id)?.optional).toEqual({ feature });
     }
@@ -770,6 +945,7 @@ describe("runbook catalog", () => {
       "Bugbot",
       "Automations",
     ]);
+    expect(trackOptionalFeatures(RUNBOOK_TRACKS[3])).toEqual([]);
 
     const tagged = stripOptionalTags("[Optional - Cloud Agents] /plan the work");
     expect(tagged.features).toEqual(["Cloud Agents"]);
@@ -817,10 +993,18 @@ describe("runbook catalog", () => {
     };
     const track101 = trackMarkup("101", "201");
     const track201 = trackMarkup("201", "301");
-    const track301 = trackMarkup("301");
+    const track301 = trackMarkup("301", "401");
+    const track401 = trackMarkup("401");
     expect(track101).toContain('data-beat="ask"');
     expect(track201).toContain('data-beat="rename-agent-1-all"');
     expect(track301).toContain('data-beat="plan-command-center"');
+    expect(track401).toContain('data-beat="rewrite-dispute-cap"');
+    expect(track401).toContain("What tasks do you delegate?");
+    expect(track401).toContain("How do you delegate asynchronous work?");
+    expect(track401).toContain("How do you direct larger work?");
+    expect(track401).not.toContain("Morning");
+    expect(track401).not.toContain("Midday");
+    expect(track401).not.toContain("Afternoon");
     expect(track101).not.toContain("feature-toggle");
     expect(track201).not.toContain("feature-toggle");
     expect(track301).toContain('class="feature-checklist"');
@@ -852,7 +1036,13 @@ describe("runbook catalog", () => {
 
     expect(html).toContain(".do-box, pre {");
     expect(html).toContain("--indigo-soft: #eef2ff;");
-    expect(html).toContain(".tabs a, label.feature-option {");
+    expect(html).toContain(".tabs a, .tabs button, label.feature-option {");
+    expect(html).toContain('role="tablist" aria-label="Catalog"');
+    expect(html).toContain('data-catalog="101"');
+    expect(html).toContain('data-catalog="201"');
+    expect(html).toContain('data-catalog="301"');
+    expect(html).not.toContain("<select");
+    expect(html).not.toContain('id="track"');
     expect(html).not.toContain("steps-label");
     expect(html).not.toContain(">Steps<");
 
@@ -937,10 +1127,42 @@ describe("runbook catalog", () => {
     expect(committed).toContain("ids.indexOf(data.track) !== -1");
     expect(committed).toContain("show(data.track, false)");
     expect(committed).toContain("Canvas srcdoc pages cannot update their about:srcdoc URL.");
+
+    const canvas = readFileSync(join(root, STATIC_CANVAS_PATH), "utf8");
+    expect(canvas, "run `npm run runbooks:export` to regenerate runbooks.canvas.tsx").toBe(
+      renderRunbooksCanvas(),
+    );
+    expect(canvas).toContain('from "cursor/canvas"');
+    expect(canvas).toContain("Copy");
+    expect(canvas).toContain('"Step " + beat.number');
+    expect(canvas).toContain('useCanvasState<TrackId>("runbooks-track", "101")');
+    expect(canvas).toContain("navigator.clipboard");
+    expect(canvas).not.toContain("Previous");
+    expect(canvas).not.toContain("scrollSnapType");
+    expect(canvas).not.toContain("runbooks-beat");
+    expect(canvas).not.toContain(" of \" + ");
+    expect(canvas).not.toContain("CardHeader");
+    expect(canvas).not.toContain("runbooks-section");
+    expect(canvas).not.toContain("Grid");
+    expect(canvas).not.toContain("auto-fit");
+    expect(canvas).not.toContain("auto-fill");
+    expect(canvas).not.toContain("Zoom out");
+    expect(canvas).not.toContain("Zoom in");
+    expect(canvas).not.toContain("runbooks-zoom");
+    expect(canvas).not.toContain("iframe");
+    expect(canvas).not.toContain("srcDoc");
+    expect(canvas).not.toContain("WriteCanvas");
+    expect(canvas).toContain("/ask Tell me what this application does in 3 sentences");
+    expect(canvas).toContain("/multitask @resolve-dispute.md");
+    expect(canvas).toContain("/plan the collections command center from its open Linear issues.");
+    expect(canvas).toContain("type TrackId = \"101\" | \"201\" | \"301\" | \"401\"");
+    expect(canvas).toContain(
+      "Rewrite the dispute cap issue in Linear so a Cloud Agent can finish it alone.",
+    );
   });
 
   it("does not resolve the retired advanced track", () => {
-    expect(RUNBOOK_TRACKS).toHaveLength(3);
+    expect(RUNBOOK_TRACKS).toHaveLength(4);
     for (const retired of ["advanced", "Advanced"]) {
       expect(RUNBOOK_TRACKS.find((track) => track.id === retired)).toBeUndefined();
     }
@@ -956,7 +1178,7 @@ describe("runbook catalog", () => {
     }
   });
 
-  it("points docs, skills, and rules at runbooks.html and documents the 101, 201, and 301 tracks", () => {
+  it("points docs, skills, and rules at runbooks.html and documents the 101, 201, 301, and 401 tracks", () => {
     const files = {
       readme: readFileSync(join(root, "README.md"), "utf8"),
       howto: readFileSync(join(root, "demo-howto.md"), "utf8"),
@@ -976,14 +1198,21 @@ describe("runbook catalog", () => {
       );
     }
 
-    expect(files.readme).toContain("runbooks.html?track=201");
-    expect(files.howto).toContain("runbooks.html?track=201");
-    expect(files.readme).toContain("runbooks.html?track=301");
-    expect(files.howto).toContain("runbooks.html?track=301");
-    expect(files.skill).toContain("runbooks.html?track=301");
-    expect(files.agents).toContain("runbooks.html?track=301");
-    expect(files.rule).toContain("runbooks.html?track=301");
+    expect(files.readme).toContain("present-runbooks");
+    expect(files.howto).toContain("present-runbooks");
+    expect(files.skill).toContain("present-runbooks");
+    expect(files.agents).toContain("present-runbooks");
+    expect(files.rule).toContain("present-runbooks");
+    expect(files.readme).toContain("runbooks.html");
+    expect(files.howto).toContain("runbooks.html");
     expect(files.skill).toContain("runbooks.html");
+    expect(files.agents).toContain("runbooks.html");
+    expect(files.rule).toContain("runbooks.html");
+    expect(files.readme).not.toContain("runbooks.html?track=");
+    expect(files.howto).not.toContain("runbooks.html?track=");
+    expect(files.skill).not.toContain("runbooks.html?track=");
+    expect(files.agents).not.toContain("runbooks.html?track=");
+    expect(files.rule).not.toContain("runbooks.html?track=");
     for (const [name, contents] of Object.entries(files)) {
       expect(contents, `${name} still sends readers to an in-app /runbooks route`).not.toMatch(
         /\/runbooks\//,
@@ -997,27 +1226,48 @@ describe("runbook catalog", () => {
     const start = readFileSync(join(root, ".cursor/skills/start-ledgerly/SKILL.md"), "utf8");
     expect(start).toContain("http://localhost:43173");
     expect(start).toContain("runbooks.html");
-    expect(start).toContain("WriteCanvas");
-    expect(start).toContain("srcDoc");
+    expect(start).not.toContain("runbooks.html?track=");
+    expect(start).toContain("Do not open `runbooks.html`");
+    expect(start).toContain("runbooks.canvas.tsx");
+    expect(start).toContain("canvases/runbooks.canvas.tsx");
+    expect(start).toContain("open_resource");
     expect(start).toContain("useCanvasState");
-    expect(start).toContain("runbooks:set-track");
-    expect(start).toContain("canvas_id");
-    expect(start).toContain("event.source === iframe.contentWindow");
-    expect(start).toContain(
-      'iframe.contentWindow.postMessage({ type: "runbooks:set-track", track }, "*")',
-    );
-    expect(start).toContain(
-      'iframe.contentWindow.postMessage({ type: "runbooks:set-features", features }, "*")',
-    );
-    expect(start).toContain('type: "runbooks:catalog"');
     expect(start).toContain("runbooks-features");
-    expect(start).toContain("runbooks-zoom");
-    expect(start).toContain("Zoom out");
-    expect(start).toContain("Zoom in");
-    expect(start).toContain("Button");
-    expect(start).toContain("On the iframe `load` event only");
-    expect(start).toContain('a srcdoc frame reports `"null"`');
-    expect(start).not.toContain("whenever the persisted track changes");
+    expect(start).toContain("Copy");
+    expect(start).not.toContain("runbooks-zoom");
+    expect(start).not.toContain("runbooks-section");
+    expect(start).not.toContain("runbooks-beat");
+    expect(start).not.toContain("Previous");
+    expect(start).not.toContain("Zoom out");
+    expect(start).not.toContain("Zoom in");
+    expect(start).toContain("Catalog **tabs**");
+    expect(start).toContain("Numbered steps");
+
+    const present = readFileSync(
+      join(root, ".cursor/skills/present-runbooks/SKILL.md"),
+      "utf8",
+    );
+    expect(present).toContain("open the runbook");
+    expect(present).toContain("Do not open `runbooks.html`");
+    expect(present).toContain("runbooks.canvas.tsx");
+    expect(present).toContain("canvases/runbooks.canvas.tsx");
+    expect(present).toContain("open_resource");
+    expect(present).toContain("Numbered steps");
+    expect(present).not.toContain("runbooks-beat");
+    expect(present).not.toContain("Previous");
+    expect(present).toContain("runbooks-features");
+    expect(present).toContain("Catalog **tabs**");
+    expect(present).toMatch(/ask which track and wait/i);
+    expect(present).toContain("paste `demo-howto.md`");
+    expect(present).toMatch(/speaker notes/i);
+    expect(present).not.toContain("runbooks-section");
+    expect(present).not.toContain("WriteCanvas");
+    expect(present).not.toContain("srcDoc");
+    expect(present).not.toContain("iframe");
+    expect(start).not.toContain("WriteCanvas");
+    expect(start).not.toContain("srcDoc");
+    expect(start).not.toContain("iframe");
+    expect(start).not.toContain("select#track");
     expect(start).not.toContain("file://");
     expect(start).not.toContain("http://localhost:43173/runbooks");
 
