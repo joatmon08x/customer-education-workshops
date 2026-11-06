@@ -71,18 +71,18 @@ For any reset request, run `npm run demo:reset` first. It resets everything it k
 npm test
 ```
 
-One test fails on a clean tree: `tests/suggested-credit-api.test.ts` expects the client to use v2 while `lib/disputes/suggested-credit-api.ts` still selects deprecated v1. That migration is tracked on its own, so do not fix it as a drive-by. Preserve both routes and never change the test or seed to get green.
+The suggested-credit client selects v2. Preserve both v1 and v2 routes and never change the test or seed to invent a different credit.
 
 ### Planted demo issues
 
 These are intentional. Leave them in place for the demo, and do not ship them outside demos.
 
-- **Suggested credit.** The red test above. The client still selects deprecated v1. Do not edit the test, either route, or the seed to make the suite green.
+- **Suggested credit.** The client selects v2. Preserve both routes and the $400 claim on `dsp_1043`. Do not edit the test or seed to force a different credit.
 - **W2 Tab listener.** `.cursor/plans/keyboard-walkthrough-audit.md` tells the W2 task to add a document-level `keydown` listener in the app chrome that calls `event.preventDefault()` whenever the key is Tab. That step is intentional. It would block Tab on every page if that listener is added in the shell. `components/app-chrome.tsx` does not contain it yet. The change reviewer should flag it as High. It must never ship outside demos. Do not remove it, reword it, or label it inside the plan.
 
 Passing tests include `tests/money.test.ts` and `tests/plans.test.ts`. Environment start seeds the database and runs only the passing tests so a red suite cannot mark the machine as failed to boot.
 
-Shipped suite on a clean tree: **1 failed / 33 passed**. The `dsp_1043` page shows v1's $400 result; v2 and the stored credit are correctly capped at $249. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a separate planted UI seam, not a second red test. Do not volunteer it when explaining the app or the failing test; only when the user is on that click path.
+Shipped suite on a clean tree: **0 failed / 35 passed**. The `dsp_1043` page shows v2's $249 Scale-capped credit; v1 still returns the raw $400 claim. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a planted UI seam. Do not volunteer it when explaining the app; only when the user is on that click path.
 
 WCAG checks live in `tests/a11y/` and run separately with `npm run test:a11y`; `npm test` excludes them, so they do not change the shipped count. They check 4.5:1 text contrast for the token pairs in `app/globals.css` (light and dark) and labels on form controls, buttons, links, and images. The suite is red today on contrast only; label checks pass. Failing pairs: light `--success`, `--warning`, and `--danger` on their `-soft` badge backgrounds; light `--muted-foreground` on `--muted` and on `--indigo-soft`; light `--success` on `--card`; and dark `--danger` on `--danger-soft`. Keep `test:a11y` out of `npm test`, the environment start command, and `scripts/demo-reset.ts`.
 

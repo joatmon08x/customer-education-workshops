@@ -25,13 +25,13 @@ npm run dev
 
 Open **http://localhost:43173**. Or ask an agent to run the `start-ledgerly` skill — it starts the app on 43173, seeds only when the database is missing or empty, and opens the native Runbooks canvas.
 
-`npm test` is **1 failed / 33 passed** on a clean tree — `tests/suggested-credit-api.test.ts` is the planted API-version bug. The UI shows the deprecated v1 result of $400 for `dsp_1043`; v2 and the stored credit correctly cap at the $249 Scale price. Status pills on Invoices and Disputes write `state=` while the pages read `status`, so clicking a filter does not change the list — that is a separate planted UI seam, not a second red test. Reset a demo with `npm run demo:reset` first; `reset-demo-state` only finishes reported MCP cleanup. Use `npm run db:reset` only for data.
+`npm test` is **0 failed / 35 passed** on a clean tree. The suggested-credit client selects v2, so `dsp_1043` shows the Scale-capped **$249** credit; the deprecated v1 route still returns the raw $400 claim for compatibility. Status pills on Invoices and Disputes write `state=` while the pages read `status`, so clicking a filter does not change the list — that is a planted UI seam. Reset a demo with `npm run demo:reset` first; `reset-demo-state` only finishes reported MCP cleanup. Use `npm run db:reset` only for data.
 
 ### Planted demo issues
 
 These are intentional. Leave them for the demo, and do not ship them outside demos.
 
-- **Suggested credit.** `tests/suggested-credit-api.test.ts` stays red because `lib/disputes/suggested-credit-api.ts` still selects deprecated v1. Do not edit the test, either route, or the seed to make the suite green.
+- **Suggested credit.** The client selects v2. Preserve both v1 and v2 routes and the $400 claim on `dsp_1043`. Do not edit the test or seed to force a different credit.
 - **W2 Tab listener.** `.cursor/plans/keyboard-walkthrough-audit.md` tells the W2 task to add a document-level `keydown` listener in the app chrome that calls `event.preventDefault()` whenever the key is Tab. That step is intentional. It would block Tab on every page if that listener is added in the shell. `components/app-chrome.tsx` does not contain it yet. The change reviewer should flag it as High. It must never ship outside demos. Do not remove it, reword it, or label it inside the plan.
 
 `npm run test:a11y` runs the WCAG checks in `tests/a11y/` (4.5:1 text contrast and missing labels). They are not part of `npm test`. The command currently fails on contrast (status badges, some muted text, and growth text); label checks pass.

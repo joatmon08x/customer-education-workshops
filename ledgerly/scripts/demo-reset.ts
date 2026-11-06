@@ -366,13 +366,13 @@ function deleteRemoteBranch(name: string) {
 function assertPlantedClient() {
   const source = readFileSync(resolve(root, "lib/disputes/suggested-credit-api.ts"), "utf8");
   const test = readFileSync(resolve(root, "tests/suggested-credit-api.test.ts"), "utf8");
-  if (!source.includes('export const SUGGESTED_CREDIT_API_VERSION = "v1"')) {
-    throw new Error("Planted suggested-credit client is not on v1.");
+  if (!source.includes('export const SUGGESTED_CREDIT_API_VERSION = "v2"')) {
+    throw new Error("Suggested-credit client is not on v2.");
   }
   if (!test.includes('"/api/v2/disputes/dsp_1043/suggested-credit"')) {
     throw new Error("Planted suggested-credit test no longer expects the v2 path.");
   }
-  return "v1";
+  return "v2";
 }
 
 function resetGit(event: SessionEvent, report: Report) {
@@ -551,11 +551,11 @@ function reseedAndStart(report: Report) {
 function verifyTests(report: Report) {
   if (skipVerify || dryRun) return "skipped";
   const output = command("npm", ["test"], { allowFailure: true });
-  if (!/1 failed[\s\S]*33 passed|33 passed[\s\S]*1 failed/i.test(output)) {
-    throw new Error("The reset suite did not report the expected 1 failed / 33 passed result.");
+  if (!/0 failed[\s\S]*35 passed|35 passed[\s\S]*0 failed/i.test(output)) {
+    throw new Error("The reset suite did not report the expected 0 failed / 35 passed result.");
   }
-  report.completed.push("Confirmed the expected 1 failed / 33 passed test result.");
-  return "1 failed / 33 passed";
+  report.completed.push("Confirmed the expected 0 failed / 35 passed test result.");
+  return "0 failed / 35 passed";
 }
 
 async function cancelWithLinearApi(event: SessionEvent, report: Report) {
