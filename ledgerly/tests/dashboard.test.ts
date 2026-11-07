@@ -8,6 +8,10 @@ describe("catalogMrrCents", () => {
       catalogMrrCents([{ plan: "STARTER" }, { plan: "GROWTH" }, { plan: "SCALE" }]),
     ).toBe(4900 + 9900 + 24900);
   });
+
+  it("skips a non-catalog plan instead of throwing", () => {
+    expect(catalogMrrCents([{ plan: "SCALE" }, { plan: "LEGACY" }])).toBe(24900);
+  });
 });
 
 describe("percentChange", () => {
@@ -25,16 +29,17 @@ describe("collectionsTotals", () => {
     expect(
       collectionsTotals(
         [
-          { status: "OVERDUE", totalCents: 24900 },
-          { status: "OVERDUE", totalCents: 9900, payments: [{ amountCents: 9900 }] },
-          { status: "OPEN", totalCents: 4900 },
-          { status: "PAID", totalCents: 24900 },
+          { status: "OVERDUE", plan: "SCALE", totalCents: 24900 },
+          { status: "OVERDUE", plan: "GROWTH", totalCents: 9900, payments: [{ amountCents: 9900 }] },
+          { status: "OPEN", plan: "STARTER", totalCents: 4900 },
+          { status: "PAID", plan: "SCALE", totalCents: 24900 },
         ],
         [],
       ),
     ).toEqual({
       overdueBalanceCents: 24900,
       overdueInvoiceCount: 2,
+      overdueAmountsVisible: true,
       activitiesToday: 0,
       activitiesLast7Days: 0,
     });
@@ -53,5 +58,20 @@ describe("collectionsTotals", () => {
 
     expect(totals.activitiesToday).toBe(1);
     expect(totals.activitiesLast7Days).toBe(2);
+  });
+
+  it("masks the overdue amount when an overdue invoice is off the catalog", () => {
+    const totals = collectionsTotals(
+      [
+        { status: "OVERDUE", plan: "SCALE", totalCents: 24900 },
+        { status: "OVERDUE", plan: "LEGACY", totalCents: 9900 },
+        { status: "OPEN", plan: "LEGACY", totalCents: 4900 },
+      ],
+      [{ occurredOn: DEMO_AS_OF }],
+    );
+
+    expect(totals.overdueAmountsVisible).toBe(false);
+    expect(totals.overdueInvoiceCount).toBe(2);
+    expect(totals.activitiesToday).toBe(1);
   });
 });

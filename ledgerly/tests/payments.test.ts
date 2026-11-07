@@ -129,4 +129,32 @@ describe("POST /api/invoices/[id]/payments", () => {
     const body = await response.json();
     expect(body.payment.amountCents).toBe(9900);
   });
+
+  it("stores the full amount and marks PAID when the plan id is off the catalog", async () => {
+    const offCatalogInvoiceId = "inv_2003";
+    const before = await prisma.invoice.findUniqueOrThrow({ where: { id: offCatalogInvoiceId } });
+    await prisma.invoice.update({ where: { id: offCatalogInvoiceId }, data: { plan: "LEGACY" } });
+
+    try {
+      const response = await postPayment(
+        paymentRequest({ method: "cash", amountCents: 24900 }),
+        params(offCatalogInvoiceId),
+      );
+      expect(response.status).toBe(200);
+
+      const invoice = await prisma.invoice.findUniqueOrThrow({
+        where: { id: offCatalogInvoiceId },
+        include: { payments: true },
+      });
+      expect(invoice.status).toBe("PAID");
+      expect(invoice.payments.map((payment) => payment.amountCents)).toEqual([before.totalCents]);
+    } finally {
+      await prisma.activity.deleteMany({ where: { invoiceId: offCatalogInvoiceId } });
+      await prisma.payment.deleteMany({ where: { invoiceId: offCatalogInvoiceId } });
+      await prisma.invoice.update({
+        where: { id: offCatalogInvoiceId },
+        data: { plan: before.plan, status: before.status, paidOn: before.paidOn },
+      });
+    }
+  });
 });

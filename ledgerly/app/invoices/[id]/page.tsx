@@ -13,7 +13,7 @@ import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
 import { outstandingBalanceCents, paymentMethodLabel } from "@/lib/payments";
-import { isPlanId, planLabel } from "@/lib/plans";
+import { formatPlanAmount, isPlanId, planDisplayName } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
@@ -27,23 +27,24 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const invoice = await getInvoice(id);
   if (!invoice) notFound();
-  if (!isPlanId(invoice.plan)) notFound();
 
   const daysPastDue =
     invoice.status === "OVERDUE" ? Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn)) : 0;
   const outstandingCents = outstandingBalanceCents(invoice);
-  const noteDraft = draftCollectionNote({
-    customerName: invoice.customer.name,
-    daysPastDue,
-    plan: invoice.plan,
-  });
+  const noteDraft = isPlanId(invoice.plan)
+    ? draftCollectionNote({
+        customerName: invoice.customer.name,
+        daysPastDue,
+        plan: invoice.plan,
+      })
+    : "";
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         eyebrow={invoice.number}
         title={invoice.customer.name}
-        description={`${planLabel(invoice.plan)} · issued ${formatDate(invoice.issuedOn)} · due ${formatDate(invoice.dueOn)}`}
+        description={`${planDisplayName(invoice.plan)} · issued ${formatDate(invoice.issuedOn)} · due ${formatDate(invoice.dueOn)}`}
         actions={<InvoiceStatusBadge status={invoice.status} />}
       />
 
@@ -99,7 +100,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
               <p>{invoice.customer.email}</p>
-              <p className="text-muted-foreground">Plan on file: {planLabel(invoice.plan)}</p>
+              <p className="text-muted-foreground">Plan on file: {planDisplayName(invoice.plan)}</p>
             </CardContent>
           </Card>
 
@@ -107,7 +108,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <CardHeader>
               <CardTitle>Payment history</CardTitle>
               <CardDescription>
-                Outstanding {formatUsd(outstandingCents)}. Paid on{" "}
+                Outstanding {formatPlanAmount(invoice.plan, outstandingCents)}. Paid on{" "}
                 {invoice.paidOn ? formatDate(invoice.paidOn) : "—"}.
               </CardDescription>
             </CardHeader>
@@ -119,7 +120,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   {invoice.payments.map((payment) => (
                     <li key={payment.id} className="flex items-baseline justify-between gap-3">
                       <span>
-                        {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
+                        {formatPlanAmount(invoice.plan, payment.amountCents)} ·{" "}
+                        {paymentMethodLabel(payment.method)}
                       </span>
                       <span className="text-muted-foreground">
                         {formatDate(payment.recordedAt)} · {payment.recordedBy}

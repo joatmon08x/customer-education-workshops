@@ -16,10 +16,9 @@ import {
 import { DEMO_AS_OF } from "@/lib/clock";
 import { getCustomer } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
-import { formatUsd } from "@/lib/money";
 import { ACTIVITY_STATUS_FAILED } from "@/lib/nudge";
 import { outstandingBalanceCents, paymentMethodLabel } from "@/lib/payments";
-import { isPlanId, planLabel } from "@/lib/plans";
+import { formatPlanAmount, maskPlanAmountIn, planDisplayName } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +32,6 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   const { id } = await params;
   const customer = await getCustomer(id);
   if (!customer) notFound();
-  if (!isPlanId(customer.plan)) notFound();
 
   const latestActivity = customer.activities[0] ?? null;
   const lastActivityLabel = latestActivity
@@ -57,7 +55,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
       <PageHeader
         eyebrow="Account"
         title={customer.name}
-        description={`${planLabel(customer.plan)} · ${customer.contactName} · ${customer.email}`}
+        description={`${planDisplayName(customer.plan)} · ${customer.contactName} · ${customer.email}`}
         actions={
           <SendNudgeButton
             invoiceId={mostPastDueInvoiceId}
@@ -109,7 +107,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                     <TableCell className="text-muted-foreground">{formatDate(invoice.dueOn)}</TableCell>
                     <TableCell className="text-right tabular-nums">{invoice.daysPastDue}</TableCell>
                     <TableCell className="text-right font-medium tabular-nums">
-                      {formatUsd(invoice.outstandingCents)}
+                      {formatPlanAmount(customer.plan, invoice.outstandingCents)}
                     </TableCell>
                     <TableCell
                       className="text-muted-foreground"
@@ -160,32 +158,39 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
             <p className="text-muted-foreground">—</p>
           ) : (
             <ul className="space-y-3">
-              {customer.activities.map((activity) => (
-                <li key={activity.id} className="flex flex-col gap-0.5">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="font-medium">{activity.type}</span>
-                    <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
-                  </div>
-                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
-                    <span>
-                      {[
-                        activity.amountCents != null ? formatUsd(activity.amountCents) : null,
-                        activity.method ? paymentMethodLabel(activity.method) : activity.channel,
-                        activity.actorName,
-                        activity.invoice?.number,
-                      ]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </span>
-                    {activity.status === ACTIVITY_STATUS_FAILED ? (
-                      <Badge variant="danger">{ACTIVITY_STATUS_FAILED}</Badge>
-                    ) : (
-                      <span>{activity.status}</span>
-                    )}
-                  </p>
-                  {activity.body ? <p>{activity.body}</p> : null}
-                </li>
-              ))}
+              {customer.activities.map((activity) => {
+                const body = activity.body
+                  ? maskPlanAmountIn(customer.plan, activity.body, activity.amountCents)
+                  : null;
+                return (
+                  <li key={activity.id} className="flex flex-col gap-0.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-medium">{activity.type}</span>
+                      <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
+                    </div>
+                    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
+                      <span>
+                        {[
+                          activity.amountCents != null
+                            ? formatPlanAmount(customer.plan, activity.amountCents)
+                            : null,
+                          activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                          activity.actorName,
+                          activity.invoice?.number,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                      {activity.status === ACTIVITY_STATUS_FAILED ? (
+                        <Badge variant="danger">{ACTIVITY_STATUS_FAILED}</Badge>
+                      ) : (
+                        <span>{activity.status}</span>
+                      )}
+                    </p>
+                    {body ? <p>{body}</p> : null}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
