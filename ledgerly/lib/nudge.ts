@@ -7,7 +7,15 @@ import { prisma } from "@/lib/prisma";
 
 export const ACTIVITY_TYPE_NUDGE_SENT = "NUDGE_SENT";
 export const ACTIVITY_STATUS_SENT = "sent";
+export const ACTIVITY_STATUS_FAILED = "failed";
 export const NUDGE_CHANNEL_EMAIL = "email";
+
+export function isNudgeEmailAddress(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const trimmed = email.trim();
+  if (!trimmed) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
 
 export function nudgeTemplate(invoice: {
   number: string;
@@ -20,7 +28,7 @@ export function nudgeTemplate(invoice: {
 export async function sendInvoiceNudge(invoiceId: string) {
   const invoice = await prisma.invoice.findUnique({
     where: { id: invoiceId },
-    include: { payments: true },
+    include: { customer: true, payments: true },
   });
   if (!invoice) {
     return { ok: false as const, status: 404 as const, error: "Invoice not found" };
@@ -36,6 +44,9 @@ export async function sendInvoiceNudge(invoiceId: string) {
     outstandingCents,
   });
   const activityId = `act_${crypto.randomUUID()}`;
+  const status = isNudgeEmailAddress(invoice.customer.email)
+    ? ACTIVITY_STATUS_SENT
+    : ACTIVITY_STATUS_FAILED;
 
   const activity = await prisma.activity.create({
     data: {
@@ -43,7 +54,7 @@ export async function sendInvoiceNudge(invoiceId: string) {
       customerId: invoice.customerId,
       invoiceId: invoice.id,
       type: ACTIVITY_TYPE_NUDGE_SENT,
-      status: ACTIVITY_STATUS_SENT,
+      status,
       occurredOn: DEMO_AS_OF,
       actorName: DEMO_OPERATOR.name,
       amountCents: outstandingCents,

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CollectionNoteForm } from "@/app/customers/[id]/collection-note-form";
 import { SendNudgeButton } from "@/app/customers/[id]/send-nudge-button";
 import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -16,6 +17,7 @@ import { DEMO_AS_OF } from "@/lib/clock";
 import { getCustomer } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { ACTIVITY_STATUS_FAILED } from "@/lib/nudge";
 import { outstandingBalanceCents, paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel } from "@/lib/plans";
 
@@ -164,16 +166,22 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                     <span className="font-medium">{activity.type}</span>
                     <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
                   </div>
-                  <p className="text-muted-foreground">
-                    {[
-                      activity.amountCents != null ? formatUsd(activity.amountCents) : null,
-                      activity.method ? paymentMethodLabel(activity.method) : activity.channel,
-                      activity.actorName,
-                      activity.status,
-                      activity.invoice?.number,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
+                  <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
+                    <span>
+                      {[
+                        activity.amountCents != null ? formatUsd(activity.amountCents) : null,
+                        activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                        activity.actorName,
+                        activity.invoice?.number,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                    {activity.status === ACTIVITY_STATUS_FAILED ? (
+                      <Badge variant="danger">{ACTIVITY_STATUS_FAILED}</Badge>
+                    ) : (
+                      <span>{activity.status}</span>
+                    )}
                   </p>
                   {activity.body ? <p>{activity.body}</p> : null}
                 </li>
