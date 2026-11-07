@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CollectionNoteForm } from "@/app/customers/[id]/collection-note-form";
+import { SendNudgeButton } from "@/app/customers/[id]/send-nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -46,12 +47,22 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
     }))
     .sort((a, b) => b.daysPastDue - a.daysPastDue || a.number.localeCompare(b.number));
 
+  const mostPastDueInvoiceId = overdueBook[0]?.id;
+  const hasOverdue = overdueBook.length > 0;
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
       <PageHeader
         eyebrow="Account"
         title={customer.name}
         description={`${planLabel(customer.plan)} · ${customer.contactName} · ${customer.email}`}
+        actions={
+          <SendNudgeButton
+            invoiceId={mostPastDueInvoiceId}
+            disabled={!hasOverdue}
+            aria-label="Nudge most past due invoice"
+          />
+        }
       />
 
       <Card className="overflow-hidden py-0">
@@ -76,6 +87,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                   <TableHead className="text-right">Days past due</TableHead>
                   <TableHead className="text-right">Outstanding balance</TableHead>
                   <TableHead>Last activity</TableHead>
+                  <TableHead className="text-right">Nudge</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -102,6 +114,15 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                       aria-label={latestActivity ? lastActivityLabel : "No activity"}
                     >
                       {lastActivityLabel}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end">
+                        <SendNudgeButton
+                          invoiceId={invoice.id}
+                          size="sm"
+                          aria-label={`Nudge ${invoice.number}`}
+                        />
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
