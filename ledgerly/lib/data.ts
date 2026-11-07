@@ -125,6 +125,7 @@ export async function getCustomer(id: string) {
         include: { invoice: { select: { number: true } } },
         orderBy: { createdAt: "desc" },
       },
+      collectionNotes: { orderBy: { createdAt: "desc" } },
     },
   });
 }

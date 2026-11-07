@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CollectionNoteEdit } from "@/app/customers/[id]/collection-note-edit";
 import { CollectionNoteForm } from "@/app/customers/[id]/collection-note-form";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DEMO_AS_OF } from "@/lib/clock";
+import { isCollectionNoteEditable, matchNotesToActivities } from "@/lib/collection-notes";
 import { getCustomer } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
@@ -36,6 +38,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   const lastActivityLabel = latestActivity
     ? `${latestActivity.type} · ${formatDate(latestActivity.occurredOn)}`
     : "—";
+  const activityRows = matchNotesToActivities(customer.activities, customer.collectionNotes);
 
   const overdueBook = customer.invoices
     .filter((invoice) => invoice.status === "OVERDUE")
@@ -137,26 +140,32 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
             <p className="text-muted-foreground">—</p>
           ) : (
             <ul className="space-y-3">
-              {customer.activities.map((activity) => (
-                <li key={activity.id} className="flex flex-col gap-0.5">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="font-medium">{activity.type}</span>
-                    <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
-                  </div>
-                  <p className="text-muted-foreground">
-                    {[
-                      activity.amountCents != null ? formatUsd(activity.amountCents) : null,
-                      activity.method ? paymentMethodLabel(activity.method) : activity.channel,
-                      activity.actorName,
-                      activity.status,
-                      activity.invoice?.number,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                  {activity.body ? <p>{activity.body}</p> : null}
-                </li>
-              ))}
+              {activityRows.map(({ activity, note }) => {
+                const body = note?.body ?? activity.body;
+                return (
+                  <li key={activity.id} className="flex flex-col gap-0.5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-medium">{activity.type}</span>
+                      <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
+                    </div>
+                    <p className="text-muted-foreground">
+                      {[
+                        activity.amountCents != null ? formatUsd(activity.amountCents) : null,
+                        activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                        activity.actorName,
+                        activity.status,
+                        activity.invoice?.number,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                    {body ? <p>{body}</p> : null}
+                    {note && isCollectionNoteEditable(note) ? (
+                      <CollectionNoteEdit noteId={note.id} body={note.body} />
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
