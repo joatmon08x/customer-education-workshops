@@ -121,7 +121,10 @@ export async function getCustomer(id: string) {
         },
         orderBy: { issuedOn: "desc" },
       },
-      activities: { orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }] },
+      activities: {
+        include: { invoice: { select: { number: true } } },
+        orderBy: { createdAt: "desc" },
+      },
     },
   });
 }

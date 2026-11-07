@@ -18,16 +18,17 @@ model Workspace {
 }
 
 model Customer {
-  id          String     @id
-  workspaceId String
-  workspace   Workspace  @relation(fields: [workspaceId], references: [id])
-  name        String
-  contactName String
-  email       String
-  plan        String
-  createdAt   DateTime   @default(now())
-  invoices    Invoice[]
-  activities  Activity[]
+  id               String           @id
+  workspaceId      String
+  workspace        Workspace        @relation(fields: [workspaceId], references: [id])
+  name             String
+  contactName      String
+  email            String
+  plan             String
+  createdAt        DateTime         @default(now())
+  invoices         Invoice[]
+  activities       Activity[]
+  collectionNotes  CollectionNote[]
 }
 
 model Invoice {
@@ -47,10 +48,11 @@ model Invoice {
   totalCents      Int
   memo            String?
   collectionNote  String?
-  lines           InvoiceLine[]
-  disputes        Dispute[]
-  payments        Payment[]
-  activities      Activity[]
+  lines            InvoiceLine[]
+  disputes         Dispute[]
+  payments         Payment[]
+  activities       Activity[]
+  collectionNotes  CollectionNote[]
 }
 
 model InvoiceLine {
@@ -71,6 +73,18 @@ model Payment {
   method      String
   recordedBy  String
   recordedAt  DateTime
+}
+
+model CollectionNote {
+  id         String   @id
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  invoiceId  String?
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+  authorName String
+  body       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Activity {
