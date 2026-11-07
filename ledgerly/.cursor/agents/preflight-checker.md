@@ -72,7 +72,7 @@ Do not require Linear, `stage-linear`, or `plugins/standard-bug-fix` on 101. Lis
 | Shared baseline | required | all green |
 | Linear MCP | required | Linear tools available; `get_user` / me succeeds; user is not a guest |
 | Operator Linear team | required | at least one team on `me` (public or private). If none, `blocked` with the manual team steps from `demo-howto.md` / `stage-linear` — do not create a team |
-| `ce-field-demos` board | required for MCP issue beats | project exists on a team the operator belongs to with the three Fieldnote titles, the nine Collections slices, and the WCAG keyboard-walkthrough title (`UI changes need a WCAG 2.2 AA accessibility audit`). If missing, report `blocked` and point at `stage-linear` — **do not** run `stage-linear` or guess the team |
+| `ce-field-demos` board | required for MCP issue beats | project exists on a team the operator belongs to with the three Fieldnote titles, the nine Collections slices, the WCAG keyboard-walkthrough title (`UI changes need a WCAG 2.2 AA accessibility audit`), and the contrast-test title (`Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI`). If missing, report `blocked` and point at `stage-linear` — **do not** run `stage-linear` or guess the team |
 | Disk plugin | required for plugin beat | `plugins/standard-bug-fix/` present on disk |
 | Resolve-dispute plan | required for parallelize section | `.cursor/plans/resolve-dispute.md` exists |
 | `dispatch-subagents` skill | required | `.cursor/skills/dispatch-subagents/SKILL.md` exists |

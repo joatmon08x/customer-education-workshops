@@ -55,7 +55,7 @@ Linear MCP cannot create teams. Public and private teams are both valid. Public 
 2. Name it for this operator only (example: `{displayName}-field-demos`).
 3. Leave it public, or turn on **Make team private**. Team key can be **LY**. Settings URL looks like `https://linear.app/<workspace>/settings/teams/LY`.
 4. When the team is private, members are **only the operator**.
-5. Run `stage-linear` to create or reconcile project `ce-field-demos` on that team with the three Fieldnote issues, the nine Collections Command Center slices (same project, tagged with the feature note and a team-scoped label), and the WCAG keyboard-walkthrough issue as the thirteenth staged title. The project stays public unless the operator asks for private.
+5. Run `stage-linear` to create or reconcile project `ce-field-demos` on that team with the three Fieldnote issues, the nine Collections Command Center slices (same project, tagged with the feature note and a team-scoped label), the WCAG keyboard-walkthrough issue as the thirteenth staged title, and the contrast-test issue as the fourteenth. The project stays public unless the operator asks for private.
 
 `stage-linear` never guesses the team — it lists the operator's teams and confirms the exact one before writing, so any team name works. It does not refuse a public project or force the project private. The next stage reopens the project and reopens recorded issues to `Todo`, and creates a title only when it is missing or a canceled issue will not leave `Canceled`. `reset-demo-state` uses the same confirmation, then cancels the recorded issues and cancels the project without unlinking (the team is retained; the next `stage-linear` reactivates the board).
 

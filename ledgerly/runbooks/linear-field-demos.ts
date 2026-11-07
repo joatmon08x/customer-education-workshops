@@ -77,28 +77,37 @@ The $400 figure is Cobalt Goods' claim, not a fourth catalog price. Do not chang
     previousTitles: ["Overdue / Needs review filter does not change the list"],
     description: `## Bug
 
-On http://127.0.0.1:43173/invoices, click **Overdue**. The table still shows every invoice and **All** stays highlighted.
+On http://127.0.0.1:43173/invoices, select **Overdue**. The table still shows every invoice and **All** stays highlighted.
 
-On http://127.0.0.1:43173/disputes, click **Needs review**. The queue still shows every dispute and **All** stays highlighted.
+On http://127.0.0.1:43173/disputes, select **Needs review**. The queue still shows every dispute and **All** stays highlighted.
 
-Same control on both pages. Fix filter selection so the active pill matches the rows. Do not split this into two issues.
+## Scope
 
-## Acceptance
+Make the shared filter control change the list on invoices and on disputes. The pills write a query key the pages do not read. Align that key with the key the pages and the invoices search field already use (\`status\`). Leave catalog prices, suggested credit, dispute resolution, and pill styling alone. Do not split this into two issues.
+
+## Acceptance criteria
 
 - On /invoices, Overdue shows only OVERDUE rows and only that pill is active.
 - On /disputes, Needs review shows only NEEDS_REVIEW rows and only that pill is active.
 - All still lists the full seeded book.
+- Search on invoices keeps the active filter.
+
+## Proof
+
+A test that the Overdue pill on /invoices lists only OVERDUE invoices. It fails on the current query key and passes after the pills and pages use the same key. \`npm test\` still has one planted failure: \`tests/suggested-credit-api.test.ts\`.
+
+http://127.0.0.1:43173/invoices — select Overdue; the table and URL match.
+http://127.0.0.1:43173/disputes — select Needs review; the queue and URL match.
+
+## Judgment calls
+
+Before merging, keep \`status\` (the invoices API and search field already use it) unless you have a reason to rename the pages instead. Do not ship a restyle of the pills.
 
 ## Paths
 
 - \`components/filter-pills.tsx\`
 - \`app/invoices/page.tsx\`
-- \`app/disputes/page.tsx\`
-
-## Verify
-
-- http://127.0.0.1:43173/invoices
-- http://127.0.0.1:43173/disputes`,
+- \`app/disputes/page.tsx\``,
     ledgerlyPaths: ["components/filter-pills.tsx", "app/invoices/page.tsx", "app/disputes/page.tsx"],
     ledgerlyUrls: ["http://127.0.0.1:43173/invoices", "http://127.0.0.1:43173/disputes"],
   },
@@ -400,8 +409,9 @@ export function collectionsCommandCenterDescription(issue: CollectionsCommandCen
 /**
  * WCAG keyboard walkthrough on the ce-field-demos board.
  * stage-linear stages this as the thirteenth issue (Todo, priority 3): creates
- * it when missing, reopens a match to Todo, and updates an open copy in place.
- * It is not a Fieldnote beat and not a Collections Command Center slice.
+ * it when missing, reopens a match to Todo, and writes the catalog body in
+ * place. reset-demo-state cancels the recorded identifier. It is not a
+ * Fieldnote beat and not a Collections Command Center slice.
  */
 export const WCAG_KEYBOARD_WALKTHROUGH = {
   title: "UI changes need a WCAG 2.2 AA accessibility audit",
@@ -448,4 +458,60 @@ The manual keyboard walkthrough can show each of these. Reading the source witho
 ## Verify
 
 - http://127.0.0.1:43173/invoices — manual keyboard walkthrough: skip link, focus rings, notice menu, and badge text in both themes.`,
+} as const;
+
+/**
+ * WCAG contrast check on the ce-field-demos board (Linear LY-37).
+ * stage-linear stages this as the fourteenth issue (Todo, priority 2): creates
+ * it when missing, reopens a match to Todo, and writes the catalog body in
+ * place. reset-demo-state cancels the recorded identifier. Not a Fieldnote
+ * beat, not a Collections Command Center slice, and not the keyboard
+ * walkthrough. The check is `npm run test:a11y`; do not add that suite to
+ * `npm test`.
+ */
+export const WCAG_CONTRAST_TEST = {
+  title: "Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI",
+  state: "Todo",
+  /** Linear: 2=High */
+  priority: 2,
+  description: `## Bug
+
+\`npm run test:a11y\` fails WCAG 1.4.3 text contrast (4.5:1) in \`tests/a11y/contrast.test.ts\`. Label checks in \`tests/a11y/labels.test.tsx\` pass. \`npm test\` does not run this suite.
+
+## Scope
+
+Raise these seven failing pairs to 4.5:1 by changing existing token values in \`app/globals.css\` (\`:root\` and \`.dark\`) only. Do not add a hex color in a component. Do not edit \`tests/a11y/contrast.test.ts\` or \`tests/a11y/wcag.ts\` to drop a pair or lower the ratio. Pairs that already pass stay at or above 4.5:1, including pairs that reuse a token you change. Leave the keyboard walkthrough, suggested credit, filter pills, dispute resolution, catalog prices, \`npm test\`, and \`scripts/demo-reset.ts\` alone.
+
+Light theme:
+
+- \`--success\` on \`--success-soft\` (Paid and Accepted badges)
+- \`--warning\` on \`--warning-soft\` (Open and dispute warning badges)
+- \`--danger\` on \`--danger-soft\` (Overdue, Disputed badges, suggested credit)
+- \`--muted-foreground\` on \`--muted\` (muted badge, search placeholder)
+- \`--muted-foreground\` on \`--indigo-soft\` (collections queue callout)
+- \`--success\` on \`--card\` (KPI growth up)
+
+Dark theme:
+
+- \`--danger\` on \`--danger-soft\` (Overdue, Disputed badges, suggested credit)
+
+## Acceptance criteria
+
+Paid, Open, Overdue, and Disputed badges, muted text, and the up KPI still read as the same semantic colors (green success, amber warning, red danger) in light and dark. \`test:a11y\` stays out of \`npm test\`, the environment start command, and \`scripts/demo-reset.ts\`.
+
+## Proof
+
+\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 32 passed.
+
+http://127.0.0.1:43173/invoices — Paid, Open, and Overdue badge text in light and dark.
+
+## Judgment calls
+
+Before merging, pick which side of each pair moves (foreground vs \`-soft\` background) and confirm the badges are not washed out. Stay on the existing hues; do not swap in an unrelated color that only clears 4.5:1.
+
+## Paths
+
+- \`app/globals.css\`
+
+The contrast test is the check, not a file to edit.`,
 } as const;

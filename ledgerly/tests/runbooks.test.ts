@@ -1317,6 +1317,7 @@ describe("runbook catalog", () => {
     expect(files.reset).toContain("stage-linear");
     expect(files.reset).not.toContain("stage-linear-201");
     expect(files.reset).toContain("FIELD_DEMO_ISSUES");
+    expect(files.reset).toContain("WCAG_CONTRAST_TEST");
     expect(files.reset).toContain("Canceled");
     expect(files.agents).toContain("stage-linear");
     expect(files.agents).not.toContain("stage-linear-201");
@@ -1406,6 +1407,11 @@ describe("runbook catalog", () => {
     expect(stage, "stage must not cancel the WCAG walkthrough as an extra").toContain(
       "Never cancel the WCAG keyboard-walkthrough issue as an extra",
     );
+    expect(stage).toContain("Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI");
+    expect(stage, "stage must not cancel the contrast test as an extra").toContain(
+      "Never cancel the contrast-test issue as an extra",
+    );
+    expect(stage, "stage writes contrast from the catalog body").toContain("WCAG_CONTRAST_TEST");
     expect(stage, "stage reopens a match to Todo").toMatch(/reopen(?:s)?(?: those)? matches? to `Todo`|state`: `Todo`/i);
     expect(stage, "stage creates a missing title").toMatch(
       /Create this title when it is missing|Create a new issue only in two cases/i,
