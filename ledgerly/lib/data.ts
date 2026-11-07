@@ -15,6 +15,7 @@ const invoiceInclude = {
   customer: true,
   lines: true,
   disputes: true,
+  payments: { orderBy: { recordedAt: "desc" as const } },
 } as const;
 
 const disputeInclude = {
@@ -113,9 +114,14 @@ export async function getCustomer(id: string) {
     where: { id },
     include: {
       invoices: {
-        include: { lines: true, disputes: true },
+        include: {
+          lines: true,
+          disputes: true,
+          payments: { orderBy: { recordedAt: "desc" as const } },
+        },
         orderBy: { issuedOn: "desc" },
       },
+      activities: { orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }] },
     },
   });
 }

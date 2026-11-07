@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { RecordPaymentForm } from "@/app/invoices/[id]/record-payment-form";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge, DisputeStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,10 @@ import { DEMO_AS_OF } from "@/lib/clock";
 import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { outstandingBalanceCents, paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel } from "@/lib/plans";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,6 +31,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   const daysPastDue =
     invoice.status === "OVERDUE" ? Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn)) : 0;
+  const outstandingCents = outstandingBalanceCents(invoice);
   const noteDraft = draftCollectionNote({
     customerName: invoice.customer.name,
     daysPastDue,
@@ -95,6 +100,41 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <CardContent className="space-y-1 text-sm">
               <p>{invoice.customer.email}</p>
               <p className="text-muted-foreground">Plan on file: {planLabel(invoice.plan)}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Payment history</CardTitle>
+              <CardDescription>
+                Outstanding {formatUsd(outstandingCents)}. Paid on{" "}
+                {invoice.paidOn ? formatDate(invoice.paidOn) : "—"}.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {invoice.payments.length === 0 ? (
+                <p className="text-muted-foreground">No payments recorded.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {invoice.payments.map((payment) => (
+                    <li key={payment.id} className="flex items-baseline justify-between gap-3">
+                      <span>
+                        {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {formatDate(payment.recordedAt)} · {payment.recordedBy}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {outstandingCents > 0 ? (
+                <RecordPaymentForm
+                  invoiceId={invoice.id}
+                  invoiceNumber={invoice.number}
+                  amountCents={outstandingCents}
+                />
+              ) : null}
             </CardContent>
           </Card>
 

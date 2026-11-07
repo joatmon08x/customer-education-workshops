@@ -14,6 +14,7 @@ import { DEMO_AS_OF } from "@/lib/clock";
 import { getCustomer } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { outstandingBalanceCents, paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
@@ -30,11 +31,17 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
   if (!customer) notFound();
   if (!isPlanId(customer.plan)) notFound();
 
+  const latestActivity = customer.activities[0] ?? null;
+  const lastActivityLabel = latestActivity
+    ? `${latestActivity.type} · ${formatDate(latestActivity.occurredOn)}`
+    : "—";
+
   const overdueBook = customer.invoices
     .filter((invoice) => invoice.status === "OVERDUE")
     .map((invoice) => ({
       ...invoice,
       daysPastDue: Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn)),
+      outstandingCents: outstandingBalanceCents(invoice),
     }))
     .sort((a, b) => b.daysPastDue - a.daysPastDue || a.number.localeCompare(b.number));
 
@@ -51,7 +58,7 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
           <CardTitle>Overdue Book</CardTitle>
           <CardDescription>
             Overdue invoices for this account only, days past due descending. Outstanding balance is
-            the invoice total until payments are recorded. Last activity shows an em dash when the
+            the invoice total minus recorded payments. Last activity shows an em dash when the
             account has no activity.
           </CardDescription>
         </CardHeader>
@@ -87,15 +94,51 @@ export default async function CustomerAccountPage({ params }: { params: Promise<
                     <TableCell className="text-muted-foreground">{formatDate(invoice.dueOn)}</TableCell>
                     <TableCell className="text-right tabular-nums">{invoice.daysPastDue}</TableCell>
                     <TableCell className="text-right font-medium tabular-nums">
-                      {formatUsd(invoice.totalCents)}
+                      {formatUsd(invoice.outstandingCents)}
                     </TableCell>
-                    <TableCell className="text-muted-foreground" aria-label="No activity">
-                      —
+                    <TableCell
+                      className="text-muted-foreground"
+                      aria-label={latestActivity ? lastActivityLabel : "No activity"}
+                    >
+                      {lastActivityLabel}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Activity</CardTitle>
+          <CardDescription>Collections history for this account. Newest first.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          {customer.activities.length === 0 ? (
+            <p className="text-muted-foreground">—</p>
+          ) : (
+            <ul className="space-y-3">
+              {customer.activities.map((activity) => (
+                <li key={activity.id} className="flex flex-col gap-0.5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="font-medium">{activity.type}</span>
+                    <span className="text-muted-foreground">{formatDate(activity.occurredOn)}</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    {[
+                      activity.amountCents != null ? formatUsd(activity.amountCents) : null,
+                      activity.method ? paymentMethodLabel(activity.method) : activity.channel,
+                      activity.actorName,
+                      activity.status,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                </li>
+              ))}
+            </ul>
           )}
         </CardContent>
       </Card>
