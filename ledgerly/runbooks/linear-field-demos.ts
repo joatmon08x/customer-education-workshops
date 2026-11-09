@@ -381,7 +381,7 @@ export const COLLECTIONS_COMMAND_CENTER_ISSUES: readonly CollectionsCommandCente
   },
 ] as const;
 
-/** Linear description for one slice. Note first, then the split-prd fields. */
+/** Linear description for one slice. Note first, then the slice fields. */
 export function collectionsCommandCenterDescription(issue: CollectionsCommandCenterIssue): string {
   const index = COLLECTIONS_COMMAND_CENTER_ISSUES.findIndex((candidate) => candidate.slug === issue.slug);
   const position = `Slice ${index + 1} of ${COLLECTIONS_COMMAND_CENTER_ISSUES.length}`;

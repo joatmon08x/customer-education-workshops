@@ -1181,7 +1181,7 @@ describe("runbook catalog", () => {
   it("points docs, skills, and rules at runbooks.html and documents the 101, 201, 301, and 401 tracks", () => {
     const files = {
       readme: readFileSync(join(root, "README.md"), "utf8"),
-      howto: readFileSync(join(root, "demo-howto.md"), "utf8"),
+      presenter: readFileSync(join(root, "PRESENTER.md"), "utf8"),
       agents: readFileSync(join(root, "AGENTS.md"), "utf8"),
       rule: readFileSync(join(root, ".cursor/rules/ledgerly.mdc"), "utf8"),
       skill: readFileSync(join(root, ".cursor/skills/choose-cursor-workflow/SKILL.md"), "utf8"),
@@ -1198,18 +1198,15 @@ describe("runbook catalog", () => {
       );
     }
 
-    expect(files.readme).toContain("present-runbooks");
-    expect(files.howto).toContain("present-runbooks");
+    expect(files.presenter).toContain("present-runbooks");
     expect(files.skill).toContain("present-runbooks");
     expect(files.agents).toContain("present-runbooks");
     expect(files.rule).toContain("present-runbooks");
-    expect(files.readme).toContain("runbooks.html");
-    expect(files.howto).toContain("runbooks.html");
+    expect(files.presenter).toContain("runbooks.html");
     expect(files.skill).toContain("runbooks.html");
     expect(files.agents).toContain("runbooks.html");
     expect(files.rule).toContain("runbooks.html");
-    expect(files.readme).not.toContain("runbooks.html?track=");
-    expect(files.howto).not.toContain("runbooks.html?track=");
+    expect(files.presenter).not.toContain("runbooks.html?track=");
     expect(files.skill).not.toContain("runbooks.html?track=");
     expect(files.agents).not.toContain("runbooks.html?track=");
     expect(files.rule).not.toContain("runbooks.html?track=");
@@ -1258,7 +1255,7 @@ describe("runbook catalog", () => {
     expect(present).toContain("runbooks-features");
     expect(present).toContain("Catalog **tabs**");
     expect(present).toMatch(/ask which track and wait/i);
-    expect(present).toContain("paste `demo-howto.md`");
+    expect(present).toContain("paste `PRESENTER.md`");
     expect(present).toMatch(/speaker notes/i);
     expect(present).not.toContain("runbooks-section");
     expect(present).not.toContain("WriteCanvas");
@@ -1296,7 +1293,6 @@ describe("runbook catalog", () => {
     const countPattern = /1 failed \/ (\d+) passed/g;
     const countSources: Record<string, string> = {
       readme: files.readme,
-      howto: files.howto,
       agents: files.agents,
       reset: files.reset,
       plan: readFileSync(join(root, ".cursor/plans/resolve-dispute.md"), "utf8"),
@@ -1325,17 +1321,14 @@ describe("runbook catalog", () => {
     expect(files.rule).not.toContain("stage-linear-201");
     expect(files.skill).toContain("stage-linear");
     expect(files.skill).not.toContain("stage-linear-201");
-    expect(files.howto).toContain("stage-linear");
-    expect(files.howto).not.toContain("stage-linear-201");
-    expect(files.readme).toContain("Settings → Teams → New team");
-    expect(files.readme).toContain("Make team private");
-    expect(files.howto).toContain("Settings → Teams → New team");
-    expect(files.howto).toContain("Make team private");
+    expect(files.presenter).toContain("stage-linear");
+    expect(files.presenter).not.toContain("stage-linear-201");
+    expect(files.presenter).toContain("Settings → Teams → New team");
+    expect(files.presenter).toContain("Make team private");
     expect(files.agents).toContain("Settings → Teams → New team");
     expect(files.agents).toContain("Make team private");
     expect(files.rule).toContain("Make team private");
-    expect(files.readme).toContain("settings/teams/LY");
-    expect(files.howto).toContain("settings/teams/LY");
+    expect(files.presenter).toContain("settings/teams/LY");
     expect(files.agents).toContain("settings/teams/LY");
   });
 
@@ -1353,8 +1346,7 @@ describe("runbook catalog", () => {
     expect(reset, "reset must not ban public-team teardown").not.toContain("Never cancel Linear issues on a public");
 
     const docs = {
-      readme: readFileSync(join(root, "README.md"), "utf8"),
-      howto: readFileSync(join(root, "demo-howto.md"), "utf8"),
+      presenter: readFileSync(join(root, "PRESENTER.md"), "utf8"),
       agents: readFileSync(join(root, "AGENTS.md"), "utf8"),
       rule: readFileSync(join(root, ".cursor/rules/ledgerly.mdc"), "utf8"),
     };
@@ -1395,9 +1387,6 @@ describe("runbook catalog", () => {
     expect(reset).toContain("301 Reviewer automation");
     const resetScript = readFileSync(join(root, "scripts/demo-reset.ts"), "utf8");
     expect(resetScript).toContain('".cursor/agents/accessibility-manual-reviewer.md"');
-    expect(readFileSync(join(root, "demo-howto.md"), "utf8")).toContain(
-      "npm run demo:session -- record project-path .cursor/agents/accessibility-manual-reviewer.md",
-    );
     expect(reset, "reset must restore dispute queue pages").toContain("app/disputes/page.tsx");
 
     expect(stage, "stage must say the WCAG audit is a manual keyboard walkthrough").toContain(

@@ -26,7 +26,7 @@ Do not invent another issue or a fourth price.
 
 **Public and private projects are both valid.** Do not refuse a public project. Do not set the project private unless the operator asks.
 
-The same steps are in `README.md`, `demo-howto.md`, and `AGENTS.md`. Repeat them if the operator has no team yet:
+The same steps are in `PRESENTER.md` and `AGENTS.md`. Repeat them if the operator has no team yet:
 
 1. Open Linear → **Settings → Teams → New team**.
 2. Name it for this operator only (example: `{displayName}-field-demos`).

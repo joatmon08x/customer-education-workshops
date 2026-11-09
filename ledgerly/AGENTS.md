@@ -14,7 +14,7 @@ Fictional billing ops SaaS. Fieldnote Workspace. Operator Avery Quinn. No auth. 
 
 Catalog prices are frozen: Starter **$49**, Growth **$99**, Scale **$249**. Never invent a fourth price, live ARR, or a real customer name.
 
-This is a **Grok Build demo app** with four jumpable tracks: 101, 201, 301, and 401. Runbook beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Regenerate both files with `npm run runbooks:export` whenever beats change — `tests/runbooks.test.ts` fails if they drift. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. The presenter run-of-show is `demo-howto.md`. Project subagents live in `.cursor/agents/`. Skills live in `.cursor/skills/`. Do not add talk-track or speaker-note skills. Do not reintroduce retired Advanced runbooks without a request.
+This is a **Grok Build demo app** with four jumpable tracks: 101, 201, 301, and 401. Runbook beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Regenerate both files with `npm run runbooks:export` whenever beats change — `tests/runbooks.test.ts` fails if they drift. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. Presenter ops are `PRESENTER.md`. Project subagents live in `.cursor/agents/`. Skills live in `.cursor/skills/`. Do not add talk-track or speaker-note skills. Do not reintroduce retired Advanced runbooks without a request.
 
 Before a demo session, invoke `preflight-checker` with the track id (`preflight-checker track 101`, `201`, `301`, or `401`). It reports pass / fail / blocked for that track and does not install, seed, start the server, stage Linear, or authenticate MCP. If the track is missing, it asks and runs no checks. `start-ledgerly` is the start step after the report, not a substitute for preflight.
 
@@ -117,7 +117,7 @@ Incomplete on purpose:
 | `.cursor/skills/present-runbooks/` | Open the native Runbooks canvas with numbered steps for a 101, 201, 301, or 401 walkthrough |
 | `.cursor/skills/choose-cursor-workflow/` | Walk the 101, 201, 301, or 401 track: modes, models, rules, skills, and finishing one task with an agent |
 | `.cursor/skills/stage-linear/` | Reconcile Fieldnote issues on the `ce-field-demos` Linear project. Public and private teams and projects are both valid. |
-| `.cursor/skills/standard-bug-fix/` | `/standard-bug-fix` — pull one ce-field-demos Linear issue and fix only that bug |
+| `plugins/standard-bug-fix/skills/standard-bug-fix/` | `/standard-bug-fix` — pull one ce-field-demos Linear issue and fix only that bug |
 | `.cursor/skills/dispatch-subagents/` | Parallel Task launches |
 | `.cursor/skills/hand-to-cloud-agent/` | Cloud `/goal`, `/autopilot`, and `/orchestrate` |
 | `.cursor/skills/write-prisma-query/` | Invoice, dispute, and customer lookups against SQLite — not an MCP |

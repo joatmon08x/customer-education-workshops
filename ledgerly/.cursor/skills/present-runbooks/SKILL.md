@@ -31,5 +31,5 @@ Tell the user to click the named track tab, uncheck optional features they are s
 ## 3. Do not
 
 - Start the server, seed, or run `preflight-checker`. Those stay `start-ledgerly` and `preflight-checker`.
-- Recap beats, paste `demo-howto.md`, or add speaker notes in chat.
+- Recap beats, paste `PRESENTER.md`, or add speaker notes in chat.
 - Open `runbooks.html` or any other runbook view.

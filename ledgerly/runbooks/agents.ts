@@ -30,7 +30,7 @@ export const PROJECT_SKILLS = [
   {
     name: "choose-cursor-workflow",
     path: ".cursor/skills/choose-cursor-workflow/SKILL.md",
-    when: "Walk the 101 or 201 track, then choose the mode, model, rule, or skill from the shape of the work.",
+    when: "Walk the 101, 201, 301, or 401 track, then choose the mode, model, rule, or skill from the shape of the work.",
   },
   {
     name: "stage-linear",
@@ -39,7 +39,7 @@ export const PROJECT_SKILLS = [
   },
   {
     name: "standard-bug-fix",
-    path: ".cursor/skills/standard-bug-fix/SKILL.md",
+    path: "plugins/standard-bug-fix/skills/standard-bug-fix/SKILL.md",
     when: "/standard-bug-fix on one ce-field-demos Linear issue.",
   },
   {

@@ -6,9 +6,9 @@ Public demos for customer education workshops. Each top-level folder is a standa
 
 | Folder | What | Run |
 | --- | --- | --- |
-| [`ledgerly/`](ledgerly/) | Fictional B2B billing ops (Fieldnote). Grok Build 101, 201, 301, and 401 tracks. | `cd ledgerly && npm i && npx prisma generate && npx prisma db seed && npm run dev` → [http://localhost:43173](http://localhost:43173) |
+| [`ledgerly/`](ledgerly/) | Fictional B2B billing ops (Fieldnote). Grok Build workshop app. | `cd ledgerly && npm i && npx prisma generate && npx prisma db seed && npm run dev` → [http://localhost:43173](http://localhost:43173) |
 
-See [`ledgerly/README.md`](ledgerly/README.md) for catalog prices, planted seams, and presenter notes (`demo-howto.md`).
+See [`ledgerly/README.md`](ledgerly/README.md) for workshop setup and [`ledgerly/PRESENTER.md`](ledgerly/PRESENTER.md) to present.
 
 ## License
 
