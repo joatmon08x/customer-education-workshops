@@ -1,6 +1,7 @@
 import { DEMO_AS_OF, DEMO_PRIOR_END, DEMO_PRIOR_START, DEMO_WINDOW_START } from "@/lib/clock";
 import { sumCents } from "@/lib/money";
-import { planPriceCents } from "@/lib/plans";
+import { outstandingCents } from "@/lib/collections";
+import { amountsVisible, isPlanId, planPriceCents } from "@/lib/plans";
 
 type InvoiceLike = {
   status: string;
@@ -42,7 +43,9 @@ export function percentChange(current: number, prior: number): number | null {
 }
 
 export function catalogMrrCents(customers: { plan: string }[]) {
-  return sumCents(customers.map((customer) => planPriceCents(customer.plan)));
+  return sumCents(
+    customers.filter((customer) => isPlanId(customer.plan)).map((customer) => planPriceCents(customer.plan)),
+  );
 }
 
 export function collectedCents(invoices: InvoiceLike[], start: Date, end: Date) {
@@ -101,3 +104,38 @@ export const DASHBOARD_WINDOWS = {
   priorStart: DEMO_PRIOR_START,
   priorEnd: DEMO_PRIOR_END,
 };
+
+function utcDay(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+export function collectionsKpi(input: {
+  invoices: {
+    status: string;
+    totalCents: number;
+    customer: { plan: string };
+    payments?: { amountCents: number }[];
+  }[];
+  activities: { occurredOn: Date }[];
+  asOf?: Date;
+}) {
+  const asOf = input.asOf ?? DEMO_AS_OF;
+  const overdue = input.invoices.filter((invoice) => invoice.status === "OVERDUE");
+  const weekStart = new Date(asOf);
+  weekStart.setUTCDate(weekStart.getUTCDate() - 6);
+  const today = utcDay(asOf);
+  const weekStartDay = utcDay(weekStart);
+
+  return {
+    overdueCount: overdue.length,
+    overdueCents: sumCents(
+      overdue.filter((invoice) => isPlanId(invoice.customer.plan)).map((invoice) => outstandingCents(invoice)),
+    ),
+    amountsVisible: overdue.every((invoice) => amountsVisible(invoice.customer.plan)),
+    activitiesToday: input.activities.filter((activity) => utcDay(activity.occurredOn) === today).length,
+    activitiesThisWeek: input.activities.filter((activity) => {
+      const day = utcDay(activity.occurredOn);
+      return day >= weekStartDay && day <= today;
+    }).length,
+  };
+}

@@ -27,6 +27,8 @@ model Customer {
   plan        String
   createdAt   DateTime  @default(now())
   invoices    Invoice[]
+  notes       CollectionNote[]
+  activities  Activity[]
 }
 
 model Invoice {
@@ -48,6 +50,54 @@ model Invoice {
   collectionNote  String?
   lines           InvoiceLine[]
   disputes        Dispute[]
+  payments        Payment[]
+  notes           CollectionNote[]
+  activities      Activity[]
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  amountCents Int
+  method      String
+  recordedBy  String
+  recordedOn  DateTime
+  createdAt   DateTime @default(now())
+}
+
+model CollectionNote {
+  id         String    @id @default(cuid())
+  customerId String
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  invoiceId  String?
+  invoice    Invoice?  @relation(fields: [invoiceId], references: [id])
+  authorName String
+  body       String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activity   Activity?
+}
+
+/// One account feed for notes, nudges, and payments. occurredOn is the demo day.
+model Activity {
+  id          String          @id @default(cuid())
+  customerId  String
+  customer    Customer        @relation(fields: [customerId], references: [id])
+  invoiceId   String?
+  invoice     Invoice?        @relation(fields: [invoiceId], references: [id])
+  noteId      String?         @unique
+  note        CollectionNote? @relation(fields: [noteId], references: [id])
+  type        String
+  status      String
+  actorName   String
+  channel     String?
+  recipient   String?
+  method      String?
+  amountCents Int?
+  message     String?
+  occurredOn  DateTime
+  createdAt   DateTime        @default(now())
 }
 
 model InvoiceLine {

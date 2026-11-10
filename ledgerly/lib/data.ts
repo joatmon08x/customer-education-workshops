@@ -3,6 +3,7 @@ import {
   DASHBOARD_WINDOWS,
   catalogMrrCents,
   collectedCents,
+  collectionsKpi,
   disputeBreakdown,
   disputeCentsAt,
   openCentsAt,
@@ -15,6 +16,7 @@ const invoiceInclude = {
   customer: true,
   lines: true,
   disputes: true,
+  payments: { orderBy: { createdAt: "asc" } },
 } as const;
 
 const disputeInclude = {
@@ -27,10 +29,11 @@ const disputeInclude = {
 } as const;
 
 export async function getDashboard() {
-  const [invoices, disputes, customers] = await Promise.all([
+  const [invoices, disputes, customers, activities] = await Promise.all([
     prisma.invoice.findMany({ include: invoiceInclude, orderBy: { issuedOn: "desc" } }),
     prisma.dispute.findMany({ include: disputeInclude, orderBy: { openedOn: "desc" } }),
     prisma.customer.findMany(),
+    prisma.activity.findMany({ select: { occurredOn: true } }),
   ]);
 
   const { currentStart, currentEnd, priorStart, priorEnd } = DASHBOARD_WINDOWS;
@@ -51,6 +54,7 @@ export async function getDashboard() {
     disputes,
     series: revenueSeries(invoices, currentStart, currentEnd),
     breakdown: disputeBreakdown(disputes),
+    collections: collectionsKpi({ invoices, activities }),
     kpis: {
       mrrCents: catalogMrrCents(customers),
       accountCount: customers.length,
@@ -98,6 +102,29 @@ export async function getInvoice(id: string) {
   return prisma.invoice.findUnique({
     where: { id },
     include: invoiceInclude,
+  });
+}
+
+export async function getCustomers() {
+  return prisma.customer.findMany({
+    include: { invoices: { include: { payments: true } } },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getCustomer(id: string) {
+  return prisma.customer.findUnique({
+    where: { id },
+    include: {
+      invoices: {
+        include: { payments: true, activities: { select: { occurredOn: true, createdAt: true } } },
+        orderBy: { dueOn: "asc" },
+      },
+      activities: {
+        include: { note: true, invoice: { select: { id: true, number: true } } },
+        orderBy: { createdAt: "desc" },
+      },
+    },
   });
 }
 

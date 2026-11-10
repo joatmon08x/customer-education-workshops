@@ -29,6 +29,13 @@ export function planPriceCents(plan: string): number {
   return PLAN_PRICE_CENTS[plan];
 }
 
+export const AMOUNTS_MASKED_COPY = "Upgrade to view amounts";
+
+/** Dollar figures render only on the paid catalog; everything else masks them. */
+export function amountsVisible(plan: string): boolean {
+  return isPlanId(plan);
+}
+
 export function planLabel(plan: string): string {
   if (!isPlanId(plan)) {
     throw new Error(`Unknown plan "${plan}".`);

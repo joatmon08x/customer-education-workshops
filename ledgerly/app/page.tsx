@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, CalendarRange, CircleDollarSign, FileText, TrendingUp } from "lucide-react";
+import { AlertTriangle, CalendarRange, CircleDollarSign, FileText, Inbox, TrendingUp } from "lucide-react";
 import { DisputeDonut } from "@/components/charts/dispute-donut";
 import { RevenueChart } from "@/components/charts/revenue-chart";
 import { InvoiceTable } from "@/components/invoice-table";
@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboard } from "@/lib/data";
 import { formatUsd } from "@/lib/money";
+import { AMOUNTS_MASKED_COPY } from "@/lib/plans";
 
 export const metadata = {
   title: "Dashboard",
@@ -16,7 +17,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const { invoices, series, breakdown, kpis } = await getDashboard();
+  const { invoices, series, breakdown, kpis, collections } = await getDashboard();
   const recent = invoices.filter((invoice) => invoice.status !== "VOID" && invoice.status !== "DRAFT").slice(0, 5);
 
   return (
@@ -34,7 +35,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <KpiCard
           label="Monthly Recurring Revenue"
           value={formatUsd(kpis.mrrCents)}
@@ -65,6 +66,13 @@ export default async function DashboardPage() {
           change={kpis.collectedChange}
           icon={CircleDollarSign}
           tone="success"
+        />
+        <KpiCard
+          label="Collections"
+          value={collections.amountsVisible ? formatUsd(collections.overdueCents) : AMOUNTS_MASKED_COPY}
+          hint={`${collections.overdueCount} overdue · ${collections.activitiesToday} activities today · ${collections.activitiesThisWeek} in 7 days`}
+          icon={Inbox}
+          tone="danger"
         />
       </section>
 

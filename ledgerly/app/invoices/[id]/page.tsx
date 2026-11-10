@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { RecordPayment } from "@/components/collections/record-payment";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge, DisputeStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { draftCollectionNote } from "@/lib/collection-note";
 import { DEMO_AS_OF } from "@/lib/clock";
+import { accountUsd, outstandingCents, paymentMethodLabel } from "@/lib/collections";
 import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
@@ -32,6 +34,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     daysPastDue,
     plan: invoice.plan,
   });
+  const outstanding = outstandingCents(invoice);
+  const payable = outstanding > 0 && (invoice.status === "OPEN" || invoice.status === "OVERDUE");
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
@@ -116,6 +120,33 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
           ) : null}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Payments</CardTitle>
+              <CardDescription>Full outstanding balance only. Partial payments are not recorded.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {invoice.payments.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No payments recorded.</p>
+              ) : (
+                <ul className="space-y-2 text-sm">
+                  {invoice.payments.map((payment) => (
+                    <li key={payment.id} className="flex justify-between gap-2">
+                      <span>
+                        {formatDate(payment.recordedOn)} · {paymentMethodLabel(payment.method)}
+                        <span className="block text-xs text-muted-foreground">Recorded by {payment.recordedBy}</span>
+                      </span>
+                      <span className="font-medium">{accountUsd(payment.amountCents, invoice.customer.plan)}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {payable ? (
+                <RecordPayment invoiceId={invoice.id} invoiceNumber={invoice.number} outstandingCents={outstanding} />
+              ) : null}
+            </CardContent>
+          </Card>
         </div>
       </div>
 
