@@ -4,7 +4,7 @@ import { configDefaults, defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["tests/**/*.test.ts"],
+    include: ["tests/**/*.test.{ts,tsx}"],
     // WCAG checks run on their own with `npm run test:a11y`.
     exclude: [...configDefaults.exclude, "tests/a11y/**"],
   },
