@@ -72,11 +72,11 @@ export function InvoiceTable({ invoices }: { invoices: InvoiceRow[] }) {
               <Link
                 href={`/invoices/${invoice.id}`}
                 className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-                aria-label={`Open ${invoice.number}`}
                 aria-hidden="true"
                 tabIndex={-1}
               >
                 <MoreHorizontal className="size-4" />
+                <span className="sr-only">{invoice.number}</span>
               </Link>
             </TableCell>
           </TableRow>
