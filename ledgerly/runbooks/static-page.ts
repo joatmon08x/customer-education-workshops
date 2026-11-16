@@ -139,7 +139,7 @@ function renderFeatureChecklist(track: (typeof RUNBOOK_TRACKS)[number]): string 
       const id = featureDomId(track.id, feature);
       return `
         <label class="feature-option" for="${id}">
-          <input id="${id}" class="feature-toggle" type="checkbox" data-track="${escapeHtml(track.id)}" data-feature="${escapeHtml(feature)}" checked>
+          <input id="${id}" class="feature-toggle" type="checkbox" data-track="${escapeHtml(track.id)}" data-feature="${escapeHtml(feature)}">
           ${escapeHtml(feature)}
         </label>`;
     })
@@ -178,7 +178,7 @@ function renderTrack(track: (typeof RUNBOOK_TRACKS)[number]): string {
  * Every track is pre-rendered so the file still reads top to bottom with
  * scripts disabled; the script only hides tracks other than `?track=`.
  * Optional beats stay in the markup. Each track lists its optional features
- * as checkboxes, checked by default. Unchecking a feature hides its beats.
+ * as checkboxes, off by default. Checking a feature shows its beats.
  * The choice is stored in localStorage. Required beats are always shown.
  */
 export function renderRunbooksHtml(): string {
@@ -347,7 +347,7 @@ ${RUNBOOK_TRACKS.map(renderTrack).join("\n")}
           var trackId = box.getAttribute("data-track");
           var featureName = box.getAttribute("data-feature");
           var trackState = state[trackId] || {};
-          box.checked = trackState[featureName] !== false;
+          box.checked = trackState[featureName] === true;
         });
       }
       function collectFeatures() {
@@ -356,7 +356,7 @@ ${RUNBOOK_TRACKS.map(renderTrack).join("\n")}
           var trackId = box.getAttribute("data-track");
           var featureName = box.getAttribute("data-feature");
           if (!state[trackId]) state[trackId] = {};
-          if (!box.checked) state[trackId][featureName] = false;
+          if (box.checked) state[trackId][featureName] = true;
         });
         return state;
       }
@@ -405,8 +405,8 @@ ${RUNBOOK_TRACKS.map(renderTrack).join("\n")}
           var state = readFeatures();
           if (!state[trackId]) state[trackId] = {};
           var featureName = box.getAttribute("data-feature");
-          if (box.checked) delete state[trackId][featureName];
-          else state[trackId][featureName] = false;
+          if (box.checked) state[trackId][featureName] = true;
+          else delete state[trackId][featureName];
           writeFeatures(state);
           postFeatures();
         });

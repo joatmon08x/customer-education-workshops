@@ -29,6 +29,9 @@ type CanvasTrack = {
   sections: CanvasSection[];
 };
 
+type NumberedBeat = CanvasBeat & { number: number };
+type NumberedSection = { id: string; title: string; beats: NumberedBeat[] };
+
 export function canvasTracks(): CanvasTrack[] {
   return RUNBOOK_TRACKS.map((track) => ({
     id: track.id,
@@ -47,6 +50,24 @@ export function canvasTracks(): CanvasTrack[] {
       }),
     })),
   }));
+}
+
+export function visibleNumberedBeats(
+  track: CanvasTrack,
+  enabled: Record<string, boolean>,
+): NumberedSection[] {
+  const sections: NumberedSection[] = [];
+  let number = 0;
+  for (const section of track.sections) {
+    const beats: NumberedBeat[] = [];
+    for (const beat of section.beats) {
+      if (beat.feature && enabled[beat.feature] !== true) continue;
+      number += 1;
+      beats.push({ ...beat, number });
+    }
+    if (beats.length) sections.push({ id: section.id, title: section.title, beats });
+  }
+  return sections;
 }
 
 export function renderRunbooksCanvas(): string {
@@ -87,13 +108,13 @@ type FeatureMap = Record<string, Record<string, boolean>>;
 
 const TRACKS: Track[] = ${data};
 
-function numberedSections(track: Track, hidden: Record<string, boolean>): NumberedSection[] {
+function numberedSections(track: Track, enabled: Record<string, boolean>): NumberedSection[] {
   const sections: NumberedSection[] = [];
   let number = 0;
   for (const section of track.sections) {
     const beats: NumberedBeat[] = [];
     for (const beat of section.beats) {
-      if (beat.feature && hidden[beat.feature] === false) continue;
+      if (beat.feature && enabled[beat.feature] !== true) continue;
       number += 1;
       beats.push({ ...beat, number });
     }
@@ -236,14 +257,14 @@ export default function Runbooks() {
   const track = TRACKS.find(function (entry) {
     return entry.id === trackId;
   }) ?? TRACKS[0];
-  const hidden = features[track.id] ?? {};
-  const sections = numberedSections(track, hidden);
+  const enabled = features[track.id] ?? {};
+  const sections = numberedSections(track, enabled);
 
   function setFeature(feature: string, on: boolean) {
     setFeatures(function (prev) {
       const nextTrack = { ...(prev[track.id] ?? {}) };
-      if (on) delete nextTrack[feature];
-      else nextTrack[feature] = false;
+      if (on) nextTrack[feature] = true;
+      else delete nextTrack[feature];
       return { ...prev, [track.id]: nextTrack };
     });
   }
@@ -285,7 +306,7 @@ export default function Runbooks() {
               return (
                 <Checkbox
                   key={feature}
-                  checked={hidden[feature] !== false}
+                  checked={enabled[feature] === true}
                   onChange={function (on) {
                     setFeature(feature, on);
                   }}

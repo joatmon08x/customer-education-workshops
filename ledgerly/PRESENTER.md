@@ -36,7 +36,7 @@ Do not use `start-ledgerly` as a substitute for preflight.
 If the canvas is not already open, run `present-runbooks`. `runbooks.html` is a fallback if the canvas cannot open.
 
 1. Select the track tab for this session.
-2. If the track shows optional features, uncheck the ones you are skipping.
+2. If the track shows optional features, check the ones you are using. They start off.
 3. Copy the prompt on the current step.
 4. Paste it in Grok Build.
 5. Review the result before you go to the next step.

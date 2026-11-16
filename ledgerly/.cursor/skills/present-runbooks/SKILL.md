@@ -23,10 +23,10 @@ The canvas is native `cursor/canvas` UI:
 
 - Catalog **tabs** for `101` / `201` / `301` / `401` (`useCanvasState` `runbooks-track`, default `"101"`)
 - Numbered steps (`Step 1`, `Step 2`, …) in one scrolling list under section headings. Numbers skip unchecked optional steps.
-- Optional-feature checkboxes on 301 (`runbooks-features`), on by default
+- Optional-feature checkboxes on 301 (`runbooks-features`), off by default
 - **Copy** on each prompt (`navigator.clipboard`)
 
-Tell the user to click the named track tab, uncheck optional features they are skipping, and scroll to the next step. Copy pastes the prompt.
+Tell the user to click the named track tab, check optional features they are using, and scroll to the next step. Copy pastes the prompt.
 
 ## 3. Do not
 

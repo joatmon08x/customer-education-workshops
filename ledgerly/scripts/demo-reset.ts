@@ -599,6 +599,47 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
     const canceledState = nodes.find((state) => state.type.toLowerCase() === "canceled");
     if (!canceledState) throw new Error("The confirmed Linear team has no Canceled workflow state.");
 
+    let deletedComments = 0;
+    for (const issueId of event.linear.issueIds) {
+      let cursor: string | undefined;
+      for (;;) {
+        const comments = await request(
+          cursor
+            ? `query ResetIssueComments($id: String!, $after: String!) {
+                issue(id: $id) {
+                  comments(first: 50, after: $after) {
+                    nodes { id }
+                    pageInfo { hasNextPage endCursor }
+                  }
+                }
+              }`
+            : `query ResetIssueComments($id: String!) {
+                issue(id: $id) {
+                  comments(first: 50) {
+                    nodes { id }
+                    pageInfo { hasNextPage endCursor }
+                  }
+                }
+              }`,
+          cursor ? { id: issueId, after: cursor } : { id: issueId },
+        );
+        const connection = (comments.issue as {
+          comments: { nodes: Array<{ id: string }>; pageInfo: { hasNextPage: boolean; endCursor: string | null } };
+        }).comments;
+        for (const comment of connection.nodes) {
+          await request(
+            `mutation ResetDeleteComment($id: String!) {
+              commentDelete(id: $id) { success }
+            }`,
+            { id: comment.id },
+          );
+          deletedComments += 1;
+        }
+        if (!connection.pageInfo.hasNextPage || !connection.pageInfo.endCursor) break;
+        cursor = connection.pageInfo.endCursor;
+      }
+    }
+
     for (const issueId of event.linear.issueIds) {
       await request(
         `mutation CancelIssue($id: String!, $stateId: String!) {
@@ -613,7 +654,9 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
       }`,
       { id: event.linear.projectId },
     );
-    report.completed.push(`Canceled recorded Linear board ${event.linear.projectId} through the Linear API.`);
+    report.completed.push(
+      `Deleted ${deletedComments} comments and canceled recorded Linear board ${event.linear.projectId} through the Linear API.`,
+    );
   } catch (error) {
     report.skipped.push(`Linear API skipped: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -626,7 +669,7 @@ function remainingExternalActions(event: SessionEvent, report: Report) {
   if (event.linear && !report.completed.some((entry) => entry.includes(`Linear board ${event.linear!.projectId}`))) {
     report.remaining.push({
       kind: "linear",
-      detail: `Cancel recorded Linear project ${event.linear.projectId} and issues ${event.linear.issueIds.join(", ")} after confirming team ${event.linear.teamName} (${event.linear.teamKey}).`,
+      detail: `Delete comments on recorded Linear issues ${event.linear.issueIds.join(", ")} (\`list_comments\` then \`delete_comment\`), then cancel project ${event.linear.projectId} after confirming team ${event.linear.teamName} (${event.linear.teamKey}).`,
     });
   }
 }

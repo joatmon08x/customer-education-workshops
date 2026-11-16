@@ -15,9 +15,9 @@ The demo ships four jumpable tracks: **101**, **201**, **301**, and **401**. Eve
 
 301: You will orchestrate work across agents, tasks, and coworkers: break tasks down for multiple agents, take a plan through parallel agents to a reviewable PR, scale review when several streams finish, and share ownership safely.
 
-401 — You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.
+401 — You will rewrite a backlog task so an agent can finish it unattended, hand well-defined tasks to parallel Cloud Agents including one with /goal, and direct a Project coordinator to plan and delegate larger work.
 
-The beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. Use the matching `example` verbatim. Do not invent another catalog price.
+The beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Optional features are checkboxes, off by default. Check a feature to show its beats. The choice is saved in the canvas. Use the matching `example` verbatim. Do not invent another catalog price.
 
 The named demo error is `dsp_1043` / the suggested-credit v1 client. Do not mention the invoice or dispute filter-pill `state=` seam unless the user is on that click path.
 
@@ -53,9 +53,9 @@ Before the session, run `preflight-checker` with the track id (`preflight-checke
 
 Before the session, run `preflight-checker` with the track id (`preflight-checker track 401`).
 
-1. **What tasks do you delegate?** Rewrite the dispute cap issue for unattended Cloud Agents, sort the backlog, and keep one issue synchronous.
-2. **How do you delegate asynchronous work?** Check the cloud environment, launch three Cloud Agents in parallel, check them on the web, and review the finished PR.
-3. **How do you direct larger work?** Start a Project, hand the coordinator the collections command center, review and build the plan, then track progress and shared context.
+1. **What tasks do you delegate?** Start a local agent, rewrite the dispute cap task for unattended work, sort the backlog, and keep one task to check yourself.
+2. **How do you delegate asynchronous work?** Check the cloud environment, launch two Cloud Agents in parallel, assign contrast with `/goal`, check them on the web, and review the finished PR.
+3. **How do you direct larger work?** Start a Project named Collections Command Center, review the model, hand the coordinator the Linear issues, review and build the plan, then track progress and shared context.
 
 ## Choose the mode
 

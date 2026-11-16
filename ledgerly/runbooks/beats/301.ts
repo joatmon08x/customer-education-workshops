@@ -220,7 +220,7 @@ export const RUNBOOK_SECTIONS_301 = [
         title: "Identify any changes requiring closer inspection.",
         promptType: "reusable",
         say: "The plan includes a step that sounds reasonable but blocks Tab navigation everywhere. The change reviewer flags it as high severity, with the file and line, so we never keep it.",
-        detail: "Check the change reviewer’s output for any issues requiring closer inspection.",
+        detail: "Check the change reviewer's output for any issues requiring closer inspection.",
         example: "Fix the findings from the change reviewer.",
       },
       {
@@ -266,7 +266,7 @@ export const RUNBOOK_SECTIONS_301 = [
         title: "Create an Automation.",
         optional: { feature: "Automations" },
         promptType: "none",
-        detail: "Go to the Automations tab.\nClick New Automation.\nName it Reviewer.\nSelect the demo repository.\nClick Triggers > PR opened, then select the demo repository and set the author to Anyone.\nAdd “Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.” to agent instructions.\nAdd “Comment on Pull Request” to tools.\nClick Save.",
+        detail: "Go to the Automations tab.\nClick New Automation.\nName it Reviewer.\nSelect the demo repository.\nClick Triggers > PR opened, then select the demo repository and set the author to Anyone.\nAdd \"Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.\" to agent instructions.\nAdd \"Comment on Pull Request\" to tools.\nClick Save.",
       },
       {
         id: "optional-trigger-automation",
@@ -281,8 +281,8 @@ export const RUNBOOK_SECTIONS_301 = [
         id: "return-to-plan",
         title: "Return to the collections command center plan.",
         promptType: "none",
-        say: "Now I’m going back to the collections command center plan. Before I start the work, I’ll check the keyboard fixes PR for conflicts.",
-        detail: "Open the command center planning agent in the Agent Window. Don’t start a new plan.",
+        say: "Now I'm going back to the collections command center plan. Before I start the work, I'll check the keyboard fixes PR for conflicts.",
+        detail: "Open the command center planning agent in the Agent Window. Don't start a new plan.",
       },
       {
         id: "optional-cloud-return",

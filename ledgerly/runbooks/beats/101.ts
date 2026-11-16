@@ -9,37 +9,40 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "ask",
         title: "Ask",
         promptType: "reusable",
-        detail: "Let’s learn more about the application with Ask mode.",
+        say: "Let's learn more about the application with Ask mode.",
+        detail: "",
         example: "/ask Tell me what this application does in 3 sentences",
       },
       {
         id: "plan",
         title: "Plan",
         promptType: "adaptable",
-        detail: "Map your approach to building a new feature in Plan mode.",
+        say: "Map your approach to building a new feature in Plan mode.",
+        detail: "",
         example:
-          "/plan I want a new feature to update the customer email in the invoice detail customer card. Don’t implement email validation.",
+          "/plan I want a new feature to update the customer email in the invoice detail customer card. Don't implement email validation.",
       },
       {
         id: "agent-build",
         title: "Build in Agent mode",
         promptType: "none",
-        detail: "Build the feature in Agent mode. Build the plan locally. Check the feature in the UI.",
+        say: "Build the feature in Agent mode.",
+        detail: "Build the plan locally. Check the feature in the UI.",
       },
       {
         id: "debug",
         title: "Debug",
         promptType: "reusable",
-        detail:
-          "Investigate the failing test using Debug mode. Debug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause. I can choose to reproduce the bug and attempt to fix based on the agent’s hypotheses.",
+        say: "Investigate the failing test using Debug mode.\nDebug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause.\nI can choose to reproduce the bug and attempt to fix based on the agent's hypotheses.",
+        detail: "",
         example: "/debug the failing test",
       },
       {
         id: "model-fast",
         title: "Check the models",
         promptType: "none",
-        detail:
-          "Check the models available for use. Select Auto in the chat and review the models available for use.",
+        say: "Check the models available for use.",
+        detail: "Select Auto in the chat and review the models available for use.",
       },
       {
         id: "fix",
@@ -58,15 +61,15 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "allowlist",
         title: "Run Mode Allowlist",
         promptType: "none",
-        detail:
-          "Let’s change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review. Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist.",
+        say: "Let's change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review.",
+        detail: "Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist.",
       },
       {
         id: "verify-email",
         title: "Verify the email feature",
         promptType: "none",
         detail:
-          "Go to http://localhost:43173/invoices/inv_1048. Find the edit email feature you implemented in the Customer box.",
+          "Go to http://localhost:43173/invoices/inv_1048.\nFind the edit email feature you implemented in the Customer box.",
       },
       {
         id: "start-and-stop",
@@ -86,8 +89,8 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "interrupt-steer",
         title: "Interrupt and steer",
         promptType: "adaptable",
-        detail:
-          "Steer the prompt. Show how the agent pauses for your approval. Continue running after reviewing the first file.",
+        say: "Steer the prompt.",
+        detail: "Show how the agent pauses for your approval. Continue running after reviewing the first file.",
         example:
           "Redact the customer email in the UI. Show it in plaintext when I click the box to edit it. Stop every time you change a file for me to review.",
       },
@@ -102,14 +105,14 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "diffs",
         title: "Review diffs",
         promptType: "none",
-        detail: "Select Changes in the right hand panel. Show diffs from agent’s last turn.",
+        detail: "Select Changes in the right hand panel. Show diffs from agent's last turn.",
       },
       {
         id: "checkpoint-restore",
         title: "Restore from a checkpoint",
         promptType: "none",
-        detail:
-          "If I want to revert the code, I can restore from a checkpoint. Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.",
+        say: "If I want to revert the code, I can restore from a checkpoint.",
+        detail: "Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.",
       },
     ],
   },
@@ -121,8 +124,8 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "rule",
         title: "Create a user rule",
         promptType: "adaptable",
-        detail:
-          "Let’s create a user rule so the agent doesn’t try to improve the invoice UI without our approval. Use /create-rule, a built-in skill, to create a rule. Go to Customize > Rules > User to view the rule.",
+        say: "Let's create a user rule so the agent doesn't try to improve the invoice UI without our approval.\nUse /create-rule, a built-in skill, to create a rule.",
+        detail: "Go to Customize > Rules > User to view the rule.",
         example:
           "/create-rule Preserve the invoice view. Do not rename, restyle, or rearrange invoice screens unless the user names the **exact** new copy (or a specific layout change). This is a personal rule.",
       },
@@ -137,8 +140,8 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "skill",
         title: "Create a user skill",
         promptType: "adaptable",
-        detail:
-          "Let’s create a user skill that tells me the domain breakdown and available APIs. Go to Customize > Skills to view the skill.",
+        say: "Let's create a user skill that tells me the domain breakdown and available APIs.",
+        detail: "Go to Customize > Skills to view the skill.",
         example:
           "/create-skill Use domain-driven design to break down the domains in this application and match it to available APIs or data schemas. This is a personal skill.",
       },
@@ -153,15 +156,17 @@ export const RUNBOOK_SECTIONS_101 = [
         id: "canvas",
         title: "Canvas",
         promptType: "reusable",
-        detail: "Use Canvas to generate interactive artifacts that render next to the chat.",
+        say: "Use Canvas to generate interactive artifacts that render next to the chat.",
+        detail: "",
         example: "Create a canvas explaining what we did today.",
       },
       {
         id: "mcp",
         title: "MCP / Figma",
         promptType: "adaptable",
+        say: "Ask Grok Build to create a slideshow in Figma using MCP Servers.",
         detail:
-          "Ask Grok Build to create a slideshow in Figma using MCP Servers. Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
+          "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
         example:
           "Create three slides in Figma Slides outlining how I used Grok Build to develop a new feature. I want to use this as part of my demo showcase.",
       },

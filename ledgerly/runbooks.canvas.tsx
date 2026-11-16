@@ -47,10 +47,8 @@ const TRACKS: Track[] = [
             "title": "Ask",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Let’s learn more about the application with Ask mode."
-                ]
+                "kind": "say",
+                "text": "Let's learn more about the application with Ask mode."
               },
               {
                 "kind": "prompt",
@@ -64,14 +62,12 @@ const TRACKS: Track[] = [
             "title": "Plan",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Map your approach to building a new feature in Plan mode."
-                ]
+                "kind": "say",
+                "text": "Map your approach to building a new feature in Plan mode."
               },
               {
                 "kind": "prompt",
-                "text": "/plan I want a new feature to update the customer email in the invoice detail customer card. Don’t implement email validation.",
+                "text": "/plan I want a new feature to update the customer email in the invoice detail customer card. Don't implement email validation.",
                 "label": "Paste in Grok Build"
               }
             ]
@@ -81,9 +77,13 @@ const TRACKS: Track[] = [
             "title": "Build in Agent mode",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Build the feature in Agent mode."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Build the feature in Agent mode. Build the plan locally. Check the feature in the UI."
+                  "Build the plan locally. Check the feature in the UI."
                 ]
               }
             ]
@@ -93,10 +93,8 @@ const TRACKS: Track[] = [
             "title": "Debug",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Investigate the failing test using Debug mode. Debug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause. I can choose to reproduce the bug and attempt to fix based on the agent’s hypotheses."
-                ]
+                "kind": "say",
+                "text": "Investigate the failing test using Debug mode.\nDebug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause.\nI can choose to reproduce the bug and attempt to fix based on the agent's hypotheses."
               },
               {
                 "kind": "prompt",
@@ -110,9 +108,13 @@ const TRACKS: Track[] = [
             "title": "Check the models",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Check the models available for use."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Check the models available for use. Select Auto in the chat and review the models available for use."
+                  "Select Auto in the chat and review the models available for use."
                 ]
               }
             ]
@@ -145,9 +147,13 @@ const TRACKS: Track[] = [
             "title": "Run Mode Allowlist",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Let's change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Let’s change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review. Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist."
+                  "Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist."
                 ]
               }
             ]
@@ -159,7 +165,8 @@ const TRACKS: Track[] = [
               {
                 "kind": "steps",
                 "lines": [
-                  "Go to http://localhost:43173/invoices/inv_1048. Find the edit email feature you implemented in the Customer box."
+                  "Go to http://localhost:43173/invoices/inv_1048.",
+                  "Find the edit email feature you implemented in the Customer box."
                 ]
               }
             ]
@@ -192,9 +199,13 @@ const TRACKS: Track[] = [
             "title": "Interrupt and steer",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Steer the prompt."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Steer the prompt. Show how the agent pauses for your approval. Continue running after reviewing the first file."
+                  "Show how the agent pauses for your approval. Continue running after reviewing the first file."
                 ]
               },
               {
@@ -222,7 +233,7 @@ const TRACKS: Track[] = [
               {
                 "kind": "steps",
                 "lines": [
-                  "Select Changes in the right hand panel. Show diffs from agent’s last turn."
+                  "Select Changes in the right hand panel. Show diffs from agent's last turn."
                 ]
               }
             ]
@@ -232,9 +243,13 @@ const TRACKS: Track[] = [
             "title": "Restore from a checkpoint",
             "blocks": [
               {
+                "kind": "say",
+                "text": "If I want to revert the code, I can restore from a checkpoint."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "If I want to revert the code, I can restore from a checkpoint. Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt."
+                  "Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt."
                 ]
               }
             ]
@@ -250,9 +265,13 @@ const TRACKS: Track[] = [
             "title": "Create a user rule",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Let's create a user rule so the agent doesn't try to improve the invoice UI without our approval.\nUse /create-rule, a built-in skill, to create a rule."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Let’s create a user rule so the agent doesn’t try to improve the invoice UI without our approval. Use /create-rule, a built-in skill, to create a rule. Go to Customize > Rules > User to view the rule."
+                  "Go to Customize > Rules > User to view the rule."
                 ]
               },
               {
@@ -278,9 +297,13 @@ const TRACKS: Track[] = [
             "title": "Create a user skill",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Let's create a user skill that tells me the domain breakdown and available APIs."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Let’s create a user skill that tells me the domain breakdown and available APIs. Go to Customize > Skills to view the skill."
+                  "Go to Customize > Skills to view the skill."
                 ]
               },
               {
@@ -306,10 +329,8 @@ const TRACKS: Track[] = [
             "title": "Canvas",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Use Canvas to generate interactive artifacts that render next to the chat."
-                ]
+                "kind": "say",
+                "text": "Use Canvas to generate interactive artifacts that render next to the chat."
               },
               {
                 "kind": "prompt",
@@ -323,9 +344,13 @@ const TRACKS: Track[] = [
             "title": "MCP / Figma",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Ask Grok Build to create a slideshow in Figma using MCP Servers."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Ask Grok Build to create a slideshow in Figma using MCP Servers. Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma."
+                  "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma."
                 ]
               },
               {
@@ -373,7 +398,7 @@ const TRACKS: Track[] = [
           },
           {
             "id": "rename-agent-2-target",
-            "title": "Let’s open a second agent. This starts a new context window.",
+            "title": "Let's open a second agent. This starts a new context window.",
             "blocks": [
               {
                 "kind": "prompt",
@@ -395,24 +420,34 @@ const TRACKS: Track[] = [
           },
           {
             "id": "context-usage",
-            "title": "Check agent 1’s context window.",
+            "title": "Check agent 1's context window.",
             "blocks": [
+              {
+                "kind": "say",
+                "text": "Agent 1 maps all the domains in the whole codebase. Its context window shows X%."
+              },
               {
                 "kind": "steps",
                 "lines": [
-                  "Go to Agent 1 All chat. Click the Context Usage indicator below the chat. Agent 1 maps all the domains in the whole codebase. Its context window shows X%."
+                  "Go to Agent 1 All chat.",
+                  "Click the Context Usage indicator below the chat."
                 ]
               }
             ]
           },
           {
             "id": "compare-agents",
-            "title": "Check agent 2’s context window.",
+            "title": "Check agent 2's context window.",
             "blocks": [
+              {
+                "kind": "say",
+                "text": "Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%.\nThe difference in context window may not be significant but can affect larger repositories."
+              },
               {
                 "kind": "steps",
                 "lines": [
-                  "Go to Agent 2 Target. Click the Context Usage indicator below the chat. Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%. The difference in context window may not be significant but can affect larger repositories."
+                  "Go to Agent 2 Target.",
+                  "Click the Context Usage indicator below the chat."
                 ]
               }
             ]
@@ -422,9 +457,13 @@ const TRACKS: Track[] = [
             "title": "We want to check if the invoice table can be changed in isolation.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Agent 1 did the work of identifying all domains.\nAgent 2 can benefit from its summary. It doesn't need to review the entire codebase again."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Agent 1 did the work of identifying all domains. Agent 2 can benefit from its summary. It doesn’t need to review the entire codebase again. Go to Agent 2 Target chat."
+                  "Go to Agent 2 Target chat."
                 ]
               },
               {
@@ -445,9 +484,14 @@ const TRACKS: Track[] = [
             "title": "Open a new agent and add a new personal skill.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern.\nLet's create a skill for it so the agent can do less work."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Open a new agent. Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern. Let’s create a skill for it so the agent can do less work. Open skill in ~/.cursor/skills."
+                  "Open a new agent.",
+                  "Open skill in ~/.cursor/skills."
                 ]
               },
               {
@@ -462,9 +506,12 @@ const TRACKS: Track[] = [
             "title": "Create a project skill.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill.",
                   "Open skill in .cursor/skills",
                   "Review the other project skills for this repository, such as add-dashboard-widget, draft-collection-email, or write-prisma-query."
                 ]
@@ -487,9 +534,12 @@ const TRACKS: Track[] = [
             "title": "Start the MCP server for the company issue tracker.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Let's start the issue tracker's MCP server. For this workshop, that is Linear. Get a ticket for this project."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Let’s start the issue tracker’s MCP server. For this workshop, that is Linear. Get a ticket for this project.",
                   "Review MCP servers in Customize > MCPs",
                   "Enable the Linear MCP server."
                 ]
@@ -513,9 +563,13 @@ const TRACKS: Track[] = [
             "title": "Start a new agent.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Someone reported a bug and it was logged in our issue tracker. I want more information on it."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Open a new agent. Someone reported a bug and it was logged in our issue tracker. I want more information on it."
+                  "Open a new agent."
                 ]
               }
             ]
@@ -542,21 +596,29 @@ const TRACKS: Track[] = [
             "title": "Add the plugin.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker. Go to Customize > Plugins > Add > From Local Repository. Find the plugins/standard-bug-fix file directory and add it."
+                  "Go to Customize > Plugins > Add > From Local Repository.",
+                  "Find the plugins/standard-bug-fix file directory and add it."
                 ]
               }
             ]
           },
           {
             "id": "check-plugin",
-            "title": "Enable the “Standard bug fix” plugin.",
+            "title": "Enable the \"Standard bug fix\" plugin.",
             "blocks": [
               {
                 "kind": "steps",
                 "lines": [
-                  "Go to Customize > Plugins. Go to Personal. Click Add to enable the “Standard bug fix” plugin. Show that the plugin has skills, rules, and MCP server."
+                  "Go to Customize > Plugins.",
+                  "Go to Personal.",
+                  "Click Add to enable the \"Standard bug fix\" plugin.",
+                  "Show that the plugin has skills, rules, and MCP server."
                 ]
               }
             ]
@@ -566,9 +628,13 @@ const TRACKS: Track[] = [
             "title": "Fix the bug with the standard template.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Let's fix the bug and update the issue with the standard template."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Let’s fix the bug and update the issue with the standard template. Go to the issue in Linear and review the comments following the bug template."
+                  "Go to the issue in Linear and review the comments following the bug template."
                 ]
               },
               {
@@ -589,9 +655,13 @@ const TRACKS: Track[] = [
             "title": "Start a new agent.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "I created a plan for a feature to resolve disputes, splitting the work across three agents."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Open a new agent. I created a plan for a feature to resolve disputes, splitting the work across three agents."
+                  "Open a new agent."
                 ]
               }
             ]
@@ -603,7 +673,8 @@ const TRACKS: Track[] = [
               {
                 "kind": "steps",
                 "lines": [
-                  "Open .cursor/plans/resolve-dispute.md. Review the plan and how it splits data, API, and UI tasks."
+                  "Open .cursor/plans/resolve-dispute.md.",
+                  "Review the plan and how it splits data, API, and UI tasks."
                 ]
               }
             ]
@@ -613,9 +684,12 @@ const TRACKS: Track[] = [
             "title": "The plan uses custom subagents to control how changes are made.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "For any changes to the application, there is a reviewer subagent to check changes."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "For any changes to the application, there is a reviewer subagent to check changes.",
                   "Open .cursor/agents/ledgerly-reviewer.md"
                 ]
               }
@@ -626,9 +700,13 @@ const TRACKS: Track[] = [
             "title": "The plan has concrete steps for conflict resolution.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "This skill gives clear guidance to your agents that they should avoid making changes with conflicts."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Open .cursor/skills/dispatch-subagents/SKILL.md. This skill gives clear guidance to your agents that they should avoid making changes with conflicts."
+                  "Open .cursor/skills/dispatch-subagents/SKILL.md."
                 ]
               }
             ]
@@ -638,10 +716,8 @@ const TRACKS: Track[] = [
             "title": "Start multitasking.",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Build the feature using the /multitask command."
-                ]
+                "kind": "say",
+                "text": "Build the feature using the /multitask command."
               },
               {
                 "kind": "prompt",
@@ -655,9 +731,13 @@ const TRACKS: Track[] = [
             "title": "Show the progress of subagents and tasks.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Use Canvas to keep track of the progress of subagents and their tasks."
+              },
+              {
                 "kind": "steps",
                 "lines": [
-                  "Use Canvas to keep track of the progress of subagents and their tasks. Review Canvas with subagent progress and worktree conflicts."
+                  "Review Canvas with subagent progress and worktree conflicts."
                 ]
               },
               {
@@ -672,10 +752,8 @@ const TRACKS: Track[] = [
             "title": "Verify the task completed with the subagent.",
             "blocks": [
               {
-                "kind": "steps",
-                "lines": [
-                  "Use the specialized reviewer subagent to check the completed task."
-                ]
+                "kind": "say",
+                "text": "Use the specialized reviewer subagent to check the completed task."
               },
               {
                 "kind": "prompt",
@@ -1141,7 +1219,7 @@ const TRACKS: Track[] = [
               {
                 "kind": "steps",
                 "lines": [
-                  "Check the change reviewer’s output for any issues requiring closer inspection."
+                  "Check the change reviewer's output for any issues requiring closer inspection."
                 ]
               },
               {
@@ -1238,8 +1316,8 @@ const TRACKS: Track[] = [
                   "Name it Reviewer.",
                   "Select the demo repository.",
                   "Click Triggers > PR opened, then select the demo repository and set the author to Anyone.",
-                  "Add “Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.” to agent instructions.",
-                  "Add “Comment on Pull Request” to tools.",
+                  "Add \"Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.\" to agent instructions.",
+                  "Add \"Comment on Pull Request\" to tools.",
                   "Click Save."
                 ]
               }
@@ -1274,12 +1352,12 @@ const TRACKS: Track[] = [
             "blocks": [
               {
                 "kind": "say",
-                "text": "Now I’m going back to the collections command center plan. Before I start the work, I’ll check the keyboard fixes PR for conflicts."
+                "text": "Now I'm going back to the collections command center plan. Before I start the work, I'll check the keyboard fixes PR for conflicts."
               },
               {
                 "kind": "steps",
                 "lines": [
-                  "Open the command center planning agent in the Agent Window. Don’t start a new plan."
+                  "Open the command center planning agent in the Agent Window. Don't start a new plan."
                 ]
               }
             ]
@@ -1319,7 +1397,7 @@ const TRACKS: Track[] = [
   {
     "id": "401",
     "title": "401",
-    "description": "You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.",
+    "description": "You will rewrite a backlog task so an agent can finish it unattended, hand well-defined tasks to parallel Cloud Agents including one with /goal, and direct a Project coordinator to plan and delegate larger work.",
     "features": [],
     "sections": [
       {
@@ -1327,18 +1405,28 @@ const TRACKS: Track[] = [
         "title": "What tasks do you delegate?",
         "beats": [
           {
-            "id": "rewrite-dispute-cap",
-            "title": "Rewrite an issue so an agent can finish it unattended.",
+            "id": "start-delegate-agent",
+            "title": "Start a new agent.",
             "blocks": [
               {
                 "kind": "say",
-                "text": "Before I hand work to Cloud Agents, I need to rewrite an issue so an agent can finish it unattended."
+                "text": "Before I hand work to asynchronous agents, I need to rewrite a task so an agent can finish it unattended."
               },
               {
                 "kind": "steps",
                 "lines": [
                   "Go to the Agents Window and start a new local agent."
                 ]
+              }
+            ]
+          },
+          {
+            "id": "rewrite-dispute-cap",
+            "title": "Rewrite a task so an agent can finish it unattended.",
+            "blocks": [
+              {
+                "kind": "say",
+                "text": "Scope, acceptance criteria, proof, and judgment calls give the agent a finish line it can check.\nThe invoice and contrast tasks are already written this way. I'll only rewrite dispute cap live."
               },
               {
                 "kind": "prompt",
@@ -1349,8 +1437,12 @@ const TRACKS: Track[] = [
           },
           {
             "id": "sort-backlog-async",
-            "title": "Sort the backlog into synchronous and asynchronous tasks.",
+            "title": "Sort the backlog into tasks to hand off and tasks to keep.",
             "blocks": [
+              {
+                "kind": "say",
+                "text": "Expect candidates such as the dispute cap bug, the invoice filter bug, and the contrast fix."
+              },
               {
                 "kind": "prompt",
                 "text": "/ask Which open issues have enough details to delegate to a Cloud Agent? Exclude Collections Command Center issues.",
@@ -1360,11 +1452,15 @@ const TRACKS: Track[] = [
           },
           {
             "id": "choose-synchronous-issue",
-            "title": "Choose 1 issue that I need to run with a local agent and check synchronously.",
+            "title": "Choose one task that I need to run with a local agent and check myself.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "If the agent flags keyboard walkthrough or similar exploratory checks, keep those with you.\nI can delegate the dispute cap bug, the UI filter bug, and the accessibility fix to asynchronous agents. The keyboard walkthrough is an exploratory check, so I'll do it myself."
+              },
+              {
                 "kind": "prompt",
-                "text": "/ask Choose 1 issue that I need to run with a local agent and check synchronously.",
+                "text": "/ask Choose one task that I need to run with a local agent and check myself.",
                 "label": "Paste in Grok Build"
               }
             ]
@@ -1381,7 +1477,7 @@ const TRACKS: Track[] = [
             "blocks": [
               {
                 "kind": "say",
-                "text": "This Build already installed the repository’s dependencies, so every agent I start today starts ready to run tests."
+                "text": "This Build already installed the repository's dependencies, so every agent I start today starts ready to run tests."
               },
               {
                 "kind": "steps",
@@ -1407,13 +1503,7 @@ const TRACKS: Track[] = [
                 "kind": "prompt",
                 "text": "Fix the dispute cap issue as written. Run the tests and open a PR with a screenshot of the corrected cap.",
                 "label": "Paste in Grok Build"
-              }
-            ]
-          },
-          {
-            "id": "launch-invoice-filter-agent",
-            "title": "Fix the invoice filtering issue as written.",
-            "blocks": [
+              },
               {
                 "kind": "steps",
                 "lines": [
@@ -1429,8 +1519,12 @@ const TRACKS: Track[] = [
           },
           {
             "id": "launch-contrast-agent",
-            "title": "Fix the failing contrast tests as written.",
+            "title": "Use a /goal to assign an ongoing objective.",
             "blocks": [
+              {
+                "kind": "say",
+                "text": "This is the same kind of Cloud Agent as the other two, with /goal turned on. The other two stop when they think they're done. This one keeps starting new turns until the goal is complete. Its finish line: the accessibility tests pass."
+              },
               {
                 "kind": "steps",
                 "lines": [
@@ -1439,7 +1533,7 @@ const TRACKS: Track[] = [
               },
               {
                 "kind": "prompt",
-                "text": "Fix the failing contrast tests as written. Run the tests and open a PR.",
+                "text": "/goal Fix the failing contrast tests as written, in app/globals.css tokens only. Done when the accessibility tests pass.",
                 "label": "Paste in Grok Build"
               }
             ]
@@ -1450,7 +1544,7 @@ const TRACKS: Track[] = [
             "blocks": [
               {
                 "kind": "say",
-                "text": "The same agents show up on the web. Stop an agent early if its plan drifts from the issue."
+                "text": "The same agents show up on the web, including the goal agent. A goal you run in a local chat doesn't show up here, so use a Cloud Agent when the goal has to wait on CI or keep running after you close your laptop. Stop an agent early if its plan drifts from the task. To end a goal, archive the agent."
               },
               {
                 "kind": "steps",
@@ -1494,8 +1588,24 @@ const TRACKS: Track[] = [
                 "kind": "steps",
                 "lines": [
                   "In the Agents Window, go to Projects in the sidebar and select New Project.",
-                  "Enter {{ INSERT COMPANY HERE, default is Ledgerly }} as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.",
+                  "Enter Collections Command Center as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.",
                   "Select Create Project."
+                ]
+              }
+            ]
+          },
+          {
+            "id": "review-project-model",
+            "title": "Review the model.",
+            "blocks": [
+              {
+                "kind": "say",
+                "text": "You can choose the model for the coordinator and workers. Workers inherit the coordinator's model by default."
+              },
+              {
+                "kind": "steps",
+                "lines": [
+                  "Select Auto in the chat."
                 ]
               }
             ]
@@ -1505,6 +1615,10 @@ const TRACKS: Track[] = [
             "title": "Hand the coordinator a larger goal.",
             "blocks": [
               {
+                "kind": "say",
+                "text": "Expect a plan that splits the work across agents."
+              },
+              {
                 "kind": "steps",
                 "lines": [
                   "Select + in the chat and put the Project agent in Plan mode."
@@ -1512,7 +1626,7 @@ const TRACKS: Track[] = [
               },
               {
                 "kind": "prompt",
-                "text": "Build the collections command center based on the issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.",
+                "text": "Build the collections command center based on its Linear issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.",
                 "label": "Paste in Grok Build"
               }
             ]
@@ -1555,7 +1669,7 @@ const TRACKS: Track[] = [
             "blocks": [
               {
                 "kind": "say",
-                "text": "The Project sidebar list the issues and track what is in progress, queued, for review, and done.\nYou can choose List or Board view to review what the Project is building."
+                "text": "The Project sidebar lists the tasks and tracks what is in progress, queued, for review, and done.\nYou can choose List or Board view to review what the Project is building."
               },
               {
                 "kind": "steps",
@@ -1577,7 +1691,7 @@ const TRACKS: Track[] = [
               {
                 "kind": "steps",
                 "lines": [
-                  "Select the Library view to review the project’s file changes.",
+                  "Select the Library view to review the project's file changes.",
                   "Open the plan file."
                 ]
               }
@@ -1605,13 +1719,13 @@ const TRACKS: Track[] = [
   }
 ];
 
-function numberedSections(track: Track, hidden: Record<string, boolean>): NumberedSection[] {
+function numberedSections(track: Track, enabled: Record<string, boolean>): NumberedSection[] {
   const sections: NumberedSection[] = [];
   let number = 0;
   for (const section of track.sections) {
     const beats: NumberedBeat[] = [];
     for (const beat of section.beats) {
-      if (beat.feature && hidden[beat.feature] === false) continue;
+      if (beat.feature && enabled[beat.feature] !== true) continue;
       number += 1;
       beats.push({ ...beat, number });
     }
@@ -1754,14 +1868,14 @@ export default function Runbooks() {
   const track = TRACKS.find(function (entry) {
     return entry.id === trackId;
   }) ?? TRACKS[0];
-  const hidden = features[track.id] ?? {};
-  const sections = numberedSections(track, hidden);
+  const enabled = features[track.id] ?? {};
+  const sections = numberedSections(track, enabled);
 
   function setFeature(feature: string, on: boolean) {
     setFeatures(function (prev) {
       const nextTrack = { ...(prev[track.id] ?? {}) };
-      if (on) delete nextTrack[feature];
-      else nextTrack[feature] = false;
+      if (on) nextTrack[feature] = true;
+      else delete nextTrack[feature];
       return { ...prev, [track.id]: nextTrack };
     });
   }
@@ -1803,7 +1917,7 @@ export default function Runbooks() {
               return (
                 <Checkbox
                   key={feature}
-                  checked={hidden[feature] !== false}
+                  checked={enabled[feature] === true}
                   onChange={function (on) {
                     setFeature(feature, on);
                   }}

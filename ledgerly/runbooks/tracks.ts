@@ -30,7 +30,7 @@ export const RUNBOOK_TRACKS = [
     id: "401" as const,
     title: "401",
     description:
-      "You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.",
+      "You will rewrite a backlog task so an agent can finish it unattended, hand well-defined tasks to parallel Cloud Agents including one with /goal, and direct a Project coordinator to plan and delegate larger work.",
     sections: RUNBOOK_SECTIONS_401,
   },
 ] as const satisfies readonly {

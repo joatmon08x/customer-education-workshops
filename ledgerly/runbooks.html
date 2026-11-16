@@ -116,9 +116,7 @@
         <div class="beats">
         <article class="beat" data-beat="ask">
           <h4>Ask</h4>
-          <div class="do-box">
-            <ul><li>Let’s learn more about the application with Ask mode.</li></ul>
-          </div>
+          <p class="say">Let&#39;s learn more about the application with Ask mode.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -129,28 +127,27 @@
         </article>
         <article class="beat" data-beat="plan">
           <h4>Plan</h4>
-          <div class="do-box">
-            <ul><li>Map your approach to building a new feature in Plan mode.</li></ul>
-          </div>
+          <p class="say">Map your approach to building a new feature in Plan mode.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
               <button type="button" class="copy">Copy</button>
             </div>
-            <pre>/plan I want a new feature to update the customer email in the invoice detail customer card. Don’t implement email validation.</pre>
+            <pre>/plan I want a new feature to update the customer email in the invoice detail customer card. Don&#39;t implement email validation.</pre>
           </div>
         </article>
         <article class="beat" data-beat="agent-build">
           <h4>Build in Agent mode</h4>
+          <p class="say">Build the feature in Agent mode.</p>
           <div class="do-box">
-            <ul><li>Build the feature in Agent mode. Build the plan locally. Check the feature in the UI.</li></ul>
+            <ul><li>Build the plan locally. Check the feature in the UI.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="debug">
           <h4>Debug</h4>
-          <div class="do-box">
-            <ul><li>Investigate the failing test using Debug mode. Debug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause. I can choose to reproduce the bug and attempt to fix based on the agent’s hypotheses.</li></ul>
-          </div>
+          <p class="say">Investigate the failing test using Debug mode.
+Debug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause.
+I can choose to reproduce the bug and attempt to fix based on the agent&#39;s hypotheses.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -161,8 +158,9 @@
         </article>
         <article class="beat" data-beat="model-fast">
           <h4>Check the models</h4>
+          <p class="say">Check the models available for use.</p>
           <div class="do-box">
-            <ul><li>Check the models available for use. Select Auto in the chat and review the models available for use.</li></ul>
+            <ul><li>Select Auto in the chat and review the models available for use.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="fix">
@@ -185,14 +183,15 @@
         <div class="beats">
         <article class="beat" data-beat="allowlist">
           <h4>Run Mode Allowlist</h4>
+          <p class="say">Let&#39;s change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review.</p>
           <div class="do-box">
-            <ul><li>Let’s change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review. Go to Settings &gt; Agents &gt; Executions &amp; Approvals &gt; Run Mode &gt; Allowlist.</li></ul>
+            <ul><li>Go to Settings &gt; Agents &gt; Executions &amp; Approvals &gt; Run Mode &gt; Allowlist.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="verify-email">
           <h4>Verify the email feature</h4>
           <div class="do-box">
-            <ul><li>Go to http://localhost:43173/invoices/inv_1048. Find the edit email feature you implemented in the Customer box.</li></ul>
+            <ol><li>Go to http://localhost:43173/invoices/inv_1048.</li><li>Find the edit email feature you implemented in the Customer box.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="start-and-stop">
@@ -213,8 +212,9 @@
         </article>
         <article class="beat" data-beat="interrupt-steer">
           <h4>Interrupt and steer</h4>
+          <p class="say">Steer the prompt.</p>
           <div class="do-box">
-            <ul><li>Steer the prompt. Show how the agent pauses for your approval. Continue running after reviewing the first file.</li></ul>
+            <ul><li>Show how the agent pauses for your approval. Continue running after reviewing the first file.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -237,13 +237,14 @@
         <article class="beat" data-beat="diffs">
           <h4>Review diffs</h4>
           <div class="do-box">
-            <ul><li>Select Changes in the right hand panel. Show diffs from agent’s last turn.</li></ul>
+            <ul><li>Select Changes in the right hand panel. Show diffs from agent&#39;s last turn.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="checkpoint-restore">
           <h4>Restore from a checkpoint</h4>
+          <p class="say">If I want to revert the code, I can restore from a checkpoint.</p>
           <div class="do-box">
-            <ul><li>If I want to revert the code, I can restore from a checkpoint. Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.</li></ul>
+            <ul><li>Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.</li></ul>
           </div>
         </article>
         </div>
@@ -253,8 +254,10 @@
         <div class="beats">
         <article class="beat" data-beat="rule">
           <h4>Create a user rule</h4>
+          <p class="say">Let&#39;s create a user rule so the agent doesn&#39;t try to improve the invoice UI without our approval.
+Use /create-rule, a built-in skill, to create a rule.</p>
           <div class="do-box">
-            <ul><li>Let’s create a user rule so the agent doesn’t try to improve the invoice UI without our approval. Use /create-rule, a built-in skill, to create a rule. Go to Customize &gt; Rules &gt; User to view the rule.</li></ul>
+            <ul><li>Go to Customize &gt; Rules &gt; User to view the rule.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -276,8 +279,9 @@
         </article>
         <article class="beat" data-beat="skill">
           <h4>Create a user skill</h4>
+          <p class="say">Let&#39;s create a user skill that tells me the domain breakdown and available APIs.</p>
           <div class="do-box">
-            <ul><li>Let’s create a user skill that tells me the domain breakdown and available APIs. Go to Customize &gt; Skills to view the skill.</li></ul>
+            <ul><li>Go to Customize &gt; Skills to view the skill.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -299,9 +303,7 @@
         </article>
         <article class="beat" data-beat="canvas">
           <h4>Canvas</h4>
-          <div class="do-box">
-            <ul><li>Use Canvas to generate interactive artifacts that render next to the chat.</li></ul>
-          </div>
+          <p class="say">Use Canvas to generate interactive artifacts that render next to the chat.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -312,8 +314,9 @@
         </article>
         <article class="beat" data-beat="mcp">
           <h4>MCP / Figma</h4>
+          <p class="say">Ask Grok Build to create a slideshow in Figma using MCP Servers.</p>
           <div class="do-box">
-            <ul><li>Ask Grok Build to create a slideshow in Figma using MCP Servers. Find an MCP server for slideshow generation in Grok Build. Go to Customize &gt; MCPs &gt; Figma.</li></ul>
+            <ul><li>Find an MCP server for slideshow generation in Grok Build. Go to Customize &gt; MCPs &gt; Figma.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -360,7 +363,7 @@
           </div>
         </article>
         <article class="beat" data-beat="rename-agent-2-target">
-          <h4>Let’s open a second agent. This starts a new context window.</h4>
+          <h4>Let&#39;s open a second agent. This starts a new context window.</h4>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -380,21 +383,26 @@
           </div>
         </article>
         <article class="beat" data-beat="context-usage">
-          <h4>Check agent 1’s context window.</h4>
+          <h4>Check agent 1&#39;s context window.</h4>
+          <p class="say">Agent 1 maps all the domains in the whole codebase. Its context window shows X%.</p>
           <div class="do-box">
-            <ul><li>Go to Agent 1 All chat. Click the Context Usage indicator below the chat. Agent 1 maps all the domains in the whole codebase. Its context window shows X%.</li></ul>
+            <ol><li>Go to Agent 1 All chat.</li><li>Click the Context Usage indicator below the chat.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="compare-agents">
-          <h4>Check agent 2’s context window.</h4>
+          <h4>Check agent 2&#39;s context window.</h4>
+          <p class="say">Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%.
+The difference in context window may not be significant but can affect larger repositories.</p>
           <div class="do-box">
-            <ul><li>Go to Agent 2 Target. Click the Context Usage indicator below the chat. Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%. The difference in context window may not be significant but can affect larger repositories.</li></ul>
+            <ol><li>Go to Agent 2 Target.</li><li>Click the Context Usage indicator below the chat.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="ask-cross-context">
           <h4>We want to check if the invoice table can be changed in isolation.</h4>
+          <p class="say">Agent 1 did the work of identifying all domains.
+Agent 2 can benefit from its summary. It doesn&#39;t need to review the entire codebase again.</p>
           <div class="do-box">
-            <ul><li>Agent 1 did the work of identifying all domains. Agent 2 can benefit from its summary. It doesn’t need to review the entire codebase again. Go to Agent 2 Target chat.</li></ul>
+            <ul><li>Go to Agent 2 Target chat.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -411,8 +419,10 @@
         <div class="beats">
         <article class="beat" data-beat="create-api-personal-skill">
           <h4>Open a new agent and add a new personal skill.</h4>
+          <p class="say">Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern.
+Let&#39;s create a skill for it so the agent can do less work.</p>
           <div class="do-box">
-            <ul><li>Open a new agent. Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern. Let’s create a skill for it so the agent can do less work. Open skill in ~/.cursor/skills.</li></ul>
+            <ol><li>Open a new agent.</li><li>Open skill in ~/.cursor/skills.</li></ol>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -424,8 +434,9 @@
         </article>
         <article class="beat" data-beat="promote-create-api-project">
           <h4>Create a project skill.</h4>
+          <p class="say">A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill.</p>
           <div class="do-box">
-            <ol><li>A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill.</li><li>Open skill in .cursor/skills</li><li>Review the other project skills for this repository, such as add-dashboard-widget, draft-collection-email, or write-prisma-query.</li></ol>
+            <ol><li>Open skill in .cursor/skills</li><li>Review the other project skills for this repository, such as add-dashboard-widget, draft-collection-email, or write-prisma-query.</li></ol>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -442,8 +453,9 @@
         <div class="beats">
         <article class="beat" data-beat="add-linear-mcp">
           <h4>Start the MCP server for the company issue tracker.</h4>
+          <p class="say">Let&#39;s start the issue tracker&#39;s MCP server. For this workshop, that is Linear. Get a ticket for this project.</p>
           <div class="do-box">
-            <ol><li>Let’s start the issue tracker’s MCP server. For this workshop, that is Linear. Get a ticket for this project.</li><li>Review MCP servers in Customize &gt; MCPs</li><li>Enable the Linear MCP server.</li></ol>
+            <ol><li>Review MCP servers in Customize &gt; MCPs</li><li>Enable the Linear MCP server.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="mcp-allowlist">
@@ -454,8 +466,9 @@
         </article>
         <article class="beat" data-beat="start-issue-agent">
           <h4>Start a new agent.</h4>
+          <p class="say">Someone reported a bug and it was logged in our issue tracker. I want more information on it.</p>
           <div class="do-box">
-            <ul><li>Open a new agent. Someone reported a bug and it was logged in our issue tracker. I want more information on it.</li></ul>
+            <ul><li>Open a new agent.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="ask-linear-bug">
@@ -473,20 +486,22 @@
         </article>
         <article class="beat" data-beat="add-local-plugin">
           <h4>Add the plugin.</h4>
+          <p class="say">My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker.</p>
           <div class="do-box">
-            <ul><li>My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker. Go to Customize &gt; Plugins &gt; Add &gt; From Local Repository. Find the plugins/standard-bug-fix file directory and add it.</li></ul>
+            <ol><li>Go to Customize &gt; Plugins &gt; Add &gt; From Local Repository.</li><li>Find the plugins/standard-bug-fix file directory and add it.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="check-plugin">
-          <h4>Enable the “Standard bug fix” plugin.</h4>
+          <h4>Enable the &quot;Standard bug fix&quot; plugin.</h4>
           <div class="do-box">
-            <ul><li>Go to Customize &gt; Plugins. Go to Personal. Click Add to enable the “Standard bug fix” plugin. Show that the plugin has skills, rules, and MCP server.</li></ul>
+            <ol><li>Go to Customize &gt; Plugins.</li><li>Go to Personal.</li><li>Click Add to enable the &quot;Standard bug fix&quot; plugin.</li><li>Show that the plugin has skills, rules, and MCP server.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="standard-bug-fix">
           <h4>Fix the bug with the standard template.</h4>
+          <p class="say">Let&#39;s fix the bug and update the issue with the standard template.</p>
           <div class="do-box">
-            <ul><li>Let’s fix the bug and update the issue with the standard template. Go to the issue in Linear and review the comments following the bug template.</li></ul>
+            <ul><li>Go to the issue in Linear and review the comments following the bug template.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -503,33 +518,34 @@
         <div class="beats">
         <article class="beat" data-beat="open-new-agent">
           <h4>Start a new agent.</h4>
+          <p class="say">I created a plan for a feature to resolve disputes, splitting the work across three agents.</p>
           <div class="do-box">
-            <ul><li>Open a new agent. I created a plan for a feature to resolve disputes, splitting the work across three agents.</li></ul>
+            <ul><li>Open a new agent.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="open-resolve-dispute-plan">
           <h4>Split the plan for three parallel agents.</h4>
           <div class="do-box">
-            <ul><li>Open .cursor/plans/resolve-dispute.md. Review the plan and how it splits data, API, and UI tasks.</li></ul>
+            <ol><li>Open .cursor/plans/resolve-dispute.md.</li><li>Review the plan and how it splits data, API, and UI tasks.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="open-ledgerly-reviewer">
           <h4>The plan uses custom subagents to control how changes are made.</h4>
+          <p class="say">For any changes to the application, there is a reviewer subagent to check changes.</p>
           <div class="do-box">
-            <ol><li>For any changes to the application, there is a reviewer subagent to check changes.</li><li>Open .cursor/agents/ledgerly-reviewer.md</li></ol>
+            <ul><li>Open .cursor/agents/ledgerly-reviewer.md</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="open-dispatch-subagents-skill">
           <h4>The plan has concrete steps for conflict resolution.</h4>
+          <p class="say">This skill gives clear guidance to your agents that they should avoid making changes with conflicts.</p>
           <div class="do-box">
-            <ul><li>Open .cursor/skills/dispatch-subagents/SKILL.md. This skill gives clear guidance to your agents that they should avoid making changes with conflicts.</li></ul>
+            <ul><li>Open .cursor/skills/dispatch-subagents/SKILL.md.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="multitask-resolve-dispute">
           <h4>Start multitasking.</h4>
-          <div class="do-box">
-            <ul><li>Build the feature using the /multitask command.</li></ul>
-          </div>
+          <p class="say">Build the feature using the /multitask command.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -540,8 +556,9 @@
         </article>
         <article class="beat" data-beat="canvas-subagent-progress">
           <h4>Show the progress of subagents and tasks.</h4>
+          <p class="say">Use Canvas to keep track of the progress of subagents and their tasks.</p>
           <div class="do-box">
-            <ul><li>Use Canvas to keep track of the progress of subagents and their tasks. Review Canvas with subagent progress and worktree conflicts.</li></ul>
+            <ul><li>Review Canvas with subagent progress and worktree conflicts.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -553,9 +570,7 @@
         </article>
         <article class="beat" data-beat="ledgerly-reviewer-check">
           <h4>Verify the task completed with the subagent.</h4>
-          <div class="do-box">
-            <ul><li>Use the specialized reviewer subagent to check the completed task.</li></ul>
-          </div>
+          <p class="say">Use the specialized reviewer subagent to check the completed task.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -574,19 +589,19 @@
       <fieldset class="feature-checklist">
         <legend>Optional features</legend>
         <label class="feature-option" for="feature-301-cloud-agents">
-          <input id="feature-301-cloud-agents" class="feature-toggle" type="checkbox" data-track="301" data-feature="Cloud Agents" checked>
+          <input id="feature-301-cloud-agents" class="feature-toggle" type="checkbox" data-track="301" data-feature="Cloud Agents">
           Cloud Agents
         </label>
         <label class="feature-option" for="feature-301-projects">
-          <input id="feature-301-projects" class="feature-toggle" type="checkbox" data-track="301" data-feature="Projects" checked>
+          <input id="feature-301-projects" class="feature-toggle" type="checkbox" data-track="301" data-feature="Projects">
           Projects
         </label>
         <label class="feature-option" for="feature-301-bugbot">
-          <input id="feature-301-bugbot" class="feature-toggle" type="checkbox" data-track="301" data-feature="Bugbot" checked>
+          <input id="feature-301-bugbot" class="feature-toggle" type="checkbox" data-track="301" data-feature="Bugbot">
           Bugbot
         </label>
         <label class="feature-option" for="feature-301-automations">
-          <input id="feature-301-automations" class="feature-toggle" type="checkbox" data-track="301" data-feature="Automations" checked>
+          <input id="feature-301-automations" class="feature-toggle" type="checkbox" data-track="301" data-feature="Automations">
           Automations
         </label>
       </fieldset>
@@ -869,7 +884,7 @@ You can review tasks in project notes and shared files in context.</p>
           <h4>Identify any changes requiring closer inspection.</h4>
           <p class="say">The plan includes a step that sounds reasonable but blocks Tab navigation everywhere. The change reviewer flags it as high severity, with the file and line, so we never keep it.</p>
           <div class="do-box">
-            <ul><li>Check the change reviewer’s output for any issues requiring closer inspection.</li></ul>
+            <ul><li>Check the change reviewer&#39;s output for any issues requiring closer inspection.</li></ul>
           </div>
           <div class="paste">
             <div class="paste-head">
@@ -930,7 +945,7 @@ You can review tasks in project notes and shared files in context.</p>
         <article class="beat" data-beat="optional-reviewer-automation" data-feature="Automations">
           <h4>Create an Automation.</h4>
           <div class="do-box">
-            <ol><li>Go to the Automations tab.</li><li>Click New Automation.</li><li>Name it Reviewer.</li><li>Select the demo repository.</li><li>Click Triggers &gt; PR opened, then select the demo repository and set the author to Anyone.</li><li>Add “Use the change reviewer subagent to review this PR and comment with each issue&#39;s file, line, and severity.” to agent instructions.</li><li>Add “Comment on Pull Request” to tools.</li><li>Click Save.</li></ol>
+            <ol><li>Go to the Automations tab.</li><li>Click New Automation.</li><li>Name it Reviewer.</li><li>Select the demo repository.</li><li>Click Triggers &gt; PR opened, then select the demo repository and set the author to Anyone.</li><li>Add &quot;Use the change reviewer subagent to review this PR and comment with each issue&#39;s file, line, and severity.&quot; to agent instructions.</li><li>Add &quot;Comment on Pull Request&quot; to tools.</li><li>Click Save.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="optional-trigger-automation" data-feature="Automations">
@@ -949,9 +964,9 @@ You can review tasks in project notes and shared files in context.</p>
         </article>
         <article class="beat" data-beat="return-to-plan">
           <h4>Return to the collections command center plan.</h4>
-          <p class="say">Now I’m going back to the collections command center plan. Before I start the work, I’ll check the keyboard fixes PR for conflicts.</p>
+          <p class="say">Now I&#39;m going back to the collections command center plan. Before I start the work, I&#39;ll check the keyboard fixes PR for conflicts.</p>
           <div class="do-box">
-            <ul><li>Open the command center planning agent in the Agent Window. Don’t start a new plan.</li></ul>
+            <ul><li>Open the command center planning agent in the Agent Window. Don&#39;t start a new plan.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="optional-cloud-return" data-feature="Cloud Agents">
@@ -977,7 +992,7 @@ You can review tasks in project notes and shared files in context.</p>
 
     <div class="track" data-track="401">
       <h2>401</h2>
-      <p class="lede">You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.</p>
+      <p class="lede">You will rewrite a backlog task so an agent can finish it unattended, hand well-defined tasks to parallel Cloud Agents including one with /goal, and direct a Project coordinator to plan and delegate larger work.</p>
       <nav class="tabs" aria-label="401 sections">
         <a href="#401-what-tasks-do-you-delegate">What tasks do you delegate?</a>
         <a href="#401-how-do-you-delegate-asynchronous-work">How do you delegate asynchronous work?</a>
@@ -986,12 +1001,17 @@ You can review tasks in project notes and shared files in context.</p>
       <section id="401-what-tasks-do-you-delegate">
         <h3>What tasks do you delegate?</h3>
         <div class="beats">
-        <article class="beat" data-beat="rewrite-dispute-cap">
-          <h4>Rewrite an issue so an agent can finish it unattended.</h4>
-          <p class="say">Before I hand work to Cloud Agents, I need to rewrite an issue so an agent can finish it unattended.</p>
+        <article class="beat" data-beat="start-delegate-agent">
+          <h4>Start a new agent.</h4>
+          <p class="say">Before I hand work to asynchronous agents, I need to rewrite a task so an agent can finish it unattended.</p>
           <div class="do-box">
             <ul><li>Go to the Agents Window and start a new local agent.</li></ul>
           </div>
+        </article>
+        <article class="beat" data-beat="rewrite-dispute-cap">
+          <h4>Rewrite a task so an agent can finish it unattended.</h4>
+          <p class="say">Scope, acceptance criteria, proof, and judgment calls give the agent a finish line it can check.
+The invoice and contrast tasks are already written this way. I&#39;ll only rewrite dispute cap live.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -1001,7 +1021,8 @@ You can review tasks in project notes and shared files in context.</p>
           </div>
         </article>
         <article class="beat" data-beat="sort-backlog-async">
-          <h4>Sort the backlog into synchronous and asynchronous tasks.</h4>
+          <h4>Sort the backlog into tasks to hand off and tasks to keep.</h4>
+          <p class="say">Expect candidates such as the dispute cap bug, the invoice filter bug, and the contrast fix.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
@@ -1011,13 +1032,15 @@ You can review tasks in project notes and shared files in context.</p>
           </div>
         </article>
         <article class="beat" data-beat="choose-synchronous-issue">
-          <h4>Choose 1 issue that I need to run with a local agent and check synchronously.</h4>
+          <h4>Choose one task that I need to run with a local agent and check myself.</h4>
+          <p class="say">If the agent flags keyboard walkthrough or similar exploratory checks, keep those with you.
+I can delegate the dispute cap bug, the UI filter bug, and the accessibility fix to asynchronous agents. The keyboard walkthrough is an exploratory check, so I&#39;ll do it myself.</p>
           <div class="paste">
             <div class="paste-head">
               <span>Paste in Grok Build</span>
               <button type="button" class="copy">Copy</button>
             </div>
-            <pre>/ask Choose 1 issue that I need to run with a local agent and check synchronously.</pre>
+            <pre>/ask Choose one task that I need to run with a local agent and check myself.</pre>
           </div>
         </article>
         </div>
@@ -1027,7 +1050,7 @@ You can review tasks in project notes and shared files in context.</p>
         <div class="beats">
         <article class="beat" data-beat="check-cloud-environment">
           <h4>Check the cloud environment.</h4>
-          <p class="say">This Build already installed the repository’s dependencies, so every agent I start today starts ready to run tests.</p>
+          <p class="say">This Build already installed the repository&#39;s dependencies, so every agent I start today starts ready to run tests.</p>
           <div class="do-box">
             <ol><li>Go to https://cursor.com/dashboard/cloud-agents.</li><li>Select the environment for the forked repository.</li></ol>
           </div>
@@ -1044,9 +1067,6 @@ You can review tasks in project notes and shared files in context.</p>
             </div>
             <pre>Fix the dispute cap issue as written. Run the tests and open a PR with a screenshot of the corrected cap.</pre>
           </div>
-        </article>
-        <article class="beat" data-beat="launch-invoice-filter-agent">
-          <h4>Fix the invoice filtering issue as written.</h4>
           <div class="do-box">
             <ul><li>Start a new Cloud Agent.</li></ul>
           </div>
@@ -1059,7 +1079,8 @@ You can review tasks in project notes and shared files in context.</p>
           </div>
         </article>
         <article class="beat" data-beat="launch-contrast-agent">
-          <h4>Fix the failing contrast tests as written.</h4>
+          <h4>Use a /goal to assign an ongoing objective.</h4>
+          <p class="say">This is the same kind of Cloud Agent as the other two, with /goal turned on. The other two stop when they think they&#39;re done. This one keeps starting new turns until the goal is complete. Its finish line: the accessibility tests pass.</p>
           <div class="do-box">
             <ul><li>Start a new Cloud Agent.</li></ul>
           </div>
@@ -1068,12 +1089,12 @@ You can review tasks in project notes and shared files in context.</p>
               <span>Paste in Grok Build</span>
               <button type="button" class="copy">Copy</button>
             </div>
-            <pre>Fix the failing contrast tests as written. Run the tests and open a PR.</pre>
+            <pre>/goal Fix the failing contrast tests as written, in app/globals.css tokens only. Done when the accessibility tests pass.</pre>
           </div>
         </article>
         <article class="beat" data-beat="check-agents-web">
           <h4>Check the agents from another surface.</h4>
-          <p class="say">The same agents show up on the web. Stop an agent early if its plan drifts from the issue.</p>
+          <p class="say">The same agents show up on the web, including the goal agent. A goal you run in a local chat doesn&#39;t show up here, so use a Cloud Agent when the goal has to wait on CI or keep running after you close your laptop. Stop an agent early if its plan drifts from the task. To end a goal, archive the agent.</p>
           <div class="do-box">
             <ul><li>Go to cursor.com/agents and select one running agent.</li></ul>
           </div>
@@ -1094,11 +1115,19 @@ You can review tasks in project notes and shared files in context.</p>
           <h4>Start a Project.</h4>
           <p class="say">The Project opens as a chat with its coordinator. It keeps building the collections command center tonight, after I close my laptop.</p>
           <div class="do-box">
-            <ol><li>In the Agents Window, go to Projects in the sidebar and select New Project.</li><li>Enter {{ INSERT COMPANY HERE, default is Ledgerly }} as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.</li><li>Select Create Project.</li></ol>
+            <ol><li>In the Agents Window, go to Projects in the sidebar and select New Project.</li><li>Enter Collections Command Center as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.</li><li>Select Create Project.</li></ol>
+          </div>
+        </article>
+        <article class="beat" data-beat="review-project-model">
+          <h4>Review the model.</h4>
+          <p class="say">You can choose the model for the coordinator and workers. Workers inherit the coordinator&#39;s model by default.</p>
+          <div class="do-box">
+            <ul><li>Select Auto in the chat.</li></ul>
           </div>
         </article>
         <article class="beat" data-beat="hand-coordinator-goal">
           <h4>Hand the coordinator a larger goal.</h4>
+          <p class="say">Expect a plan that splits the work across agents.</p>
           <div class="do-box">
             <ul><li>Select + in the chat and put the Project agent in Plan mode.</li></ul>
           </div>
@@ -1107,7 +1136,7 @@ You can review tasks in project notes and shared files in context.</p>
               <span>Paste in Grok Build</span>
               <button type="button" class="copy">Copy</button>
             </div>
-            <pre>Build the collections command center based on the issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.</pre>
+            <pre>Build the collections command center based on its Linear issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.</pre>
           </div>
         </article>
         <article class="beat" data-beat="review-project-plan">
@@ -1127,7 +1156,7 @@ Every future agent in this Project starts with the plan, so nobody onboards an a
         </article>
         <article class="beat" data-beat="track-project-progress">
           <h4>Track the progress.</h4>
-          <p class="say">The Project sidebar list the issues and track what is in progress, queued, for review, and done.
+          <p class="say">The Project sidebar lists the tasks and tracks what is in progress, queued, for review, and done.
 You can choose List or Board view to review what the Project is building.</p>
           <div class="do-box">
             <ol><li>Open the Project sidebar in the right panel.</li><li>Select the Board view to review the project on a board.</li></ol>
@@ -1137,7 +1166,7 @@ You can choose List or Board view to review what the Project is building.</p>
           <h4>Review shared context.</h4>
           <p class="say">The Project writes the plan file to a shared file library that every Cloud Agent can access. If an agent needs more information, it can access the plan as shared context.</p>
           <div class="do-box">
-            <ol><li>Select the Library view to review the project’s file changes.</li><li>Open the plan file.</li></ol>
+            <ol><li>Select the Library view to review the project&#39;s file changes.</li><li>Open the plan file.</li></ol>
           </div>
         </article>
         <article class="beat" data-beat="let-the-work-run">
@@ -1211,7 +1240,7 @@ You can choose List or Board view to review what the Project is building.</p>
           var trackId = box.getAttribute("data-track");
           var featureName = box.getAttribute("data-feature");
           var trackState = state[trackId] || {};
-          box.checked = trackState[featureName] !== false;
+          box.checked = trackState[featureName] === true;
         });
       }
       function collectFeatures() {
@@ -1220,7 +1249,7 @@ You can choose List or Board view to review what the Project is building.</p>
           var trackId = box.getAttribute("data-track");
           var featureName = box.getAttribute("data-feature");
           if (!state[trackId]) state[trackId] = {};
-          if (!box.checked) state[trackId][featureName] = false;
+          if (box.checked) state[trackId][featureName] = true;
         });
         return state;
       }
@@ -1269,8 +1298,8 @@ You can choose List or Board view to review what the Project is building.</p>
           var state = readFeatures();
           if (!state[trackId]) state[trackId] = {};
           var featureName = box.getAttribute("data-feature");
-          if (box.checked) delete state[trackId][featureName];
-          else state[trackId][featureName] = false;
+          if (box.checked) state[trackId][featureName] = true;
+          else delete state[trackId][featureName];
           writeFeatures(state);
           postFeatures();
         });

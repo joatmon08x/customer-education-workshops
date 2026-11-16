@@ -12,7 +12,12 @@ import {
   stripOptionalTags,
   trackOptionalFeatures,
 } from "@/runbooks/meta";
-import { STATIC_CANVAS_PATH, renderRunbooksCanvas } from "@/runbooks/canvas-page";
+import {
+  STATIC_CANVAS_PATH,
+  canvasTracks,
+  renderRunbooksCanvas,
+  visibleNumberedBeats,
+} from "@/runbooks/canvas-page";
 import {
   STATIC_RUNBOOKS_PATH,
   beatFeature,
@@ -45,7 +50,7 @@ describe("runbook catalog", () => {
       "You will orchestrate work across agents, tasks, and coworkers: break tasks down for multiple agents, take a plan through parallel agents to a reviewable PR, scale review when several streams finish, and share ownership safely.",
     );
     expect(track401?.description).toBe(
-      "You will rewrite a backlog issue so a Cloud Agent can finish it unattended, hand well-defined issues to parallel Cloud Agents, and direct a Project coordinator to plan and delegate larger work.",
+      "You will rewrite a backlog task so an agent can finish it unattended, hand well-defined tasks to parallel Cloud Agents including one with /goal, and direct a Project coordinator to plan and delegate larger work.",
     );
 
     for (const track of RUNBOOK_TRACKS) {
@@ -87,36 +92,42 @@ describe("runbook catalog", () => {
 
     const beat = (id: (typeof beats101)[number]["id"]) => beats101.find((entry) => entry.id === id);
 
-    expect(beat("ask")?.detail).toBe("Let’s learn more about the application with Ask mode.");
+    expect(beat("ask")?.say).toBe("Let's learn more about the application with Ask mode.");
+    expect(beat("ask")?.detail).toBe("");
     expect(beat("ask")?.example).toBe("/ask Tell me what this application does in 3 sentences");
-    expect(beat("plan")?.detail).toBe("Map your approach to building a new feature in Plan mode.");
+    expect(beat("plan")?.say).toBe("Map your approach to building a new feature in Plan mode.");
+    expect(beat("plan")?.detail).toBe("");
     expect(beat("plan")?.example).toBe(
-      "/plan I want a new feature to update the customer email in the invoice detail customer card. Don’t implement email validation.",
+      "/plan I want a new feature to update the customer email in the invoice detail customer card. Don't implement email validation.",
     );
-    expect(beat("agent-build")?.detail).toBe(
-      "Build the feature in Agent mode. Build the plan locally. Check the feature in the UI.",
-    );
+    expect(beat("agent-build")?.say).toBe("Build the feature in Agent mode.");
+    expect(beat("agent-build")?.detail).toBe("Build the plan locally. Check the feature in the UI.");
     expect(beat("agent-build")?.example).toBeUndefined();
-    expect(beat("debug")?.detail).toBe(
-      "Investigate the failing test using Debug mode. Debug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause. I can choose to reproduce the bug and attempt to fix based on the agent’s hypotheses.",
+    expect(beat("debug")?.say).toBe(
+      "Investigate the failing test using Debug mode.\nDebug mode is useful because the agent investigates the codebase and presents some hypothesis on the root cause.\nI can choose to reproduce the bug and attempt to fix based on the agent's hypotheses.",
     );
+    expect(beat("debug")?.detail).toBe("");
     expect(beat("debug")?.example).toBe("/debug the failing test");
     expect(beat("model-fast")?.title).toBe("Check the models");
     expect(beat("model-fast")?.promptType).toBe("none");
+    expect(beat("model-fast")?.say).toBe("Check the models available for use.");
     expect(beat("model-fast")?.detail).toBe(
-      "Check the models available for use. Select Auto in the chat and review the models available for use.",
+      "Select Auto in the chat and review the models available for use.",
     );
     expect(beat("model-fast")?.example).toBeUndefined();
     expect(beat("fix")?.detail).toBe("Use shift-tab to toggle to Agent mode.");
     expect(beat("fix")?.example).toBe("Fix the failing test.");
     expect(beat("allowlist")?.example).toBeUndefined();
+    expect(beat("allowlist")?.say).toBe(
+      "Let's change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review.",
+    );
     expect(beat("allowlist")?.detail).toBe(
-      "Let’s change how our agent asks for approvals by configuring an allowlist - a known set of commands that Grok Build can run without asking for review. Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist.",
+      "Go to Settings > Agents > Executions & Approvals > Run Mode > Allowlist.",
     );
     expect(beat("verify-email")?.promptType).toBe("none");
     expect(beat("verify-email")?.example).toBeUndefined();
     expect(beat("verify-email")?.detail).toBe(
-      "Go to http://localhost:43173/invoices/inv_1048. Find the edit email feature you implemented in the Customer box.",
+      "Go to http://localhost:43173/invoices/inv_1048.\nFind the edit email feature you implemented in the Customer box.",
     );
     expect(beat("start-and-stop")?.title).toBe("Redact (partial)");
     expect(beat("start-and-stop")?.detail).toBe("");
@@ -125,8 +136,9 @@ describe("runbook catalog", () => {
     );
     expect(beat("stop")?.example).toBeUndefined();
     expect(beat("stop")?.detail).toBe("Stop the prompt with the Stop button in the chat.");
+    expect(beat("interrupt-steer")?.say).toBe("Steer the prompt.");
     expect(beat("interrupt-steer")?.detail).toBe(
-      "Steer the prompt. Show how the agent pauses for your approval. Continue running after reviewing the first file.",
+      "Show how the agent pauses for your approval. Continue running after reviewing the first file.",
     );
     expect(beat("interrupt-steer")?.example).toBe(
       "Redact the customer email in the UI. Show it in plaintext when I click the box to edit it. Stop every time you change a file for me to review.",
@@ -137,25 +149,30 @@ describe("runbook catalog", () => {
     );
     expect(beat("diffs")?.example).toBeUndefined();
     expect(beat("diffs")?.detail).toBe(
-      "Select Changes in the right hand panel. Show diffs from agent’s last turn.",
+      "Select Changes in the right hand panel. Show diffs from agent's last turn.",
     );
     expect(beat("checkpoint-restore")?.title).toBe("Restore from a checkpoint");
     expect(beat("checkpoint-restore")?.promptType).toBe("none");
     expect(beat("checkpoint-restore")?.example).toBeUndefined();
+    expect(beat("checkpoint-restore")?.say).toBe(
+      "If I want to revert the code, I can restore from a checkpoint.",
+    );
     expect(beat("checkpoint-restore")?.detail).toBe(
-      "If I want to revert the code, I can restore from a checkpoint. Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.",
+      "Scroll back to a prompt before updating the feature. Select the restore icon next to the prompt.",
     );
-    expect(beat("rule")?.detail).toBe(
-      "Let’s create a user rule so the agent doesn’t try to improve the invoice UI without our approval. Use /create-rule, a built-in skill, to create a rule. Go to Customize > Rules > User to view the rule.",
+    expect(beat("rule")?.say).toBe(
+      "Let's create a user rule so the agent doesn't try to improve the invoice UI without our approval.\nUse /create-rule, a built-in skill, to create a rule.",
     );
+    expect(beat("rule")?.detail).toBe("Go to Customize > Rules > User to view the rule.");
     expect(beat("rule")?.example).toBe(
       "/create-rule Preserve the invoice view. Do not rename, restyle, or rearrange invoice screens unless the user names the **exact** new copy (or a specific layout change). This is a personal rule.",
     );
     expect(beat("test-rule")?.detail).toBe("");
     expect(beat("test-rule")?.example).toBe('Change "Line Items" in the UI to something else.');
-    expect(beat("skill")?.detail).toBe(
-      "Let’s create a user skill that tells me the domain breakdown and available APIs. Go to Customize > Skills to view the skill.",
+    expect(beat("skill")?.say).toBe(
+      "Let's create a user skill that tells me the domain breakdown and available APIs.",
     );
+    expect(beat("skill")?.detail).toBe("Go to Customize > Skills to view the skill.");
     expect(beat("skill")?.example).toBe(
       "/create-skill Use domain-driven design to break down the domains in this application and match it to available APIs or data schemas. This is a personal skill.",
     );
@@ -164,8 +181,12 @@ describe("runbook catalog", () => {
     expect(beat("canvas")?.title).toBe("Canvas");
     expect(beat("canvas")?.example).toBe("Create a canvas explaining what we did today.");
     expect(beat("mcp")?.title).toBe("MCP / Figma");
+    expect(beat("canvas")?.say).toBe(
+      "Use Canvas to generate interactive artifacts that render next to the chat.",
+    );
+    expect(beat("mcp")?.say).toBe("Ask Grok Build to create a slideshow in Figma using MCP Servers.");
     expect(beat("mcp")?.detail).toBe(
-      "Ask Grok Build to create a slideshow in Figma using MCP Servers. Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
+      "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
     );
     expect(beat("mcp")?.example).toBe(
       "Create three slides in Figma Slides outlining how I used Grok Build to develop a new feature. I want to use this as part of my demo showcase.",
@@ -258,7 +279,7 @@ describe("runbook catalog", () => {
       "/ask what is the domain driven design of the application.",
     );
     expect(beat("rename-agent-2-target")?.title).toBe(
-      "Let’s open a second agent. This starts a new context window.",
+      "Let's open a second agent. This starts a new context window.",
     );
     expect(beat("rename-agent-2-target")?.detail).toBe("");
     expect(beat("rename-agent-2-target")?.example).toBe("/rename-chat Agent 2 Target");
@@ -267,45 +288,61 @@ describe("runbook catalog", () => {
       "/ask what is the domain driven design of the @invoice-table.tsx",
     );
     expect(beat("context-usage")?.promptType).toBe("none");
-    expect(beat("context-usage")?.title).toBe("Check agent 1’s context window.");
+    expect(beat("context-usage")?.title).toBe("Check agent 1's context window.");
+    expect(beat("context-usage")?.say).toBe(
+      "Agent 1 maps all the domains in the whole codebase. Its context window shows X%.",
+    );
     expect(beat("context-usage")?.detail).toBe(
-      "Go to Agent 1 All chat. Click the Context Usage indicator below the chat. Agent 1 maps all the domains in the whole codebase. Its context window shows X%.",
+      "Go to Agent 1 All chat.\nClick the Context Usage indicator below the chat.",
     );
     expect(beat("context-usage")?.example).toBeUndefined();
     expect(beat("compare-agents")?.promptType).toBe("none");
     expect(beat("compare-agents")?.example).toBeUndefined();
-    expect(beat("compare-agents")?.title).toBe("Check agent 2’s context window.");
+    expect(beat("compare-agents")?.title).toBe("Check agent 2's context window.");
+    expect(beat("compare-agents")?.say).toBe(
+      "Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%.\nThe difference in context window may not be significant but can affect larger repositories.",
+    );
     expect(beat("compare-agents")?.detail).toBe(
-      "Go to Agent 2 Target. Click the Context Usage indicator below the chat. Agent 2 maps half of the domains based on the targeted context. Its context window shows Y%. The difference in context window may not be significant but can affect larger repositories.",
+      "Go to Agent 2 Target.\nClick the Context Usage indicator below the chat.",
     );
     expect(beat("ask-cross-context")?.title).toBe(
       "We want to check if the invoice table can be changed in isolation.",
     );
-    expect(beat("ask-cross-context")?.detail).toBe(
-      "Agent 1 did the work of identifying all domains. Agent 2 can benefit from its summary. It doesn’t need to review the entire codebase again. Go to Agent 2 Target chat.",
+    expect(beat("ask-cross-context")?.say).toBe(
+      "Agent 1 did the work of identifying all domains.\nAgent 2 can benefit from its summary. It doesn't need to review the entire codebase again.",
     );
+    expect(beat("ask-cross-context")?.detail).toBe("Go to Agent 2 Target chat.");
     expect(beat("ask-cross-context")?.example).toBe(
       "/ask @Agent 1 All Does refactoring the table change anything across all contexts?",
     );
     expect(beat("create-api-personal-skill")?.title).toBe(
       "Open a new agent and add a new personal skill.",
     );
+    expect(beat("create-api-personal-skill")?.say).toBe(
+      "Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern.\nLet's create a skill for it so the agent can do less work.",
+    );
     expect(beat("create-api-personal-skill")?.detail).toBe(
-      "Open a new agent. Every time I ask a new agent to create an API, it forgets how to do it and scans the entire repository for the pattern. Let’s create a skill for it so the agent can do less work. Open skill in ~/.cursor/skills.",
+      "Open a new agent.\nOpen skill in ~/.cursor/skills.",
     );
     expect(beat("create-api-personal-skill")?.example).toBe(
       "/create-skill for how to create a new API. Follow the standards in this repo. This is a personal skill named create-api.",
     );
     expect(beat("promote-create-api-project")?.title).toBe("Create a project skill.");
+    expect(beat("promote-create-api-project")?.say).toBe(
+      "A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill.",
+    );
     expect(beat("promote-create-api-project")?.detail).toBe(
-      "A teammate mentioned they were frustrated because they had to keep correcting the agent when it builds the API. They asked if they could also use the API skill.\nOpen skill in .cursor/skills\nReview the other project skills for this repository, such as add-dashboard-widget, draft-collection-email, or write-prisma-query.",
+      "Open skill in .cursor/skills\nReview the other project skills for this repository, such as add-dashboard-widget, draft-collection-email, or write-prisma-query.",
     );
     expect(beat("promote-create-api-project")?.example).toBe("Promote the create-api skill to this project.");
     expect(beat("add-linear-mcp")?.title).toBe(
       "Start the MCP server for the company issue tracker.",
     );
+    expect(beat("add-linear-mcp")?.say).toBe(
+      "Let's start the issue tracker's MCP server. For this workshop, that is Linear. Get a ticket for this project.",
+    );
     expect(beat("add-linear-mcp")?.detail).toBe(
-      "Let’s start the issue tracker’s MCP server. For this workshop, that is Linear. Get a ticket for this project.\nReview MCP servers in Customize > MCPs\nEnable the Linear MCP server.",
+      "Review MCP servers in Customize > MCPs\nEnable the Linear MCP server.",
     );
     expect(beat("add-linear-mcp")?.example).toBeUndefined();
     expect(beat("mcp-allowlist")?.promptType).toBe("none");
@@ -316,9 +353,10 @@ describe("runbook catalog", () => {
     expect(beat("mcp-allowlist")?.title).toBe("Check your allowed MCP servers.");
     expect(beat("start-issue-agent")?.promptType).toBe("none");
     expect(beat("start-issue-agent")?.title).toBe("Start a new agent.");
-    expect(beat("start-issue-agent")?.detail).toBe(
-      "Open a new agent. Someone reported a bug and it was logged in our issue tracker. I want more information on it.",
+    expect(beat("start-issue-agent")?.say).toBe(
+      "Someone reported a bug and it was logged in our issue tracker. I want more information on it.",
     );
+    expect(beat("start-issue-agent")?.detail).toBe("Open a new agent.");
     expect(beat("start-issue-agent")?.example).toBeUndefined();
     expect(beat("ask-linear-bug")?.title).toBe("Retrieve a bug ticket from the issue tracker.");
     expect(beat("ask-linear-bug")?.detail).toBe(
@@ -328,56 +366,70 @@ describe("runbook catalog", () => {
     expect(beat("add-local-plugin")?.promptType).toBe("none");
     expect(beat("add-local-plugin")?.example).toBeUndefined();
     expect(beat("add-local-plugin")?.title).toBe("Add the plugin.");
+    expect(beat("add-local-plugin")?.say).toBe(
+      "My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker.",
+    );
     expect(beat("add-local-plugin")?.detail).toBe(
-      "My teammate on another application let me know that they just created a plugin for standardizing and documenting bug fixes on our issue tracker. Go to Customize > Plugins > Add > From Local Repository. Find the plugins/standard-bug-fix file directory and add it.",
+      "Go to Customize > Plugins > Add > From Local Repository.\nFind the plugins/standard-bug-fix file directory and add it.",
     );
     expect(beat("check-plugin")?.promptType).toBe("none");
     expect(beat("check-plugin")?.example).toBeUndefined();
     expect(beat("check-plugin")?.detail).toBe(
-      "Go to Customize > Plugins. Go to Personal. Click Add to enable the “Standard bug fix” plugin. Show that the plugin has skills, rules, and MCP server.",
+      'Go to Customize > Plugins.\nGo to Personal.\nClick Add to enable the "Standard bug fix" plugin.\nShow that the plugin has skills, rules, and MCP server.',
+    );
+    expect(beat("standard-bug-fix")?.say).toBe(
+      "Let's fix the bug and update the issue with the standard template.",
     );
     expect(beat("standard-bug-fix")?.detail).toBe(
-      "Let’s fix the bug and update the issue with the standard template. Go to the issue in Linear and review the comments following the bug template.",
+      "Go to the issue in Linear and review the comments following the bug template.",
     );
     expect(beat("standard-bug-fix")?.example).toBe(
       "Work on a standard bug fix for the issue where clicking overdue does not filter.",
     );
-    expect(beat("check-plugin")?.title).toBe("Enable the “Standard bug fix” plugin.");
+    expect(beat("check-plugin")?.title).toBe('Enable the "Standard bug fix" plugin.');
     expect(beat("standard-bug-fix")?.title).toBe("Fix the bug with the standard template.");
     expect(beat("open-new-agent")?.title).toBe("Start a new agent.");
     expect(beat("open-new-agent")?.promptType).toBe("none");
     expect(beat("open-new-agent")?.example).toBeUndefined();
-    expect(beat("open-new-agent")?.detail).toBe(
-      "Open a new agent. I created a plan for a feature to resolve disputes, splitting the work across three agents.",
+    expect(beat("open-new-agent")?.say).toBe(
+      "I created a plan for a feature to resolve disputes, splitting the work across three agents.",
     );
+    expect(beat("open-new-agent")?.detail).toBe("Open a new agent.");
     expect(beat("open-resolve-dispute-plan")?.promptType).toBe("none");
     expect(beat("open-resolve-dispute-plan")?.example).toBeUndefined();
     expect(beat("open-resolve-dispute-plan")?.title).toBe(
       "Split the plan for three parallel agents.",
     );
     expect(beat("open-resolve-dispute-plan")?.detail).toBe(
-      "Open .cursor/plans/resolve-dispute.md. Review the plan and how it splits data, API, and UI tasks.",
+      "Open .cursor/plans/resolve-dispute.md.\nReview the plan and how it splits data, API, and UI tasks.",
     );
     expect(beat("open-ledgerly-reviewer")?.title).toBe(
       "The plan uses custom subagents to control how changes are made.",
     );
     expect(beat("open-ledgerly-reviewer")?.promptType).toBe("none");
     expect(beat("open-ledgerly-reviewer")?.example).toBeUndefined();
+    expect(beat("open-ledgerly-reviewer")?.say).toBe(
+      "For any changes to the application, there is a reviewer subagent to check changes.",
+    );
     expect(beat("open-ledgerly-reviewer")?.detail).toBe(
-      "For any changes to the application, there is a reviewer subagent to check changes.\nOpen .cursor/agents/ledgerly-reviewer.md",
+      "Open .cursor/agents/ledgerly-reviewer.md",
     );
     expect(beat("open-dispatch-subagents-skill")?.title).toBe(
       "The plan has concrete steps for conflict resolution.",
     );
     expect(beat("open-dispatch-subagents-skill")?.promptType).toBe("none");
     expect(beat("open-dispatch-subagents-skill")?.example).toBeUndefined();
+    expect(beat("open-dispatch-subagents-skill")?.say).toBe(
+      "This skill gives clear guidance to your agents that they should avoid making changes with conflicts.",
+    );
     expect(beat("open-dispatch-subagents-skill")?.detail).toBe(
-      "Open .cursor/skills/dispatch-subagents/SKILL.md. This skill gives clear guidance to your agents that they should avoid making changes with conflicts.",
+      "Open .cursor/skills/dispatch-subagents/SKILL.md.",
     );
     expect(beat("multitask-resolve-dispute")?.title).toBe("Start multitasking.");
-    expect(beat("multitask-resolve-dispute")?.detail).toBe(
+    expect(beat("multitask-resolve-dispute")?.say).toBe(
       "Build the feature using the /multitask command.",
     );
+    expect(beat("multitask-resolve-dispute")?.detail).toBe("");
     expect(beat("canvas-subagent-progress")?.title).toBe(
       "Show the progress of subagents and tasks.",
     );
@@ -386,15 +438,19 @@ describe("runbook catalog", () => {
     );
     expect(beat("multitask-resolve-dispute")?.example).toBe("/multitask @resolve-dispute.md");
     expect(beat("canvas-subagent-progress")?.promptType).toBe("adaptable");
+    expect(beat("canvas-subagent-progress")?.say).toBe(
+      "Use Canvas to keep track of the progress of subagents and their tasks.",
+    );
     expect(beat("canvas-subagent-progress")?.detail).toBe(
-      "Use Canvas to keep track of the progress of subagents and their tasks. Review Canvas with subagent progress and worktree conflicts.",
+      "Review Canvas with subagent progress and worktree conflicts.",
     );
     expect(beat("canvas-subagent-progress")?.example).toBe(
       "Update Canvas with subagent progress and models used. Make a list of worktree conflicts as you encounter them.",
     );
-    expect(beat("ledgerly-reviewer-check")?.detail).toBe(
+    expect(beat("ledgerly-reviewer-check")?.say).toBe(
       "Use the specialized reviewer subagent to check the completed task.",
     );
+    expect(beat("ledgerly-reviewer-check")?.detail).toBe("");
     expect(beat("ledgerly-reviewer-check")?.example).toBe("ledgerly-reviewer check my work");
 
     expect(beats201.every((entry) => entry.promptType !== undefined)).toBe(true);
@@ -657,7 +713,7 @@ describe("runbook catalog", () => {
     "id": "check-closer-inspection",
     "title": "Identify any changes requiring closer inspection.",
     "promptType": "reusable",
-    "detail": "Check the change reviewer’s output for any issues requiring closer inspection.",
+    "detail": "Check the change reviewer's output for any issues requiring closer inspection.",
     "example": "Fix the findings from the change reviewer.",
     "say": "The plan includes a step that sounds reasonable but blocks Tab navigation everywhere. The change reviewer flags it as high severity, with the file and line, so we never keep it."
   },
@@ -699,7 +755,7 @@ describe("runbook catalog", () => {
     "id": "optional-reviewer-automation",
     "title": "Create an Automation.",
     "promptType": "none",
-    "detail": "Go to the Automations tab.\nClick New Automation.\nName it Reviewer.\nSelect the demo repository.\nClick Triggers > PR opened, then select the demo repository and set the author to Anyone.\nAdd “Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.” to agent instructions.\nAdd “Comment on Pull Request” to tools.\nClick Save.",
+    "detail": "Go to the Automations tab.\nClick New Automation.\nName it Reviewer.\nSelect the demo repository.\nClick Triggers > PR opened, then select the demo repository and set the author to Anyone.\nAdd \"Use the change reviewer subagent to review this PR and comment with each issue's file, line, and severity.\" to agent instructions.\nAdd \"Comment on Pull Request\" to tools.\nClick Save.",
     "optional": {
       "feature": "Automations"
     }
@@ -719,8 +775,8 @@ describe("runbook catalog", () => {
     "id": "return-to-plan",
     "title": "Return to the collections command center plan.",
     "promptType": "none",
-    "detail": "Open the command center planning agent in the Agent Window. Don’t start a new plan.",
-    "say": "Now I’m going back to the collections command center plan. Before I start the work, I’ll check the keyboard fixes PR for conflicts."
+    "detail": "Open the command center planning agent in the Agent Window. Don't start a new plan.",
+    "say": "Now I'm going back to the collections command center plan. Before I start the work, I'll check the keyboard fixes PR for conflicts."
   },
   {
     "id": "optional-cloud-return",
@@ -767,9 +823,9 @@ describe("runbook catalog", () => {
       "how-do-you-delegate-asynchronous-work",
       "how-do-you-direct-larger-work",
     ]);
-    expect(RUNBOOK_SECTIONS_401.map((section) => section.beats.length)).toEqual([3, 6, 7]);
+    expect(RUNBOOK_SECTIONS_401.map((section) => section.beats.length)).toEqual([4, 5, 8]);
     expect(runbookBeatSequence("401")).toBe(
-      "Rewrite an issue so an agent can finish it unattended. \u2192 Sort the backlog into synchronous and asynchronous tasks. \u2192 Choose 1 issue that I need to run with a local agent and check synchronously. \u2192 Check the cloud environment. \u2192 Launch Cloud Agents in parallel. \u2192 Fix the invoice filtering issue as written. \u2192 Fix the failing contrast tests as written. \u2192 Check the agents from another surface. \u2192 Review the finished work. \u2192 Start a Project. \u2192 Hand the coordinator a larger goal. \u2192 Review the plan. \u2192 Build the plan. \u2192 Track the progress. \u2192 Review shared context. \u2192 Let the work run.",
+      "Start a new agent. \u2192 Rewrite a task so an agent can finish it unattended. \u2192 Sort the backlog into tasks to hand off and tasks to keep. \u2192 Choose one task that I need to run with a local agent and check myself. \u2192 Check the cloud environment. \u2192 Launch Cloud Agents in parallel. \u2192 Use a /goal to assign an ongoing objective. \u2192 Check the agents from another surface. \u2192 Review the finished work. \u2192 Start a Project. \u2192 Review the model. \u2192 Hand the coordinator a larger goal. \u2192 Review the plan. \u2192 Build the plan. \u2192 Track the progress. \u2192 Review shared context. \u2192 Let the work run.",
     );
 
     expect(
@@ -785,28 +841,37 @@ describe("runbook catalog", () => {
       })),
     ).toEqual([
       {
-        id: "rewrite-dispute-cap",
-        title: "Rewrite an issue so an agent can finish it unattended.",
-        promptType: "adaptable",
+        id: "start-delegate-agent",
+        title: "Start a new agent.",
+        promptType: "none",
         detail: "Go to the Agents Window and start a new local agent.",
+        say: "Before I hand work to asynchronous agents, I need to rewrite a task so an agent can finish it unattended.",
+      },
+      {
+        id: "rewrite-dispute-cap",
+        title: "Rewrite a task so an agent can finish it unattended.",
+        promptType: "adaptable",
+        detail: "",
         example:
           "Rewrite the dispute cap issue in Linear so a Cloud Agent can finish it alone. Add scope, acceptance criteria, a proving test, and judgment calls.",
-        say: "Before I hand work to Cloud Agents, I need to rewrite an issue so an agent can finish it unattended.",
+        say: "Scope, acceptance criteria, proof, and judgment calls give the agent a finish line it can check.\nThe invoice and contrast tasks are already written this way. I'll only rewrite dispute cap live.",
       },
       {
         id: "sort-backlog-async",
-        title: "Sort the backlog into synchronous and asynchronous tasks.",
+        title: "Sort the backlog into tasks to hand off and tasks to keep.",
         promptType: "reusable",
         detail: "",
         example:
           "/ask Which open issues have enough details to delegate to a Cloud Agent? Exclude Collections Command Center issues.",
+        say: "Expect candidates such as the dispute cap bug, the invoice filter bug, and the contrast fix.",
       },
       {
         id: "choose-synchronous-issue",
-        title: "Choose 1 issue that I need to run with a local agent and check synchronously.",
+        title: "Choose one task that I need to run with a local agent and check myself.",
         promptType: "reusable",
         detail: "",
-        example: "/ask Choose 1 issue that I need to run with a local agent and check synchronously.",
+        example: "/ask Choose one task that I need to run with a local agent and check myself.",
+        say: "If the agent flags keyboard walkthrough or similar exploratory checks, keep those with you.\nI can delegate the dispute cap bug, the UI filter bug, and the accessibility fix to asynchronous agents. The keyboard walkthrough is an exploratory check, so I'll do it myself.",
       },
       {
         id: "check-cloud-environment",
@@ -814,7 +879,7 @@ describe("runbook catalog", () => {
         promptType: "none",
         detail:
           "Go to https://cursor.com/dashboard/cloud-agents.\nSelect the environment for the forked repository.",
-        say: "This Build already installed the repository’s dependencies, so every agent I start today starts ready to run tests.",
+        say: "This Build already installed the repository's dependencies, so every agent I start today starts ready to run tests.",
       },
       {
         id: "launch-dispute-cap-agent",
@@ -824,27 +889,30 @@ describe("runbook catalog", () => {
           "In the Agents Window, start a new agent.\nSelect Cloud in the dropdown above the agent input.",
         example:
           "Fix the dispute cap issue as written. Run the tests and open a PR with a screenshot of the corrected cap.",
-      },
-      {
-        id: "launch-invoice-filter-agent",
-        title: "Fix the invoice filtering issue as written.",
-        promptType: "adaptable",
-        detail: "Start a new Cloud Agent.",
-        example: "Fix the invoice filtering issue as written. Run the tests and open a PR.",
+        after: [
+          { kind: "do", text: "Start a new Cloud Agent." },
+          {
+            kind: "prompt",
+            promptType: "adaptable",
+            text: "Fix the invoice filtering issue as written. Run the tests and open a PR.",
+          },
+        ],
       },
       {
         id: "launch-contrast-agent",
-        title: "Fix the failing contrast tests as written.",
+        title: "Use a /goal to assign an ongoing objective.",
         promptType: "adaptable",
         detail: "Start a new Cloud Agent.",
-        example: "Fix the failing contrast tests as written. Run the tests and open a PR.",
+        example:
+          "/goal Fix the failing contrast tests as written, in app/globals.css tokens only. Done when the accessibility tests pass.",
+        say: "This is the same kind of Cloud Agent as the other two, with /goal turned on. The other two stop when they think they're done. This one keeps starting new turns until the goal is complete. Its finish line: the accessibility tests pass.",
       },
       {
         id: "check-agents-web",
         title: "Check the agents from another surface.",
         promptType: "none",
         detail: "Go to cursor.com/agents and select one running agent.",
-        say: "The same agents show up on the web. Stop an agent early if its plan drifts from the issue.",
+        say: "The same agents show up on the web, including the goal agent. A goal you run in a local chat doesn't show up here, so use a Cloud Agent when the goal has to wait on CI or keep running after you close your laptop. Stop an agent early if its plan drifts from the task. To end a goal, archive the agent.",
       },
       {
         id: "review-dispute-cap-pr",
@@ -858,8 +926,15 @@ describe("runbook catalog", () => {
         title: "Start a Project.",
         promptType: "none",
         detail:
-          "In the Agents Window, go to Projects in the sidebar and select New Project.\nEnter {{ INSERT COMPANY HERE, default is Ledgerly }} as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.\nSelect Create Project.",
+          "In the Agents Window, go to Projects in the sidebar and select New Project.\nEnter Collections Command Center as the name. Under Workspace, select the forked repository. Under Model, select the model the coordinator uses, for example a Grok model.\nSelect Create Project.",
         say: "The Project opens as a chat with its coordinator. It keeps building the collections command center tonight, after I close my laptop.",
+      },
+      {
+        id: "review-project-model",
+        title: "Review the model.",
+        promptType: "none",
+        detail: "Select Auto in the chat.",
+        say: "You can choose the model for the coordinator and workers. Workers inherit the coordinator's model by default.",
       },
       {
         id: "hand-coordinator-goal",
@@ -867,7 +942,8 @@ describe("runbook catalog", () => {
         promptType: "adaptable",
         detail: "Select + in the chat and put the Project agent in Plan mode.",
         example:
-          "Build the collections command center based on the issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.",
+          "Build the collections command center based on its Linear issues. Split the work across parallel agents, each running the tests and opening a PR. Wait for my approval before building.",
+        say: "Expect a plan that splits the work across agents.",
       },
       {
         id: "review-project-plan",
@@ -889,13 +965,13 @@ describe("runbook catalog", () => {
         promptType: "none",
         detail:
           "Open the Project sidebar in the right panel.\nSelect the Board view to review the project on a board.",
-        say: "The Project sidebar list the issues and track what is in progress, queued, for review, and done.\nYou can choose List or Board view to review what the Project is building.",
+        say: "The Project sidebar lists the tasks and tracks what is in progress, queued, for review, and done.\nYou can choose List or Board view to review what the Project is building.",
       },
       {
         id: "review-shared-context",
         title: "Review shared context.",
         promptType: "none",
-        detail: "Select the Library view to review the project’s file changes.\nOpen the plan file.",
+        detail: "Select the Library view to review the project's file changes.\nOpen the plan file.",
         say: "The Project writes the plan file to a shared file library that every Cloud Agent can access. If an agent needs more information, it can access the plan as shared context.",
       },
       {
@@ -907,7 +983,7 @@ describe("runbook catalog", () => {
       },
     ]);
 
-    expect(beats401).toHaveLength(16);
+    expect(beats401).toHaveLength(17);
     expect(beats401.every((entry) => entry.promptType !== undefined)).toBe(true);
     expect(beats401.every((entry) => entry.optional === undefined)).toBe(true);
     expect(
@@ -979,7 +1055,7 @@ describe("runbook catalog", () => {
       expect(html).toContain(
         `.track[data-track="301"]:has(.feature-toggle[data-feature="${feature}"]:not(:checked)) .beat[data-feature="${feature}"] { display: none; }`,
       );
-      expect(html).toContain(`data-feature="${feature}" checked`);
+      expect(html).not.toContain(`data-feature="${feature}" checked`);
     }
     expect(html.match(/class="feature-toggle"/g)).toHaveLength(4);
 
@@ -1018,6 +1094,37 @@ describe("runbook catalog", () => {
     expect(html).not.toContain("[Optional -");
   });
 
+  it("numbers 301 beats as if optional features are off until checked", () => {
+    const track301 = canvasTracks().find((track) => track.id === "301");
+    expect(track301).toBeDefined();
+    const ids = (enabled: Record<string, boolean>) =>
+      visibleNumberedBeats(track301!, enabled).flatMap((section) =>
+        section.beats.map((beat) => ({ id: beat.id, number: beat.number, feature: beat.feature })),
+      );
+
+    const off = ids({});
+    expect(off.every((beat) => beat.feature === undefined)).toBe(true);
+    expect(off.map((beat) => beat.number)).toEqual(off.map((_, index) => index + 1));
+    expect(off.map((beat) => beat.id)).not.toContain("optional-start-project");
+
+    const projectsOn = ids({ Projects: true });
+    expect(projectsOn.some((beat) => beat.feature === "Projects")).toBe(true);
+    expect(projectsOn.some((beat) => beat.id === "optional-start-project")).toBe(true);
+    expect(projectsOn.some((beat) => beat.feature === "Bugbot")).toBe(false);
+    expect(projectsOn.map((beat) => beat.number)).toEqual(projectsOn.map((_, index) => index + 1));
+    expect(projectsOn.length).toBeGreaterThan(off.length);
+
+    expect(ids({ Projects: false }).map((beat) => beat.id)).toEqual(off.map((beat) => beat.id));
+
+    const canvas = renderRunbooksCanvas();
+    const html = renderRunbooksHtml();
+    expect(canvas).toContain("enabled[beat.feature] !== true");
+    expect(canvas).toContain("checked={enabled[feature] === true}");
+    expect(html).toContain("if (box.checked) state[trackId][featureName] = true");
+    expect(html).toContain("else delete state[trackId][featureName]");
+    expect(html).toContain("box.checked = trackState[featureName] === true");
+  });
+
   it("renders say, then the do box, then the prompt, and keeps a do step between prompts", () => {
     const html = renderRunbooksHtml();
     const card = (id: string) => {
@@ -1047,11 +1154,10 @@ describe("runbook catalog", () => {
     expect(html).not.toContain(">Steps<");
 
     const ask = card("ask");
-    before(ask, 'class="do-box"', "/ask Tell me what this application does in 3 sentences");
-    expect(ask).toContain("<ul>");
+    before(ask, 'class="say"', "/ask Tell me what this application does in 3 sentences");
+    expect(ask).toContain("Let&#39;s learn more about the application with Ask mode.");
     expect(ask).not.toContain("<ol>");
-    expect(ask).not.toContain('class="say"');
-    expect(ask.slice(ask.indexOf('class="do-box"'), ask.indexOf("</div>", ask.indexOf('class="do-box"')))).not.toContain("Copy");
+    expect(ask).not.toContain('class="do-box"');
 
     const hand = card("show-problem-by-hand");
     before(hand, "Focus is the control", 'class="do-box"');
@@ -1372,6 +1478,8 @@ describe("runbook catalog", () => {
     expect(reset, "reset should offer Linear teardown when MCP is connected").toMatch(
       /whenever the Linear MCP is connected/,
     );
+    expect(reset, "reset must delete demo-beat Linear comments").toContain("list_comments");
+    expect(reset, "reset must delete demo-beat Linear comments").toContain("delete_comment");
     expect(reset, "reset must delete git branches from the 201 standard-bug-fix beat").toContain(
       "Demo-beat git branches",
     );
@@ -1387,6 +1495,9 @@ describe("runbook catalog", () => {
     expect(reset).toContain("301 Reviewer automation");
     const resetScript = readFileSync(join(root, "scripts/demo-reset.ts"), "utf8");
     expect(resetScript).toContain('".cursor/agents/accessibility-manual-reviewer.md"');
+    expect(resetScript, "reset script must delete Linear comments before cancel").toContain(
+      "commentDelete",
+    );
     expect(reset, "reset must restore dispute queue pages").toContain("app/disputes/page.tsx");
 
     expect(stage, "stage must say the WCAG audit is a manual keyboard walkthrough").toContain(

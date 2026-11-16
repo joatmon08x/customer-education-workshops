@@ -72,7 +72,7 @@ After the server is Ready (or already responding), do both of these even when th
 
    - Catalog **tabs** for `101` / `201` / `301` / `401` (`useCanvasState` `runbooks-track`, default `"101"`)
    - Numbered steps (`Step 1`, `Step 2`, …) in one scrolling list under section headings
-   - Optional-feature checkboxes on 301 (`runbooks-features`), on by default
+   - Optional-feature checkboxes on 301 (`runbooks-features`), off by default
    - **Copy** on each prompt card (`navigator.clipboard`)
 
    `runbooks.html` is a fallback only if the native canvas cannot open.

@@ -11,16 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **201 track** — Runbooks track `201` / `RUNBOOK_SECTIONS_201` is on main for CE workshop demos (Outline Show beats, Linear staging, disk plugin) but is not a formal release in this cut.
 - **301 track.** Runbooks track `301` / `RUNBOOK_SECTIONS_301` adds the Outline Show for orchestrating agents, tasks, and coworkers (four sections, 35 beats: 11, 12, 5, 7). Not a formal release in this cut.
-- **401 track.** Runbooks track `401` / `RUNBOOK_SECTIONS_401` adds the Outline Show for delegating to asynchronous agents (three sections, 16 beats: 3, 6, 7). Tabs are the Show-owning headings, not Morning / Midday / Afternoon. Not a formal release in this cut.
+- **401 track.** Runbooks track `401` / `RUNBOOK_SECTIONS_401` adds the Outline Show for delegating to asynchronous agents (three sections, 17 beats: 4, 5, 8). Tabs are the Show-owning headings, not Morning / Midday / Afternoon. Not a formal release in this cut.
 
 ### Added
 
 - `preflight-checker` project agent. Before a 101 / 201 / 301 session, reports pass / fail / blocked per track dependency. `readonly` is false so it can run shell probes; its instructions forbid edits, install, seed, `stage-linear`, and `mcp_auth` unless the operator asks to remediate.
-- Optional runbook beats record a feature name from the Outline tag. Each track lists those features as checkboxes, on by default. Turning one off hides its beats and the browser remembers the choice.
+- Optional runbook beats record a feature name from the Outline tag. Each track lists those features as checkboxes, off by default. Checking one shows its beats and the browser remembers the choice.
 - `change-reviewer` project agent. Diff inspection for the 301 review beat. `readonly` is false so it can run `git status` and `git diff`; its instructions forbid edits. It owns the closer-inspection list: authentication, payments, personal data, permissions, or secrets; difficult rollback; missing tests; a test an agent edited; scope outside the plan; and new dependencies or shell commands. Like `ledgerly-reviewer`, it reports Passed and Incomplete, with high, warning, and suggestion inside Incomplete.
 
 ### Changed
 
+- Synced 101, 201, 301, and 401 Show beats to the live Outlines. 101 and 201 now split Say, Do, and Prompt the way 301 and 401 do. 401 hands contrast to a `/goal` Cloud Agent that finishes when the accessibility tests pass, names the Project Collections Command Center, reviews the Project model before workers launch, and uses straight quotes. 301 optional-feature checkboxes start unchecked.
 - Synced 301 Show beats to the live Outline. The Cloud Agents opener is one Do plus a /plan prompt, the subagent step uses the Outline title, and the Projects Do names the remaining prompts in this demo section.
 - `README.md`, `AGENTS.md`, and `choose-cursor-workflow` tell you to run `preflight-checker` with the track id before a demo.
 - `npm run demo:reset` now deletes local `cursor/*` and `demo/*` branches, recorded remotes on those patterns, and extra demo worktrees, then prunes worktrees. Cloud agent runs stay manual. Removing a demo worktree discards uncommitted files in that directory.

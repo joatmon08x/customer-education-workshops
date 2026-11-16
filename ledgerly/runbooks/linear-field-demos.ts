@@ -77,13 +77,17 @@ The $400 figure is Cobalt Goods' claim, not a fourth catalog price. Do not chang
     previousTitles: ["Overdue / Needs review filter does not change the list"],
     description: `## Bug
 
-On http://127.0.0.1:43173/invoices, select **Overdue**. The table still shows every invoice and **All** stays highlighted.
+On http://127.0.0.1:43173/invoices, select **Overdue**. The table still shows every invoice and **All** stays highlighted. The URL becomes \`?state=OVERDUE\`.
 
-On http://127.0.0.1:43173/disputes, select **Needs review**. The queue still shows every dispute and **All** stays highlighted.
+The same shared control is on http://127.0.0.1:43173/disputes. Select **Needs review** and the queue still shows every dispute.
+
+\`components/filter-pills.tsx\` writes \`state=\`. \`app/invoices/page.tsx\`, \`app/disputes/page.tsx\`, and the invoices search field read \`status\`.
 
 ## Scope
 
-Make the shared filter control change the list on invoices and on disputes. The pills write a query key the pages do not read. Align that key with the key the pages and the invoices search field already use (\`status\`). Leave catalog prices, suggested credit, dispute resolution, and pill styling alone. Do not split this into two issues.
+Make the shared filter control change the invoice list. Align that key with the key the pages and the invoices search field already use (\`status\`). The disputes queue uses the same control — fix it in this change. Do not split this into two issues.
+
+Leave catalog prices, suggested credit, dispute resolution, and pill styling alone. Do not rename the invoices API.
 
 ## Acceptance criteria
 
@@ -94,9 +98,9 @@ Make the shared filter control change the list on invoices and on disputes. The 
 
 ## Proof
 
-A test that the Overdue pill on /invoices lists only OVERDUE invoices. It fails on the current query key and passes after the pills and pages use the same key. \`npm test\` still has one planted failure: \`tests/suggested-credit-api.test.ts\`.
+A proving test that the Overdue pill on /invoices lists only OVERDUE invoices. It fails on the current query key (\`state\`) and passes after the pills and pages use the same key (\`status\`). \`npm test\` still has one planted failure: \`tests/suggested-credit-api.test.ts\`.
 
-http://127.0.0.1:43173/invoices — select Overdue; the table and URL match.
+http://127.0.0.1:43173/invoices — select Overdue; the table and URL match (\`status=OVERDUE\`).
 http://127.0.0.1:43173/disputes — select Needs review; the queue and URL match.
 
 ## Judgment calls
@@ -501,7 +505,7 @@ Paid, Open, Overdue, and Disputed badges, muted text, and the up KPI still read 
 
 ## Proof
 
-\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 32 passed.
+\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 33 passed.
 
 http://127.0.0.1:43173/invoices — Paid, Open, and Overdue badge text in light and dark.
 

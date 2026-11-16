@@ -35,7 +35,9 @@ describe("ce-field-demos Linear book", () => {
     expect(filter.description).toContain("## Proof");
     expect(filter.description).toContain("## Judgment calls");
     expect(filter.description).toContain("Align that key with the key the pages");
-    expect(filter.description).toContain("A test that the Overdue pill");
+    expect(filter.description).toContain("A proving test that the Overdue pill");
+    expect(filter.description).toContain("?state=OVERDUE");
+    expect(filter.description).toContain("status=OVERDUE");
     expect(FIELD_DEMO_ISSUES.map((issue) => issue.previousTitles?.[0])).toEqual([
       "Dispute dsp_1043 claims $400 against a $249 Scale invoice",
       "Overdue / Needs review filter does not change the list",
@@ -133,7 +135,7 @@ describe("ce-field-demos Linear book", () => {
     expect(WCAG_CONTRAST_TEST.description).toContain("Do not edit `tests/a11y/contrast.test.ts`");
     expect(WCAG_CONTRAST_TEST.description).toContain("7 failed / 83 passed");
     expect(WCAG_CONTRAST_TEST.description).toContain("0 failed / 90 passed");
-    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 32 passed");
+    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 33 passed");
     expect(WCAG_CONTRAST_TEST.title).not.toBe(WCAG_KEYBOARD_WALKTHROUGH.title);
     expect(FIELD_DEMO_ISSUES.some((issue) => issue.title === WCAG_CONTRAST_TEST.title)).toBe(false);
     expect(
