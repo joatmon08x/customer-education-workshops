@@ -8,7 +8,7 @@ import {
   outstandingCents,
   overdueBook,
 } from "@/lib/collections";
-import { collectionsKpi } from "@/lib/dashboard";
+import { catalogMrrCents, collectionsKpi } from "@/lib/dashboard";
 import { amountsVisible, PLAN_PRICE_CENTS } from "@/lib/plans";
 
 describe("amountsVisible", () => {
@@ -86,5 +86,6 @@ describe("collectionsKpi", () => {
     );
     expect(kpi.amountsVisible).toBe(false);
     expect(kpi.overdueCount).toBe(1);
+    expect(catalogMrrCents([{ plan: "COMPLIMENTARY" }, { plan: "GROWTH" }])).toBe(PLAN_PRICE_CENTS.GROWTH);
   });
 });

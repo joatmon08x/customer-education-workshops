@@ -42,7 +42,9 @@ export function percentChange(current: number, prior: number): number | null {
 }
 
 export function catalogMrrCents(customers: { plan: string }[]) {
-  return sumCents(customers.map((customer) => planPriceCents(customer.plan)));
+  return sumCents(
+    customers.filter((customer) => isPlanId(customer.plan)).map((customer) => planPriceCents(customer.plan)),
+  );
 }
 
 export function collectedCents(invoices: InvoiceLike[], start: Date, end: Date) {
