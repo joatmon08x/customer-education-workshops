@@ -340,6 +340,7 @@ async function main() {
   await prisma.dispute.deleteMany();
   await prisma.payment.deleteMany();
   await prisma.activity.deleteMany();
+  await prisma.collectionNote.deleteMany();
   await prisma.invoiceLine.deleteMany();
   await prisma.invoice.deleteMany();
   await prisma.customer.deleteMany();

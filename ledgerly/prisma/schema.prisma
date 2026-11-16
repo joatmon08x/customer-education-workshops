@@ -18,16 +18,17 @@ model Workspace {
 }
 
 model Customer {
-  id          String     @id
+  id          String           @id
   workspaceId String
-  workspace   Workspace  @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id])
   name        String
   contactName String
   email       String
   plan        String
-  createdAt   DateTime   @default(now())
+  createdAt   DateTime         @default(now())
   invoices    Invoice[]
   activities  Activity[]
+  notes       CollectionNote[]
 }
 
 model Invoice {
@@ -51,6 +52,20 @@ model Invoice {
   disputes        Dispute[]
   payments        Payment[]
   activities      Activity[]
+  notes           CollectionNote[]
+}
+
+model CollectionNote {
+  id         String    @id
+  customerId String
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  invoiceId  String?
+  invoice    Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  authorName String
+  body       String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  activities Activity[]
 }
 
 model Payment {
@@ -64,18 +79,21 @@ model Payment {
 }
 
 model Activity {
-  id          String    @id
+  id          String          @id
   customerId  String
-  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer    Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
   invoiceId   String?
-  invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoice     Invoice?        @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  noteId      String?
+  note        CollectionNote? @relation(fields: [noteId], references: [id], onDelete: SetNull)
   type        String
   status      String
   occurredOn  DateTime
   amountCents Int?
   method      String?
+  body        String?
   actorName   String
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime        @default(now())
 }
 
 model InvoiceLine {

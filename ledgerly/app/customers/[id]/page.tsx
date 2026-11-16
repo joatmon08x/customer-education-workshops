@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CollectionNoteEdit } from "@/components/collection-note-edit";
+import { CollectionNoteForm } from "@/components/collection-note-form";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DEMO_AS_OF } from "@/lib/clock";
+import { canEditCollectionNote } from "@/lib/collection-notes";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
 import { isPaymentMethod, outstandingCents, paymentMethodLabel } from "@/lib/payments";
@@ -35,8 +38,12 @@ export default async function CustomerDetailPage({
     where: { id },
     include: {
       invoices: { include: { payments: true } },
-      activities: {
+      notes: {
         include: { invoice: true },
+        orderBy: { createdAt: "desc" },
+      },
+      activities: {
+        include: { invoice: true, note: true },
         orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }],
       },
     },
@@ -61,6 +68,11 @@ export default async function CustomerDetailPage({
       lastActivityOn: latestActivityOn.get(invoice.id) ?? null,
     }))
     .sort((a, b) => b.daysPastDue - a.daysPastDue);
+
+  const invoiceOptions = customer.invoices
+    .slice()
+    .sort((a, b) => a.number.localeCompare(b.number))
+    .map((invoice) => ({ id: invoice.id, number: invoice.number }));
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -133,10 +145,13 @@ export default async function CustomerDetailPage({
         <CardHeader className="px-5 pt-5">
           <CardTitle>Activity</CardTitle>
           <CardDescription>
-            Single account feed for collections touches. Newest first.
+            Single account feed for collections touches. Newest first. Notes stay on the account;
+            editable by Avery Quinn for 15 minutes after creation.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-0 pb-4">
+          <CollectionNoteForm customerId={customer.id} invoices={invoiceOptions} />
+
           {customer.activities.length === 0 ? (
             <p className="px-5 pb-2 text-sm text-muted-foreground">
               No activity on this account yet.
@@ -149,35 +164,62 @@ export default async function CustomerDetailPage({
                   <TableHead>Type</TableHead>
                   <TableHead>Detail</TableHead>
                   <TableHead>Recorder</TableHead>
+                  <TableHead className="w-[1%]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {customer.activities.map((activity) => (
-                  <TableRow key={activity.id}>
-                    <TableCell className="text-muted-foreground">
-                      {formatDate(activity.occurredOn)}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">{activity.type}</TableCell>
-                    <TableCell className="text-sm">
-                      {activity.type === "PAYMENT_RECORDED" ? (
-                        <>
-                          {activity.amountCents != null ? formatUsd(activity.amountCents) : "—"}
-                          {activity.method
-                            ? ` · ${
-                                isPaymentMethod(activity.method)
-                                  ? paymentMethodLabel(activity.method)
-                                  : activity.method
-                              }`
-                            : ""}
-                          {activity.invoice ? ` · ${activity.invoice.number}` : ""}
-                        </>
-                      ) : (
-                        activity.invoice?.number ?? "—"
-                      )}
-                    </TableCell>
-                    <TableCell>{activity.actorName}</TableCell>
-                  </TableRow>
-                ))}
+                {customer.activities.map((activity) => {
+                  const linkedNote =
+                    activity.type === "NOTE_ADDED" && activity.note ? activity.note : null;
+                  const editable = linkedNote ? canEditCollectionNote(linkedNote) : false;
+
+                  return (
+                    <TableRow key={activity.id}>
+                      <TableCell className="text-muted-foreground">
+                        {formatDate(activity.occurredOn)}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">{activity.type}</TableCell>
+                      <TableCell className="text-sm">
+                        {activity.type === "PAYMENT_RECORDED" ? (
+                          <>
+                            {activity.amountCents != null ? formatUsd(activity.amountCents) : "—"}
+                            {activity.method
+                              ? ` · ${
+                                  isPaymentMethod(activity.method)
+                                    ? paymentMethodLabel(activity.method)
+                                    : activity.method
+                                }`
+                              : ""}
+                            {activity.invoice ? ` · ${activity.invoice.number}` : ""}
+                          </>
+                        ) : activity.type === "NOTE_ADDED" ? (
+                          <>
+                            <span className="whitespace-pre-wrap">
+                              {linkedNote?.body ?? activity.body ?? "—"}
+                            </span>
+                            {activity.invoice ? (
+                              <span className="text-muted-foreground">
+                                {" "}
+                                · {activity.invoice.number}
+                              </span>
+                            ) : null}
+                          </>
+                        ) : (
+                          activity.invoice?.number ?? "—"
+                        )}
+                      </TableCell>
+                      <TableCell>{activity.actorName}</TableCell>
+                      <TableCell>
+                        {editable && linkedNote ? (
+                          <CollectionNoteEdit
+                            noteId={linkedNote.id}
+                            initialBody={linkedNote.body}
+                          />
+                        ) : null}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
