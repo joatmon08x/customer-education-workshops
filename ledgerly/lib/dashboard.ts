@@ -1,6 +1,6 @@
 import { DEMO_AS_OF, DEMO_PRIOR_END, DEMO_PRIOR_START, DEMO_WINDOW_START } from "@/lib/clock";
 import { sumCents } from "@/lib/money";
-import { planPriceCents } from "@/lib/plans";
+import { isPlanId, planPriceCents } from "@/lib/plans";
 
 type InvoiceLike = {
   status: string;
@@ -93,6 +93,31 @@ export function disputeBreakdown(disputes: DisputeLike[]) {
     { id: "review", label: "In review", count: inReview, color: "#d97706" },
     { id: "resolved", label: "Resolved", color: "#4f46e5", count: resolved },
   ] as const;
+}
+
+const DAY_MS = 86_400_000;
+
+function utcDayStart(date: Date) {
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
+/** Overdue exposure plus how much of the book was worked on the demo day and the 7 days ending it. */
+export function collectionsKpi(
+  invoices: { status: string; totalCents: number; customer: { plan: string } }[],
+  activities: { occurredOn: Date }[],
+  asOf: Date = DEMO_AS_OF,
+) {
+  const overdue = invoices.filter((invoice) => invoice.status === "OVERDUE");
+  const today = utcDayStart(asOf);
+  const weekStart = today - 6 * DAY_MS;
+  const days = activities.map((activity) => utcDayStart(activity.occurredOn));
+  return {
+    overdueCents: sumCents(overdue.map((invoice) => invoice.totalCents)),
+    overdueCount: overdue.length,
+    amountsVisible: overdue.every((invoice) => isPlanId(invoice.customer.plan)),
+    activitiesToday: days.filter((day) => day === today).length,
+    activitiesWeek: days.filter((day) => day >= weekStart && day <= today).length,
+  };
 }
 
 export const DASHBOARD_WINDOWS = {

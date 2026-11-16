@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Amount } from "@/components/amount";
+import { RecordPayment } from "@/components/collections/record-payment";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge, DisputeStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -7,11 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { draftCollectionNote } from "@/lib/collection-note";
+import { isPaymentMethod, outstandingCents, PAYMENT_METHOD_LABEL } from "@/lib/collections";
 import { DEMO_AS_OF } from "@/lib/clock";
 import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
-import { isPlanId, planLabel } from "@/lib/plans";
+import { amountsVisible, isPlanId, planLabel } from "@/lib/plans";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,6 +32,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   const daysPastDue =
     invoice.status === "OVERDUE" ? Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn)) : 0;
+  const outstanding = outstandingCents(invoice);
+  const showAmounts = amountsVisible(invoice.customer.plan);
   const noteDraft = draftCollectionNote({
     customerName: invoice.customer.name,
     daysPastDue,
@@ -95,6 +102,43 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <CardContent className="space-y-1 text-sm">
               <p>{invoice.customer.email}</p>
               <p className="text-muted-foreground">Plan on file: {planLabel(invoice.plan)}</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Payments</CardTitle>
+              <CardDescription>
+                Outstanding <Amount cents={outstanding} visible={showAmounts} />
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {invoice.payments.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No payments recorded.</p>
+              ) : (
+                <ul className="space-y-2 text-sm">
+                  {invoice.payments.map((payment) => (
+                    <li key={payment.id} className="flex items-start justify-between gap-3">
+                      <div>
+                        <p>
+                          {isPaymentMethod(payment.method) ? PAYMENT_METHOD_LABEL[payment.method] : payment.method}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDate(payment.recordedOn)} · {payment.recordedBy}
+                        </p>
+                      </div>
+                      <Amount cents={payment.amountCents} visible={showAmounts} className="font-medium" />
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {outstanding > 0 && (invoice.status === "OPEN" || invoice.status === "OVERDUE") ? (
+                <RecordPayment
+                  invoiceId={invoice.id}
+                  invoiceNumber={invoice.number}
+                  outstandingCents={outstanding}
+                />
+              ) : null}
             </CardContent>
           </Card>
 
