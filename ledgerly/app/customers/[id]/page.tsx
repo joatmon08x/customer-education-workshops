@@ -13,6 +13,7 @@ import {
 import { DEMO_AS_OF } from "@/lib/clock";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { isPaymentMethod, outstandingCents, paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel } from "@/lib/plans";
 import { prisma } from "@/lib/prisma";
 
@@ -32,15 +33,32 @@ export default async function CustomerDetailPage({
   const { id } = await params;
   const customer = await prisma.customer.findUnique({
     where: { id },
-    include: { invoices: true },
+    include: {
+      invoices: { include: { payments: true } },
+      activities: {
+        include: { invoice: true },
+        orderBy: [{ occurredOn: "desc" }, { createdAt: "desc" }],
+      },
+    },
   });
   if (!customer || !isPlanId(customer.plan)) notFound();
+
+  const latestActivityOn = new Map<string, Date>();
+  for (const activity of customer.activities) {
+    if (!activity.invoiceId) continue;
+    const existing = latestActivityOn.get(activity.invoiceId);
+    if (!existing || activity.occurredOn > existing) {
+      latestActivityOn.set(activity.invoiceId, activity.occurredOn);
+    }
+  }
 
   const overdueBook = customer.invoices
     .filter((invoice) => invoice.status === "OVERDUE")
     .map((invoice) => ({
       ...invoice,
       daysPastDue: Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn)),
+      balanceCents: outstandingCents(invoice.totalCents, invoice.payments),
+      lastActivityOn: latestActivityOn.get(invoice.id) ?? null,
     }))
     .sort((a, b) => b.daysPastDue - a.daysPastDue);
 
@@ -57,7 +75,7 @@ export default async function CustomerDetailPage({
           <CardTitle>Overdue Book</CardTitle>
           <CardDescription>
             Past-due invoices for this account only, oldest exposure first. Outstanding balance is
-            the invoice total until payments land in a later slice.
+            the invoice total minus recorded payments.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-0 pb-4">
@@ -98,9 +116,66 @@ export default async function CustomerDetailPage({
                       {invoice.daysPastDue}
                     </TableCell>
                     <TableCell className="text-right font-medium tabular-nums">
-                      {formatUsd(invoice.totalCents)}
+                      {formatUsd(invoice.balanceCents)}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">—</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {invoice.lastActivityOn ? formatDate(invoice.lastActivityOn) : "—"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden py-0">
+        <CardHeader className="px-5 pt-5">
+          <CardTitle>Activity</CardTitle>
+          <CardDescription>
+            Single account feed for collections touches. Newest first.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="px-0 pb-4">
+          {customer.activities.length === 0 ? (
+            <p className="px-5 pb-2 text-sm text-muted-foreground">
+              No activity on this account yet.
+            </p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>When</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Detail</TableHead>
+                  <TableHead>Recorder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {customer.activities.map((activity) => (
+                  <TableRow key={activity.id}>
+                    <TableCell className="text-muted-foreground">
+                      {formatDate(activity.occurredOn)}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">{activity.type}</TableCell>
+                    <TableCell className="text-sm">
+                      {activity.type === "PAYMENT_RECORDED" ? (
+                        <>
+                          {activity.amountCents != null ? formatUsd(activity.amountCents) : "—"}
+                          {activity.method
+                            ? ` · ${
+                                isPaymentMethod(activity.method)
+                                  ? paymentMethodLabel(activity.method)
+                                  : activity.method
+                              }`
+                            : ""}
+                          {activity.invoice ? ` · ${activity.invoice.number}` : ""}
+                        </>
+                      ) : (
+                        activity.invoice?.number ?? "—"
+                      )}
+                    </TableCell>
+                    <TableCell>{activity.actorName}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

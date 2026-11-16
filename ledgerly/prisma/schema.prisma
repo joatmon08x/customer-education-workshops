@@ -18,15 +18,16 @@ model Workspace {
 }
 
 model Customer {
-  id          String    @id
+  id          String     @id
   workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id])
   name        String
   contactName String
   email       String
   plan        String
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime   @default(now())
   invoices    Invoice[]
+  activities  Activity[]
 }
 
 model Invoice {
@@ -48,6 +49,33 @@ model Invoice {
   collectionNote  String?
   lines           InvoiceLine[]
   disputes        Dispute[]
+  payments        Payment[]
+  activities      Activity[]
+}
+
+model Payment {
+  id          String   @id
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amountCents Int
+  method      String
+  recordedBy  String
+  recordedAt  DateTime
+}
+
+model Activity {
+  id          String    @id
+  customerId  String
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  invoiceId   String?
+  invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  type        String
+  status      String
+  occurredOn  DateTime
+  amountCents Int?
+  method      String?
+  actorName   String
+  createdAt   DateTime  @default(now())
 }
 
 model InvoiceLine {

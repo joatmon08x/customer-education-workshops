@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
+import { RecordPaymentForm } from "@/components/record-payment-form";
 import { InvoiceStatusBadge, DisputeStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { DEMO_AS_OF } from "@/lib/clock";
 import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { isPaymentMethod, outstandingCents, paymentMethodLabel } from "@/lib/payments";
 import { isPlanId, planLabel } from "@/lib/plans";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
@@ -32,6 +34,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
     daysPastDue,
     plan: invoice.plan,
   });
+  const balanceCents = outstandingCents(invoice.totalCents, invoice.payments);
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
@@ -82,6 +85,10 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 <dt>Total</dt>
                 <dd>{formatUsd(invoice.totalCents)}</dd>
               </div>
+              <div className="flex justify-between font-medium">
+                <dt>Outstanding</dt>
+                <dd>{formatUsd(balanceCents)}</dd>
+              </div>
             </dl>
           </CardContent>
         </Card>
@@ -116,8 +123,65 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
           ) : null}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Record payment</CardTitle>
+              <CardDescription>
+                Full outstanding balance only. Methods: check, ACH, card on file, cash.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RecordPaymentForm
+                invoiceId={invoice.id}
+                invoiceNumber={invoice.number}
+                outstandingCents={balanceCents}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
+
+      <Card className="overflow-hidden py-0">
+        <CardHeader className="px-5 pt-5">
+          <CardTitle>Payment history</CardTitle>
+          <CardDescription>Payments recorded against this invoice.</CardDescription>
+        </CardHeader>
+        <CardContent className="px-0 pb-4">
+          {invoice.payments.length === 0 ? (
+            <p className="px-5 pb-2 text-sm text-muted-foreground">No payments recorded yet.</p>
+          ) : (
+            <table className="w-full min-w-[28rem] text-sm">
+              <thead>
+                <tr className="border-y border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
+                  <th className="px-5 py-2 font-medium">Recorded</th>
+                  <th className="px-5 py-2 font-medium">Method</th>
+                  <th className="px-5 py-2 font-medium">Recorder</th>
+                  <th className="px-5 py-2 text-right font-medium">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoice.payments.map((payment) => (
+                  <tr key={payment.id} className="border-b border-border">
+                    <td className="px-5 py-3 text-muted-foreground">
+                      {formatDate(payment.recordedAt)}
+                    </td>
+                    <td className="px-5 py-3">
+                      {isPaymentMethod(payment.method)
+                        ? paymentMethodLabel(payment.method)
+                        : payment.method}
+                    </td>
+                    <td className="px-5 py-3">{payment.recordedBy}</td>
+                    <td className="px-5 py-3 text-right font-medium tabular-nums">
+                      {formatUsd(payment.amountCents)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

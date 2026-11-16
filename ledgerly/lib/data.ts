@@ -15,6 +15,7 @@ const invoiceInclude = {
   customer: true,
   lines: true,
   disputes: true,
+  payments: { orderBy: { recordedAt: "desc" as const } },
 } as const;
 
 const disputeInclude = {
