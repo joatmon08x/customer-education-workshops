@@ -2,10 +2,12 @@ import { prisma } from "@/lib/prisma";
 import {
   DASHBOARD_WINDOWS,
   catalogMrrCents,
+  collectionsActivityCounts,
   collectedCents,
   disputeBreakdown,
   disputeCentsAt,
   openCentsAt,
+  overdueTotals,
   percentChange,
   revenueSeries,
 } from "@/lib/dashboard";
@@ -28,10 +30,11 @@ const disputeInclude = {
 } as const;
 
 export async function getDashboard() {
-  const [invoices, disputes, customers] = await Promise.all([
+  const [invoices, disputes, customers, activities] = await Promise.all([
     prisma.invoice.findMany({ include: invoiceInclude, orderBy: { issuedOn: "desc" } }),
     prisma.dispute.findMany({ include: disputeInclude, orderBy: { openedOn: "desc" } }),
     prisma.customer.findMany(),
+    prisma.activity.findMany({ select: { occurredOn: true } }),
   ]);
 
   const { currentStart, currentEnd, priorStart, priorEnd } = DASHBOARD_WINDOWS;
@@ -46,6 +49,8 @@ export async function getDashboard() {
   const openDisputes = disputes.filter(
     (dispute) => dispute.status === "OPEN" || dispute.status === "NEEDS_REVIEW",
   );
+  const { overdueCount, overdueCents } = overdueTotals(invoices);
+  const { todayCount, weekCount } = collectionsActivityCounts(activities, currentEnd);
 
   return {
     invoices,
@@ -71,6 +76,10 @@ export async function getDashboard() {
       disputeChange: percentChange(disputeCurrent, disputePrior),
       reviewCount: needsReview.length,
       openDisputeCount: openDisputes.length,
+      overdueCount,
+      overdueCents,
+      activitiesTodayCount: todayCount,
+      activitiesWeekCount: weekCount,
     },
   };
 }

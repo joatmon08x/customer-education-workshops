@@ -95,6 +95,47 @@ export function disputeBreakdown(disputes: DisputeLike[]) {
   ] as const;
 }
 
+type ActivityLike = {
+  occurredOn: Date;
+};
+
+function demoDayKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+/** Overdue book totals — catalog cents on OVERDUE invoices only. */
+export function overdueTotals(invoices: { status: string; totalCents: number }[]) {
+  const overdue = invoices.filter((invoice) => invoice.status === "OVERDUE");
+  return {
+    overdueCount: overdue.length,
+    overdueCents: sumCents(overdue.map((invoice) => invoice.totalCents)),
+  };
+}
+
+/**
+ * Activity counts against the frozen demo clock.
+ * Today = occurredOn on DEMO_AS_OF's calendar day.
+ * Week = the 7 days ending that day (inclusive).
+ */
+export function collectionsActivityCounts(
+  activities: ActivityLike[],
+  asOf: Date = DEMO_AS_OF,
+) {
+  const asOfDay = demoDayKey(asOf);
+  const weekStart = new Date(asOf);
+  weekStart.setUTCDate(weekStart.getUTCDate() - 6);
+  const weekStartDay = demoDayKey(weekStart);
+
+  let todayCount = 0;
+  let weekCount = 0;
+  for (const activity of activities) {
+    const day = demoDayKey(activity.occurredOn);
+    if (day === asOfDay) todayCount += 1;
+    if (day >= weekStartDay && day <= asOfDay) weekCount += 1;
+  }
+  return { todayCount, weekCount };
+}
+
 export const DASHBOARD_WINDOWS = {
   currentStart: DEMO_WINDOW_START,
   currentEnd: DEMO_AS_OF,
