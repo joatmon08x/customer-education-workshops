@@ -81,10 +81,10 @@ npm test
 Expected result:
 
 ```text
-1 failed / 33 passed
+0 failed / 34 passed
 ```
 
-The failing test is part of the workshop. It doesn't mean setup failed.
+A green suite means setup succeeded.
 
 ### Troubleshoot
 

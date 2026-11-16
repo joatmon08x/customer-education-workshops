@@ -1287,10 +1287,10 @@ describe("runbook catalog", () => {
 
     // Shipped-suite count must stay consistent across the docs that cite it
     // (see the sync rule in .cursor/rules/ledgerly.mdc). Assert the
-    // "1 failed / <n> passed" format is present in each and that every file
+    // "0 failed / <n> passed" format is present in each and that every file
     // agrees, so changing the count only means updating the docs — not this
     // assertion.
-    const countPattern = /1 failed \/ (\d+) passed/g;
+    const countPattern = /0 failed \/ (\d+) passed/g;
     const countSources: Record<string, string> = {
       readme: files.readme,
       agents: files.agents,
@@ -1300,7 +1300,7 @@ describe("runbook catalog", () => {
     const passedCounts = new Set<string>();
     for (const [name, contents] of Object.entries(countSources)) {
       const matches = [...contents.matchAll(countPattern)].map((match) => match[1]);
-      expect(matches.length, `${name} is missing a "1 failed / <n> passed" count`).toBeGreaterThan(
+      expect(matches.length, `${name} is missing a "0 failed / <n> passed" count`).toBeGreaterThan(
         0,
       );
       for (const passed of matches) passedCounts.add(passed);
