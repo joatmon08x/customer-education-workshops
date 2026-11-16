@@ -19,7 +19,7 @@ The demo ships four jumpable tracks: **101**, **201**, **301**, and **401**. Eve
 
 The beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`. When asked to open the runbook, run `present-runbooks` (click **301** for that track). `start-ledgerly` starts the app and opens the same numbered-steps canvas. Do not open `runbooks.html` for those requests; it is a fallback if the canvas cannot open. Optional features are checkboxes, checked by default. Uncheck a feature to hide its beats. The choice is saved in the canvas. Use the matching `example` verbatim. Do not invent another catalog price.
 
-The named demo error is `dsp_1043` / the suggested-credit v1 client. Do not mention the invoice or dispute filter-pill `state=` seam unless the user is on that click path.
+The named demo error is `dsp_1043` / the suggested-credit v1 client.
 
 Before a demo session, run `preflight-checker` with the track id (`preflight-checker track 101`, `201`, `301`, or `401`). It reports **Ready** when every required check for that track passed, and it does not install, seed, start the server, or stage Linear. If the track is missing, it asks which of `101`, `201`, `301`, or `401` and runs no checks. Then start the session with `npm run demo:session -- start`. Record every rule, skill, Canvas, Figma deck, Linear board, and demo branch it creates. Reset is script-first and clears every track at once; update the event record and reset script whenever a beat gains a new leftover.
 

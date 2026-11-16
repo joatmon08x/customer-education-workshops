@@ -13,7 +13,7 @@ When invoked, review the diff that was named. If none was named, review the curr
 1. Read the invocation for a plan or task. If it names a plan file, read that file and treat its owned paths as the scope. If it names none, say so and do not invent an out-of-plan finding.
 2. Run `git status`, `git diff`, and `git diff --cached`. On a feature branch, also diff against `main`.
 3. Check each inspection class below. Quote the file and the changed lines. For a credential, name the kind and the file. Do not copy the secret value into the report.
-4. Run `npm test` when the diff touches tests, `lib/`, `app/api/`, or `prisma/`. The clean tree is **1 failed / 33 passed**, and `tests/suggested-credit-api.test.ts` is the planted failure. Record the count you observed.
+4. Run `npm test` when the diff touches tests, `lib/`, `app/api/`, or `prisma/`. The clean tree is **1 failed / 34 passed**, and `tests/suggested-credit-api.test.ts` is the planted failure. Record the count you observed.
 
 ## Inspection classes
 
@@ -26,7 +26,7 @@ When invoked, review the diff that was named. If none was named, review the curr
 **Warning.** Should fix before the change is trusted.
 
 - Behavior with no test coverage. New or changed branching in `lib/` or `app/api/` with no test in the diff that exercises it. Name the behavior and the test that is missing.
-- Files or scope outside the plan. A changed path the named plan does not own. An edit to a protected seam the invocation did not ask for: the suggested-credit client, `prisma/seed.ts`, `prisma/extra-accounts.ts`, the dispute-resolution stub (`lib/disputes/resolve.ts`, the resolve route, the panel buttons), or the `state=` query key in `components/filter-pills.tsx`.
+- Files or scope outside the plan. A changed path the named plan does not own. An edit to a protected seam the invocation did not ask for: the suggested-credit client, `prisma/seed.ts`, `prisma/extra-accounts.ts`, the dispute-resolution stub (`lib/disputes/resolve.ts`, the resolve route, the panel buttons), or renaming the FilterPills `status` query key.
 - New dependencies or shell commands. A new `dependencies` or `devDependencies` entry, a lockfile package the manifest did not already use, a new `package.json` script, `child_process` / `exec` / `spawn`, or a new shell script. A destructive command (`migrate reset`, recursive delete, a piped remote install) is high instead.
 
 **Suggestion.** Consider.
