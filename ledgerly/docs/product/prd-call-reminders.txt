@@ -1,10 +1,10 @@
 Product requirements: payment reminders by phone call
 Product: Ledgerly
-Status: Draft for the demo
+Document state: Draft for the demo
 Updated: 2026-11-17
 Owner: Product manager
 Voice provider: Grok Voice, mocked
-Related: ledgerly/docs/issues/index.txt
+Related: ledgerly/docs/issues/dependencies.txt
 Related: ledgerly/docs/design/call-reminders-review.txt
 Related: ledgerly/docs/product/project-update.txt
 
@@ -14,7 +14,7 @@ Billing operators need a way to remind customers about invoices that are coming 
 The reminder names the invoice and the amount due. It stays inside quiet hours. It runs only after consent. The customer can opt out on the call. The outcome and a text transcript stay on the invoice.
 
 Background
-Ledgerly already holds the invoice, the due date, the amount due, and the customer record. Operators can open an invoice and read that record. A missed due date is easier to prevent when the customer hears a short reminder while there is still time to pay.
+Ledgerly already holds the invoice, the due date, the amount due, and the customer record. Operators go to an invoice and read that record. A missed due date is easier to prevent when the customer hears a short reminder while there is still time to pay.
 
 Target users
 Billing operator. Runs the book, checks invoices, and reads call outcomes.
@@ -25,11 +25,12 @@ Finance lead. Reads call results after the results view exists. That view is not
 Goals
 Place a mocked reminder three days before the due date.
 Place a mocked reminder one day after the due date when the invoice is overdue.
-Keep every placed call outside quiet hours, using the customer local time.
+Keep every placed call outside quiet hours, using the customer's local time.
 Place a call only when consent is on file.
 End the call when the customer opts out, and block later reminders until the customer opts in again.
 Keep one active reminder call per invoice.
 Show the outcome and the transcript on the invoice.
+When the first call is not answered, try again within the retry cap.
 
 Non-goals
 Do not place a live call. Do not store a phone number. Do not ship a provider key. Grok Voice stays mocked.
@@ -43,8 +44,8 @@ Assumptions
 The invoice already exists. This feature does not create invoices.
 The mock returns one outcome: answered, no answer, or opt-out.
 The mock returns the lines it spoke, as text.
-The customer local time is on the customer record when the zone is known.
-A missing zone does not get a fallback in this draft. See the open questions.
+The customer's local time is on the customer record when the zone is known.
+A missing zone does not get a fallback in this draft. See the unresolved questions.
 
 User journey
 The workspace admin sets the two lead times, the quiet hours, and the tone.
@@ -56,39 +57,41 @@ The outcome and the transcript land on the invoice, under the Customer card.
 A <pay link> follows a completed call.
 
 Current app
-The call settings screen is not on the settings page at http://localhost:43173. The results view is not on the dashboard. The transcript requirement below states what the invoice page shows today.
+Go to http://localhost:43173. The call settings screen is not on the settings page. The results view is not on the dashboard. The transcript requirement below states what the invoice page shows today.
 
 Requirements
 
-Must. Upcoming invoices are called three days before the due date. Overdue invoices are called one day after the due date. Keys: LEDGERLY-101, LEDGERLY-103.
+Must. Only one reminder call for an invoice is active at a time. Decision: DR-1. DR means design review decision.
 
-Must. The default quiet hours run from nine in the evening until eight the next morning, in the customer local time. A call does not start inside that window. Keys: LEDGERLY-102, LEDGERLY-104. This matches DR-4.
+Must. Upcoming invoices are called three days before the due date. Overdue invoices are called one day after the due date.
 
-Must. Only one reminder call for an invoice is active at a time. Decision: DR-1.
+Must. The default quiet hours run from nine in the evening until eight the next morning, in the customer's local time. A call does not start inside that window. This matches DR-4.
 
-Must. Consent is recorded before the first reminder call. A missing consent record blocks the call. Key: LEDGERLY-121.
+Must. Consent is recorded before the first reminder call. A missing consent record blocks the call.
 
-Must. A spoken opt-out ends the call before the next step and blocks later reminder calls until the customer opts in again. Key: LEDGERLY-122. Decision: DR-3.
+Must. A spoken opt-out ends the call before the next step and blocks later reminder calls until the customer opts in again. Decision: DR-3.
 
-Must. The invoice page shows a Call transcript card under the Customer card. The card shows the outcome, the duration, and a text replay. Key: LEDGERLY-131. Decision: DR-6. LEDGERLY-131 is Done. The running app at http://localhost:43173 already shows this card.
+Must. The invoice page shows a Call transcript card under the Customer card. The card shows the outcome, the duration, and a text replay. Decision: DR-6. Go to an invoice at http://localhost:43173. The running app already shows this card.
 
-Should. The workspace admin can preview a script in the mock before a call uses it. Key: LEDGERLY-113.
+Must. When the first call is not answered, schedule a later retry. Cap retries at two attempts after the first call. Keep retries outside quiet hours. Do not retry after an opt-out.
 
-Should. When nobody answers, the mock leaves a short voicemail that names the invoice and the amount due. Key: LEDGERLY-170.
+Must. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee. This matches DR-5.
 
-Should. After a completed reminder call, send the customer a <pay link> for that invoice. Key: LEDGERLY-161.
+Should. The workspace admin can preview a script in the mock before a call uses it.
 
-Should. When quiet hours block a call, the invoice stores a skipped-call reason. Key: LEDGERLY-106.
+Should. When nobody answers, the mock leaves a short voicemail that names the invoice and the amount due. The voicemail does not replace the later retry.
 
-Should. Each call outcome is saved on the invoice as answered, no answer, or opt-out. Key: LEDGERLY-132.
+Should. After a completed reminder call, send the customer a <pay link> for that invoice.
 
-Could. The tone list includes brief and formal as well as the calm default. Key: LEDGERLY-115. Decision: DR-5.
+Should. When quiet hours block a call, the invoice stores a skipped-call reason.
 
-Could. A workspace admin can export one transcript as a text file. Key: LEDGERLY-134.
+Should. Each call outcome is saved on the invoice as answered, no answer, or opt-out.
 
-Could. A results view counts calls placed today and groups them by answered, no answer, and opt-out. Keys: LEDGERLY-151, LEDGERLY-152. This view is not in the running app.
+Could. A workspace admin can export one transcript as a text file.
 
-Could. A workspace admin can export the opt-out list. Key: LEDGERLY-123.
+Could. A results view counts calls placed today and groups them by answered, no answer, and opt-out. This view is not in the running app.
+
+Could. A workspace admin can export the opt-out list.
 
 Success metrics
 
@@ -113,13 +116,14 @@ Consent is on file before the first call to that customer.
 A spoken opt-out ends the current call and blocks the next one.
 The invoice page shows the Call transcript card under the Customer card, with the outcome, the duration, and a text replay.
 Upcoming invoices use a three-day lead time, and overdue invoices use a one-day lead time.
+A missed call gets a later retry, capped at two attempts after the first call, and that retry stays outside quiet hours.
 A <pay link> is sent after a completed reminder call.
 No release build places a live call, stores a phone number, or contains a provider key.
 
-Open questions
+Unresolved questions
 Question. When the customer record has no local zone, which zone should quiet hours use?
 Question. How many days should a <pay link> stay valid?
 Question. How many days should pass between a missed call and the retry?
 
 Stakeholders
-Billing operations. Voice platform. Workspace design. Finance ops.
+Billing operations. Voice platform. Workspace design. Finance lead.

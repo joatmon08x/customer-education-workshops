@@ -1,0 +1,27 @@
+Epic Summary:
+After a reminder call, the customer receives a pay link for that invoice. The link points at one invoice and expires after a set number of days.
+
+Objective:
+Give the customer a direct way to pay the invoice the call named.
+
+User Stories/Tasks:
+As a customer, I want a pay link after the reminder call, so that I can pay the invoice without searching for it.
+As a billing operator, I want the pay link tied to <invoice id>, so that the payment lands on the right invoice.
+As a workspace admin, I want the pay link to expire after a set number of days, so that an old link does not remain valid.
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call flow, pay prompt in DR-2 (design review decision)
+
+Dependencies:
+Call scripts and tone must finish before this epic starts.
+The needed story is the one that includes a pay prompt in the script.
+
+Timeframe:
+Start Date: 2026-12-08
+End Date: 2027-01-30
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design. Finance lead.
+
+Notes/Additional Information:
+The link is a <pay link> placeholder. This epic does not invent a payment page and does not change the amount due. How many days the link stays valid is still unset.

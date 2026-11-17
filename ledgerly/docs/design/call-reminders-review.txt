@@ -4,7 +4,7 @@ Reviewers: Workspace design
 Source: ledgerly/docs/product/prd-call-reminders.txt
 App checked against: http://localhost:43173
 
-This note covers three screens: the call flow, the call settings screen, and the transcript view on the invoice. Decisions are numbered DR-1 through DR-6. Grok Voice is mocked. The design has no phone number field and no audio file.
+This note covers three screens: the call flow, the call settings screen, and the transcript view on the invoice. Decisions are numbered DR-1 through DR-6. DR means design review decision. Grok Voice is mocked. The design has no phone number field and no audio file.
 
 Call flow
 
@@ -34,7 +34,7 @@ This screen is the target layout for workspace admins. It is not on the settings
 Fields on the target screen:
 Lead time for an upcoming invoice: three days before the due date.
 Lead time for an overdue invoice: one day after the due date.
-Quiet hours start and end, in the customer local time.
+Quiet hours start and end, in the customer's local time.
 Tone.
 Retry cap.
 Consent switch. When the switch is off, no call is placed.
@@ -44,11 +44,11 @@ There is no phone number field.
 
 When the customer record has no local zone, the screen shows <zone missing> and the call is not placed. This review does not choose a fallback zone.
 
-DR-4. The default quiet hours run from eight in the evening until nine the next morning, in the customer local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
+DR-4. The default quiet hours run from eight in the evening until nine the next morning, in the customer's local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
 
 DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee.
 
-The retry cap defaults to two attempts after the first call. The cap control sits on this screen. Enforcing the cap is tracked with the retry issues, not with a separate decision number.
+The retry cap defaults to two attempts after the first call. The cap control sits on this screen. Enforcing the cap is part of the Retry rules epic, not a separate decision number.
 
 Transcript view on the invoice
 
@@ -58,6 +58,6 @@ The card shows three facts. The outcome, which is answered, no answer, or opt-ou
 
 DR-6. The Call transcript card sits under the Customer card. It shows the outcome, the duration, and a text replay. The outcome is answered, no answer, or opt-out.
 
-Current build. Open an invoice at http://localhost:43173. The Call transcript card is already under the Customer card. It shows the outcome, the duration, and a text replay.
+Current build. Go to an invoice at http://localhost:43173. The Call transcript card is already under the Customer card. It shows the outcome, the duration, and a text replay.
 
 The script version and a text export are later additions. They are not on this card in the current build.

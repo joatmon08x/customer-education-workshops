@@ -1,0 +1,29 @@
+Epic Summary:
+Each reminder call uses a short script with a chosen tone. The default tone is calm. Brief and formal are visible and are not the default. A preview plays the script in the mock before a call uses it.
+
+Objective:
+Give every reminder call the same short shape, with calm as the default tone.
+
+User Stories/Tasks:
+As a billing operator, I want a default reminder script, so that every call states the invoice and the amount due.
+As a workspace admin, I want the script to end with an opt-out line, so that the customer can refuse later calls.
+As a workspace admin, I want to preview a script before it is used on a call, so that I can check the tone in the mock.
+As a billing operator, I want the script to include a pay prompt, so that the customer knows a pay link will follow the call.
+As a workspace admin, I want calm as the default tone, with brief and formal visible and not the default, so that the call can match the workspace voice.
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call flow, DR-2 (design review decision)
+ledgerly/docs/design/call-reminders-review.txt section: Call settings screen, DR-5
+
+Dependencies:
+Call scheduling and quiet hours, for the lead times and the quiet hours.
+
+Timeframe:
+Start Date: 2026-09-14
+End Date: 2026-11-27
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+The script names the invoice and the amount due. It does not state a late fee, and it does not threaten the customer. Preview uses the Grok Voice mock and does not place a call. Calm is the default tone. Brief and formal are visible on the tone control and are not the default.
