@@ -505,7 +505,7 @@ Paid, Open, Overdue, and Disputed badges, muted text, and the up KPI still read 
 
 ## Proof
 
-\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 35 passed.
+\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 44 passed.
 
 http://127.0.0.1:43173/invoices — Paid, Open, and Overdue badge text in light and dark.
 
@@ -519,6 +519,485 @@ Before merging, pick which side of each pair moves (foreground vs \`-soft\` back
 
 The contrast test is the check, not a file to edit.`,
 } as const;
+
+/**
+ * Status-demo board. Titles for the fourteen catalog issues are read from the
+ * constants above. New titles live only here, and stage-linear creates them
+ * on the same project. Spreadsheet gaps are applied later by
+ * `scripts/generate-epics-csv.ts`. They are not encoded in this list.
+ */
+export type StatusBoardState = "Todo" | "In Progress" | "At risk";
+export type StatusBoardPriority = "Urgent" | "High" | "Medium" | "Low";
+
+export type StatusBoardIssue = {
+  sheetId: string;
+  initiative: string;
+  epic: string;
+  title: string;
+  state: StatusBoardState;
+  priority: StatusBoardPriority;
+  owner: string;
+  targetDate: string;
+  labels: readonly string[];
+  notes: string;
+};
+
+const INITIATIVE_COLLECTIONS = "Collections Command Center";
+const INITIATIVE_FIELDNOTE = "Fieldnote quality";
+const EPIC_OVERDUE = "Overdue book";
+const EPIC_PAYMENTS = "Payments";
+const EPIC_NOTES = "Collection notes";
+const EPIC_NUDGE = "Nudge";
+const EPIC_DASHBOARD = "Dashboard and plan gating";
+const EPIC_QUALITY = "Queue, invoice, and accessibility";
+
+const OWNER_AVERY = "Avery Quinn";
+const OWNER_BLAKE = "Blake Ibarra";
+const OWNER_ROWAN = "Rowan Pell";
+const OWNER_INDRA = "Indra Solano";
+const OWNER_CASEY = "Casey Adel";
+
+function fieldTitle(slug: FieldDemoIssue["slug"]): string {
+  const issue = FIELD_DEMO_ISSUES.find((row) => row.slug === slug);
+  if (!issue) {
+    throw new Error(`Missing field demo slug: ${slug}`);
+  }
+  return issue.title;
+}
+
+function sliceTitle(slug: CollectionsCommandCenterIssue["slug"]): string {
+  const issue = COLLECTIONS_COMMAND_CENTER_ISSUES.find((row) => row.slug === slug);
+  if (!issue) {
+    throw new Error(`Missing collections slug: ${slug}`);
+  }
+  return issue.title;
+}
+
+/** Stage order for the fourteen catalog titles. The status board adds more after these. */
+export const CATALOG_STAGE_TITLES: readonly string[] = [
+  fieldTitle("suggested-credit-v1"),
+  fieldTitle("filter-pills"),
+  fieldTitle("email-on-invoice"),
+  sliceTitle("overdue-book"),
+  sliceTitle("full-payment"),
+  sliceTitle("reject-other-amount"),
+  sliceTitle("collection-note"),
+  sliceTitle("note-edit-window"),
+  sliceTitle("nudge-sent"),
+  sliceTitle("nudge-failed"),
+  sliceTitle("collections-kpi"),
+  sliceTitle("amount-mask"),
+  WCAG_KEYBOARD_WALKTHROUGH.title,
+  WCAG_CONTRAST_TEST.title,
+];
+
+const featureLabel = [COLLECTIONS_COMMAND_CENTER_LINEAR.label] as const;
+
+export const STATUS_BOARD_ISSUES: readonly StatusBoardIssue[] = [
+  {
+    sheetId: "LY-301",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: sliceTitle("overdue-book"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "A rep can open an account and see what is owed without leaving Customers.",
+  },
+  {
+    sheetId: "LY-302",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: "Customers list shows plan, overdue count, and overdue balance",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "Customers list shows the plan name, the overdue invoice count, and the overdue balance.",
+  },
+  {
+    sheetId: "LY-303",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: "Selecting an overdue row opens the invoice and its line items",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "Selecting a row opens the invoice page and its line items.",
+  },
+  {
+    sheetId: "LY-304",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: "An account with nothing overdue shows no invoice rows",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "An account with no OVERDUE invoices shows an empty Overdue Book.",
+  },
+  {
+    sheetId: "LY-305",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: "Days past due use the 23 Aug 2026 demo clock",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "Days past due are counted from the frozen clock, 23 Aug 2026.",
+  },
+  {
+    sheetId: "LY-306",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_OVERDUE,
+    title: "Outstanding balance uses the invoice total until a payment is recorded",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-18",
+    labels: featureLabel,
+    notes: "Outstanding balance is the invoice total until a later slice records a payment.",
+  },
+  {
+    sheetId: "LY-311",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: sliceTitle("full-payment"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "A rep can record a phone payment and see the invoice settle.",
+  },
+  {
+    sheetId: "LY-312",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: sliceTitle("reject-other-amount"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "A mismatched amount must not settle an invoice the customer has not paid in full.",
+  },
+  {
+    sheetId: "LY-313",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: "Payment confirm shows the invoice number and the full outstanding balance",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "The confirm step names the invoice number and the full outstanding balance before anything is stored.",
+  },
+  {
+    sheetId: "LY-314",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: "Payment history lists method, amount, and who recorded it",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "Payment history shows the method, the amount, and the person who recorded it.",
+  },
+  {
+    sheetId: "LY-315",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: "Methods are check, ACH, card on file, and cash",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "The only methods are check, ACH, card on file, and cash.",
+  },
+  {
+    sheetId: "LY-316",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_PAYMENTS,
+    title: "A recorded payment writes PAYMENT_RECORDED on the account",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-02",
+    labels: featureLabel,
+    notes: "A successful payment appends PAYMENT_RECORDED on the account activity feed.",
+  },
+  {
+    sheetId: "LY-321",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NOTES,
+    title: sliceTitle("collection-note"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-25",
+    labels: featureLabel,
+    notes: "A promise-to-pay or dispute note stays on the account.",
+  },
+  {
+    sheetId: "LY-322",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NOTES,
+    title: sliceTitle("note-edit-window"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-25",
+    labels: featureLabel,
+    notes: "A rep can fix a note just written. The audit trail keeps it.",
+  },
+  {
+    sheetId: "LY-323",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NOTES,
+    title: "A blank collection note is rejected",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-25",
+    labels: featureLabel,
+    notes: "A blank note returns 400 and does not change the feed.",
+  },
+  {
+    sheetId: "LY-324",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NOTES,
+    title: "A note can be tied to one invoice",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-25",
+    labels: featureLabel,
+    notes: "A note can name one invoice.",
+  },
+  {
+    sheetId: "LY-325",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NOTES,
+    title: "Saved notes are not deletable",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_AVERY,
+    targetDate: "2026-09-25",
+    labels: featureLabel,
+    notes: "The account has no delete control for a saved note.",
+  },
+  {
+    sheetId: "LY-331",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NUDGE,
+    title: sliceTitle("nudge-sent"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-09",
+    labels: featureLabel,
+    notes: "A reminder is tied to the invoice and shows up in the account history.",
+  },
+  {
+    sheetId: "LY-332",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NUDGE,
+    title: sliceTitle("nudge-failed"),
+    state: "In Progress",
+    priority: "Medium",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-09",
+    labels: featureLabel,
+    notes: "A bad address stays visible on the account instead of looking like a sent reminder.",
+  },
+  {
+    sheetId: "LY-333",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NUDGE,
+    title: "The account Nudge uses the most past-due overdue invoice",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-09",
+    labels: featureLabel,
+    notes: "The account-level Nudge targets the overdue invoice with the most days past due.",
+  },
+  {
+    sheetId: "LY-334",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NUDGE,
+    title: "Nudge is disabled when the account has no overdue invoices",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-09",
+    labels: featureLabel,
+    notes: "The Nudge control is disabled when the account has no overdue invoices.",
+  },
+  {
+    sheetId: "LY-335",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_NUDGE,
+    title: "The Nudge template names the invoice number, balance, and due date",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-09",
+    labels: featureLabel,
+    notes: "The fixed template names the invoice number, the outstanding balance, and the due date.",
+  },
+  {
+    sheetId: "LY-341",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_DASHBOARD,
+    title: sliceTitle("collections-kpi"),
+    state: "In Progress",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-16",
+    labels: featureLabel,
+    notes: "A rep can see overdue exposure and how much of the book was worked today.",
+  },
+  {
+    sheetId: "LY-342",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_DASHBOARD,
+    title: sliceTitle("amount-mask"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-16",
+    labels: featureLabel,
+    notes: "Amount displays stay on Starter $49, Growth $99, and Scale $249.",
+  },
+  {
+    sheetId: "LY-343",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_DASHBOARD,
+    title: "The collections card reuses the existing KPI tokens",
+    state: "Todo",
+    priority: "Low",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-16",
+    labels: featureLabel,
+    notes: "The collections card uses the existing KPI tokens. No new hex color.",
+  },
+  {
+    sheetId: "LY-344",
+    initiative: INITIATIVE_COLLECTIONS,
+    epic: EPIC_DASHBOARD,
+    title: "The collections card counts demo-day activity and the trailing 7 days",
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_BLAKE,
+    targetDate: "2026-10-16",
+    labels: featureLabel,
+    notes: "The card counts activities on the demo day and in the 7 days ending that day.",
+  },
+  {
+    sheetId: "LY-401",
+    initiative: INITIATIVE_FIELDNOTE,
+    epic: EPIC_QUALITY,
+    title: fieldTitle("suggested-credit-v1"),
+    state: "Todo",
+    priority: "High",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-23",
+    labels: [],
+    notes: "Suggested credit on dsp_1043 shows the $400 claim instead of the $249 Scale cap.",
+  },
+  {
+    sheetId: "LY-402",
+    initiative: INITIATIVE_FIELDNOTE,
+    epic: EPIC_QUALITY,
+    title: fieldTitle("filter-pills"),
+    state: "Todo",
+    priority: "High",
+    owner: OWNER_ROWAN,
+    targetDate: "2026-10-23",
+    labels: [],
+    notes: "Overdue and Needs review change the URL and leave the list unfiltered.",
+  },
+  {
+    sheetId: "LY-403",
+    initiative: INITIATIVE_FIELDNOTE,
+    epic: EPIC_QUALITY,
+    title: fieldTitle("email-on-invoice"),
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_CASEY,
+    targetDate: "2026-10-23",
+    labels: [],
+    notes: "Invoice detail shows the contact email and has no control to change it.",
+  },
+  {
+    sheetId: "LY-411",
+    initiative: INITIATIVE_FIELDNOTE,
+    epic: EPIC_QUALITY,
+    title: WCAG_KEYBOARD_WALKTHROUGH.title,
+    state: "Todo",
+    priority: "Medium",
+    owner: OWNER_INDRA,
+    targetDate: "2026-10-23",
+    labels: [],
+    notes: "Manual keyboard walkthrough for WCAG 2.2 AA. A static markup review does not complete it.",
+  },
+  {
+    sheetId: "LY-412",
+    initiative: INITIATIVE_FIELDNOTE,
+    epic: EPIC_QUALITY,
+    title: WCAG_CONTRAST_TEST.title,
+    state: "At risk",
+    priority: "High",
+    owner: OWNER_INDRA,
+    targetDate: "2026-10-23",
+    labels: [],
+    notes: "npm run test:a11y fails 4.5:1 on badges, muted text, and the up KPI.",
+  },
+];
+
+export function statusBoardNewIssues(): readonly StatusBoardIssue[] {
+  const catalog = new Set(CATALOG_STAGE_TITLES);
+  return STATUS_BOARD_ISSUES.filter((issue) => !catalog.has(issue.title));
+}
+
+export function linearPriority(priority: StatusBoardPriority): 1 | 2 | 3 | 4 {
+  switch (priority) {
+    case "Urgent":
+      return 1;
+    case "High":
+      return 2;
+    case "Medium":
+      return 3;
+    case "Low":
+      return 4;
+    default: {
+      const unreachable: never = priority;
+      return unreachable;
+    }
+  }
+}
+
+/** Linear body for a status-board title that is not one of the fourteen catalog issues. */
+export function statusBoardDescription(issue: StatusBoardIssue): string {
+  return [
+    "## Story",
+    issue.notes,
+    `Sheet id: ${issue.sheetId}. Sheet owner: ${issue.owner}. Target date: ${issue.targetDate}.`,
+  ].join("\n\n");
+}
 
 /**
  * 101 MCP / Linear beat may create a showcase issue with a canvas video.

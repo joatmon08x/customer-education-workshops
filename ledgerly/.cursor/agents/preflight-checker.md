@@ -29,7 +29,7 @@ Run these for `101`, `201`, `301`, and `401`. Baseline failures are `blocked` fo
 | Prisma client | Probe only — e.g. `node -e "require.resolve('@prisma/client')"` or an import check. Do **not** run `npx prisma generate`. | `@prisma/client` resolves; remediation may name `npx prisma generate` without running it |
 | SQLite seed | same probe as `start-ledgerly` (`customer.count()` via `tsx`) | prints `seeded` (count > 0) |
 | Dev server | `curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:43173` | 2xx/3xx |
-| Shipped suite shape | `npm test` (or vitest summary) | **1 failed / 35 passed**; sole red file `tests/suggested-credit-api.test.ts` |
+| Shipped suite shape | `npm test` (or vitest summary) | **1 failed / 44 passed**; sole red file `tests/suggested-credit-api.test.ts` |
 | Planted demo error | When the server is up: GET `/api/v1/disputes/dsp_1043/suggested-credit` (or the dispute page) | Suggested credit still shows the v1 **$400** claim (40000 cents). Do not "fix" it. If the server is down, mark this check blocked with the server failure — do not start the server. |
 | Empty project MCP map | read `.cursor/mcp.json`; confirm no `mcp/` directory | empty `mcpServers` (e.g. `{}` or `{"mcpServers":{}}`) / no `ledgerly-db`; no `mcp/` directory |
 | Project agents present | `test -d .cursor/agents` | directory exists; track matrices below name which agent files are required |
@@ -76,7 +76,7 @@ Do not require `plugins/standard-bug-fix` on 101. List it under **Skipped**.
 | Shared baseline | required | all green |
 | Linear MCP | required | Linear tools available; `get_user` / me succeeds; user is not a guest |
 | Operator Linear team | required | at least one team on `me` (public or private). If none, `blocked` with the manual team steps from `PRESENTER.md` / `stage-linear` — do not create a team |
-| Fieldnote Linear board | required for MCP issue beats | a staged Fieldnote project exists on a team the operator belongs to with the three Fieldnote titles, the nine Collections slices, the WCAG keyboard-walkthrough title (`UI changes need a WCAG 2.2 AA accessibility audit`), and the contrast-test title (`Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI`). Resolve the project from chat or ask the operator which project to check — never guess a name. If missing, report `blocked` and point at `stage-linear` — **do not** run `stage-linear` or guess the team |
+| Fieldnote Linear board | required for MCP issue beats | a staged Fieldnote project exists on a team the operator belongs to with the three Fieldnote titles, the nine Collections slices, the WCAG keyboard-walkthrough title (`UI changes need a WCAG 2.2 AA accessibility audit`), the contrast-test title (`Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI`), and the other `STATUS_BOARD_ISSUES` titles. Resolve the project from chat or ask the operator which project to check — never guess a name. If missing, report `blocked` and point at `stage-linear` — **do not** run `stage-linear` or guess the team |
 | Disk plugin | required for plugin beat | `plugins/standard-bug-fix/` present on disk |
 | Resolve-dispute plan | required for parallelize section | `.cursor/plans/resolve-dispute.md` exists |
 | `dispatch-subagents` skill | required | `.cursor/skills/dispatch-subagents/SKILL.md` exists |

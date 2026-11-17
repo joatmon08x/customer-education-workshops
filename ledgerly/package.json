@@ -20,7 +20,9 @@
     "db:reset": "prisma db push --force-reset && prisma db seed",
     "demo:session": "tsx scripts/demo-reset.ts",
     "demo:reset": "tsx scripts/demo-reset.ts reset",
-    "runbooks:export": "tsx scripts/export-runbooks.ts"
+    "runbooks:export": "tsx scripts/export-runbooks.ts",
+    "docs:epics-csv": "tsx scripts/generate-epics-csv.ts",
+    "docs:status-pptx": "tsx scripts/generate-status-pptx.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

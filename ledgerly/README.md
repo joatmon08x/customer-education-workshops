@@ -81,10 +81,14 @@ npm test
 Expected result:
 
 ```text
-1 failed / 35 passed
+1 failed / 44 passed
 ```
 
 The failing test is part of the workshop. It doesn't mean setup failed.
+
+## Status demo
+
+Project managers, product managers, and designers use [`docs/README.md`](docs/README.md). The demo PRD is [`docs/prd-collections-command-center.md`](docs/prd-collections-command-center.md). Leave [`prds/prd-01-collections-command-center.md`](prds/prd-01-collections-command-center.md) as it is.
 
 ### Troubleshoot
 

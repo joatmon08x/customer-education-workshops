@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
+import { NudgeButton } from "@/components/nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -46,32 +47,32 @@ export default async function CollectionsPage() {
           {overdue.map((invoice) => {
             const daysPastDue = Math.max(0, daysBetween(DEMO_AS_OF, invoice.dueOn));
             return (
-              <Link key={invoice.id} href={`/invoices/${invoice.id}`}>
-                <Card className="transition-colors hover:bg-accent/40">
-                  <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0 space-y-1">
-                      <p className="font-medium">{invoice.customer.name}</p>
-                      <p className="font-mono text-xs text-muted-foreground">
-                        {invoice.number} · {planLabel(invoice.plan)} · due {formatDate(invoice.dueOn)}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {daysPastDue} {daysPastDue === 1 ? "day" : "days"} past due
-                        {invoice.disputes.some(
-                          (dispute) => dispute.status === "OPEN" || dispute.status === "NEEDS_REVIEW",
-                        )
-                          ? " · open dispute on file"
-                          : ""}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      <p className="text-lg font-semibold tracking-tight">
-                        {formatUsd(invoice.totalCents)}
-                      </p>
-                      <InvoiceStatusBadge status="OVERDUE" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <Card key={invoice.id} className="transition-colors hover:bg-accent/40">
+                <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <Link href={`/invoices/${invoice.id}`} className="min-w-0 flex-1 space-y-1">
+                    <p className="font-medium">{invoice.customer.name}</p>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      {invoice.number} · {planLabel(invoice.plan)} · due {formatDate(invoice.dueOn)}
+                    </p>
+                    <p className="font-mono text-xs text-muted-foreground">{invoice.customer.email}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {daysPastDue} {daysPastDue === 1 ? "day" : "days"} past due
+                      {invoice.disputes.some(
+                        (dispute) => dispute.status === "OPEN" || dispute.status === "NEEDS_REVIEW",
+                      )
+                        ? " · open dispute on file"
+                        : ""}
+                    </p>
+                  </Link>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <p className="text-lg font-semibold tracking-tight">
+                      {formatUsd(invoice.totalCents)}
+                    </p>
+                    <InvoiceStatusBadge status="OVERDUE" />
+                    <NudgeButton email={invoice.customer.email} />
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

@@ -51,11 +51,17 @@ function Growth({ change, suffix }: { change: number | null; suffix: string }) {
     return <span>{suffix}</span>;
   }
   const rounded = Math.round(change * 10) / 10;
-  // A 10-invoice book produces wild lifts. Don't put 351% on stage.
-  if (Math.abs(rounded) > 80) {
-    return <span>{suffix}</span>;
-  }
   const up = rounded >= 0;
+  // A 10-invoice book produces wild lifts. Don't put 351% on stage.
+  // Status-demo plant: the direction word stays. "Up" is --success on the card, which fails 4.5:1.
+  if (Math.abs(rounded) > 80) {
+    return (
+      <span>
+        <span className={cn("font-medium", up ? "text-success" : "text-danger")}>{up ? "Up" : "Down"}</span>{" "}
+        {suffix}
+      </span>
+    );
+  }
   return (
     <span>
       <span className={cn("font-medium", up ? "text-success" : "text-danger")}>

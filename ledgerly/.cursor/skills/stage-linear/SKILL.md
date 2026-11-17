@@ -15,10 +15,11 @@ Issue bodies live in `runbooks/linear-field-demos.ts`. The board has two sets on
 - **Collections Command Center slices** — the nine in `COLLECTIONS_COMMAND_CENTER_ISSUES`, each tagged as part of the Collections Command Center feature (§3a).
 - **WCAG keyboard walkthrough** — `WCAG_KEYBOARD_WALKTHROUGH`. Staged as the thirteenth issue (§3b). Not a Fieldnote beat and not a Collections slice.
 - **WCAG contrast test** — `WCAG_CONTRAST_TEST`. Staged as the fourteenth issue (§3c). Not a Fieldnote beat, not a Collections slice, and not the keyboard walkthrough.
+- **Status board.** Every other title in `STATUS_BOARD_ISSUES` (§3e). Same project. The sheet in `docs/` is generated from this list.
 
 A WCAG audit on that project (`WCAG_KEYBOARD_WALKTHROUGH`) is a manual keyboard walkthrough. Create it when missing; reopen a match to `Todo`. Update that copy in place when it is already open. Do the same for `WCAG_CONTRAST_TEST` from the catalog body.
 
-Do not invent another issue or a fourth price.
+Do not invent a title that is not in `STATUS_BOARD_ISSUES`, and do not invent a fourth price.
 
 ## Team
 
@@ -166,9 +167,36 @@ Stage it **after** the keyboard walkthrough. Match a **non-archived** issue by t
 
 Create this title when it is missing (no unarchived match). If the match is `Canceled` and `save_issue` cannot change its state, leave that canceled issue linked, do not retry it, and create a new issue for the title. Do not unarchive an archived copy.
 
+## 3e. Status board rows
+
+`STATUS_BOARD_ISSUES` in `runbooks/linear-field-demos.ts` is the full title list for this project. The fourteen titles from §3 through §3c are already in that list. After those fourteen exist, create any missing title from `statusBoardNewIssues()`.
+
+Create those missing titles **sequentially**, in `STATUS_BOARD_ISSUES` order. Never in parallel. For each, `save_issue`:
+
+- `team`: the confirmed team
+- `project`: the same project
+- `title`: from the row
+- `description`: `statusBoardDescription(issue)` (run it with `npx tsx -e`, or write the same Story, notes, sheet id, sheet owner, and target date)
+- `state`: the row's `state` when that state exists on the team. `Todo` and `In Progress` are default Linear states. `At risk` is not. If the team has no workflow state named `At risk`, stop and tell the operator to add it under Team settings, Workflow, before continuing. Do not leave that title at `Todo`.
+- `priority`: `linearPriority(issue.priority)` (Urgent 1, High 2, Medium 3, Low 4)
+- `assignee`: `"me"`
+- `addLabels`: `["Collections Command Center"]` only when the row's labels include that name and the team label from §3a exists. Do not create a workspace label. Do not add that label to the three Fieldnote issues, the WCAG walkthrough, or the contrast issue.
+
+Then set live state and priority on the rows whose `state` is not `Todo`. Do not rewrite their descriptions. `save_issue` with the existing identifier, `state`, and `priority` only:
+
+- `A Nudge that cannot be emailed shows as failed` is In Progress, Medium (3)
+- `Dashboard shows collections totals on the next load` is In Progress, Medium (3)
+- `Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI` is At risk, High (2)
+
+§3 through §3c still write `Todo` first, so a canceled copy reopens. This step is what the status demo compares to the spreadsheet. Do not skip it.
+
+If a match is `Canceled` and `save_issue` cannot change its state, leave that canceled issue linked, do not retry it, and create a new issue for the title. Do not unarchive an archived copy.
+
+The status demo in `docs/README.md` asks for a private team and a private project on the FlyLo workspace. That request is the operator asking for private. Honor it for that demo. Do not force a project private when the operator did not ask.
+
 ## 3d. Extras
 
-After seeding both sets, WCAG, and contrast, list any **active** (non-`Canceled`) issue on the project whose exact title is not a current `FIELD_DEMO_ISSUES` or `COLLECTIONS_COMMAND_CENTER_ISSUES` title, is not `WCAG_KEYBOARD_WALKTHROUGH.title`, is not `WCAG_CONTRAST_TEST.title`, and was not already matched via `previousTitles`. **Confirm with the operator before canceling any of them** — the confirmed team may hold unrelated work. On confirmation, cancel each extra (`save_issue` with `state`: `Canceled`). Never cancel extras silently. Never cancel the WCAG keyboard-walkthrough issue as an extra. Never cancel the contrast-test issue as an extra. Leave canceled extras linked to the project — do not reopen them, and do not unlink them.
+After seeding both sets, WCAG, contrast, and the rest of `STATUS_BOARD_ISSUES`, list any **active** (non-`Canceled`) issue on the project whose exact title is not a `STATUS_BOARD_ISSUES` title and was not already matched via `previousTitles`. **Confirm with the operator before canceling any of them** — the confirmed team may hold unrelated work. On confirmation, cancel each extra (`save_issue` with `state`: `Canceled`). Never cancel extras silently. Never cancel the WCAG keyboard-walkthrough issue as an extra. Never cancel the contrast-test issue as an extra. Never cancel a `STATUS_BOARD_ISSUES` title as an extra. Leave canceled extras linked to the project — do not reopen them, and do not unlink them.
 
 ## 4. Confirm
 
@@ -182,7 +210,8 @@ Report:
 - The live WCAG keyboard-walkthrough identifier + title + URL, and that its description starts by saying the audit is a manual keyboard walkthrough, and it was not canceled as an extra
 - The live contrast-test identifier + title + URL, and that its description matches `WCAG_CONTRAST_TEST` (Scope, Acceptance criteria, Proof, Judgment calls), and it was not canceled as an extra
 - That `teams` on the project is only the confirmed team
-- That the **active** (unarchived, non-`Canceled`) issues on the project are exactly those fourteen titles — three Fieldnote, nine Collections Command Center, WCAG walkthrough, and contrast — ignore canceled leftovers that could not be reopened and archived leftovers still linked from a prior reset or reconcile
+- That the **active** (unarchived, non-`Canceled`) issues on the project are exactly the `STATUS_BOARD_ISSUES` titles: the fourteen from §3 through §3c (three Fieldnote, nine Collections Command Center, WCAG walkthrough, and contrast) plus every other title in that list. Ignore canceled leftovers that could not be reopened and archived leftovers still linked from a prior reset or reconcile
+- That `A Nudge that cannot be emailed shows as failed` is In Progress, `Dashboard shows collections totals on the next load` is In Progress, and `Accessibility contrast tests fail 4.5:1 on badges, muted text, and the up KPI` is At risk at priority High
 - Canceled leftovers that could not be reopened, and archived leftovers, by title only
 - That the filter issue is second within its Fieldnote create batch
 
@@ -190,7 +219,7 @@ Runbook pastes use **titles**, not identifiers, so you do not edit runbook beats
 
 ## Record for reset
 
-After confirming the team and all fourteen **live** issue identifiers (three Fieldnote, then nine Collections Command Center, then the live WCAG walkthrough, then the live contrast issue), record that board. Do not record a canceled issue that was replaced. Do not record archived identifiers:
+After confirming the team and every live `STATUS_BOARD_ISSUES` identifier, record that board. Order the ids as the fourteen from §3 through §3c (three Fieldnote, then nine Collections Command Center, then the live WCAG walkthrough, then the live contrast issue), then the other `STATUS_BOARD_ISSUES` titles in list order. Do not record a canceled issue that was replaced. Do not record archived identifiers:
 
 ```bash
 npm run demo:session -- record linear <teamId> "<teamName>" <teamKey> <projectId> <issueId,...,issueId>

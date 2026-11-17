@@ -21,7 +21,7 @@ Linear MCP cannot create teams. Public and private teams are both valid. Public 
 4. If the team is private, members are only you.
 5. Run `stage-linear` and confirm the exact team before it writes. The project stays public unless you ask for private.
 
-`stage-linear` never guesses the team. The next stage reopens the project and reopens recorded issues to `Todo`. It creates a title only when the title is missing, or when a canceled issue will not leave `Canceled`. `reset-demo-state` uses the same confirmation, then cancels the recorded issues and cancels the project. Issues stay linked. The team stays for the next run.
+`stage-linear` never guesses the team. The next stage reopens the project and reopens recorded issues to `Todo`, then applies `STATUS_BOARD_ISSUES` states that are not Todo. It creates a title only when the title is missing, or when a canceled issue will not leave `Canceled`. The status demo in `docs/README.md` asks for a private team and a private project. `reset-demo-state` uses the same confirmation, then cancels the recorded issues and cancels the project. Issues stay linked. The team stays for the next run.
 
 A public project on that team is valid. `stage-linear` does not refuse it or force it private.
 
