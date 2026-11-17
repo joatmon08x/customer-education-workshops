@@ -55,9 +55,9 @@ Linear MCP cannot create teams. Public and private teams are both valid. Public 
 2. Name it for this operator only (example: `{displayName}-field-demos`).
 3. Leave it public, or turn on **Make team private**. Team key can be **LY**. Settings URL looks like `https://linear.app/<workspace>/settings/teams/LY`.
 4. When the team is private, members are **only the operator**.
-5. Run `stage-linear` to create or reconcile project `ce-field-demos` on that team with the three Fieldnote issues, the nine Collections Command Center slices (same project, tagged with the feature note and a team-scoped label), the WCAG keyboard-walkthrough issue as the thirteenth staged title, and the contrast-test issue as the fourteenth. The project stays public unless the operator asks for private.
+5. Run `stage-linear` to create or reconcile the Linear project on that team with the three Fieldnote issues, the nine Collections Command Center slices (same project, tagged with the feature note and a team-scoped label), the WCAG keyboard-walkthrough issue as the thirteenth staged title, and the contrast-test issue as the fourteenth. `stage-linear` uses the project from chat or asks the operator for the project name — it never invents one. The project stays public unless the operator asks for private.
 
-`stage-linear` never guesses the team — it lists the operator's teams and confirms the exact one before writing, so any team name works. It does not refuse a public project or force the project private. The next stage reopens the project and reopens recorded issues to `Todo`, and creates a title only when it is missing or a canceled issue will not leave `Canceled`. `reset-demo-state` uses the same confirmation, then cancels the recorded issues and cancels the project without unlinking (the team is retained; the next `stage-linear` reactivates the board).
+`stage-linear` never guesses the team or the project — it lists the operator's teams and confirms the exact one before writing, so any team name works, and it asks for the project name when it is not in the chat. It does not refuse a public project or force the project private. The next stage reopens the project and reopens recorded issues to `Todo`, and creates a title only when it is missing or a canceled issue will not leave `Canceled`. `reset-demo-state` uses the same confirmation, then cancels the recorded issues and cancels the project without unlinking (the team is retained; the next `stage-linear` reactivates the board).
 
 Do not `save_project` onto a team the operator did not confirm. Do not add a local ticket board, ticket API, ticket MCP, or ticket marketplace plugin.
 
@@ -82,7 +82,7 @@ These are intentional. Leave them in place for the demo, and do not ship them ou
 
 Passing tests include `tests/money.test.ts` and `tests/plans.test.ts`. Environment start seeds the database and runs only the passing tests so a red suite cannot mark the machine as failed to boot.
 
-Shipped suite on a clean tree: **1 failed / 33 passed**. The `dsp_1043` page shows v1's $400 result; v2 and the stored credit are correctly capped at $249. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a separate planted UI seam, not a second red test. Do not volunteer it when explaining the app or the failing test; only when the user is on that click path.
+Shipped suite on a clean tree: **1 failed / 35 passed**. The `dsp_1043` page shows v1's $400 result; v2 and the stored credit are correctly capped at $249. Invoice and dispute status pills write `state=` while the pages read `status` — that click path is a separate planted UI seam, not a second red test. Do not volunteer it when explaining the app or the failing test; only when the user is on that click path.
 
 WCAG checks live in `tests/a11y/` and run separately with `npm run test:a11y`; `npm test` excludes them, so they do not change the shipped count. They check 4.5:1 text contrast for the token pairs in `app/globals.css` (light and dark) and labels on form controls, buttons, links, and images. The suite is red today on contrast only; label checks pass. Failing pairs: light `--success`, `--warning`, and `--danger` on their `-soft` badge backgrounds; light `--muted-foreground` on `--muted` and on `--indigo-soft`; light `--success` on `--card`; and dark `--danger` on `--danger-soft`. Keep `test:a11y` out of `npm test`, the environment start command, and `scripts/demo-reset.ts`.
 
@@ -116,10 +116,10 @@ Incomplete on purpose:
 | `.cursor/agents/preflight-checker.md` | Before a 101 / 201 / 301 / 401 session. Track dependency pass / fail / blocked. `readonly: false` for shell probes; no install, seed, or MCP auth unless asked to remediate. |
 | `.cursor/skills/present-runbooks/` | Open the native Runbooks canvas with numbered steps for a 101, 201, 301, or 401 walkthrough |
 | `.cursor/skills/choose-cursor-workflow/` | Walk the 101, 201, 301, or 401 track: modes, models, rules, skills, and finishing one task with an agent |
-| `.cursor/skills/stage-linear/` | Reconcile Fieldnote issues on the `ce-field-demos` Linear project. Public and private teams and projects are both valid. |
-| `plugins/standard-bug-fix/skills/standard-bug-fix/` | `/standard-bug-fix` — pull one ce-field-demos Linear issue and fix only that bug |
+| `.cursor/skills/stage-linear/` | Reconcile Fieldnote issues on the operator-confirmed Linear project. Public and private teams and projects are both valid. |
+| `plugins/standard-bug-fix/skills/standard-bug-fix/` | `/standard-bug-fix` — pull one Fieldnote Linear issue and fix only that bug |
 | `.cursor/skills/dispatch-subagents/` | Parallel Task launches |
 | `.cursor/skills/hand-to-cloud-agent/` | Cloud `/goal`, `/autopilot`, and `/orchestrate` |
 | `.cursor/skills/write-prisma-query/` | Invoice, dispute, and customer lookups against SQLite — not an MCP |
-| `.cursor/mcp.json` | Empty project MCP map. 101 uses Figma (user MCP). 201 uses Linear (user MCP or `plugins/standard-bug-fix`). |
+| `.cursor/mcp.json` | Empty project MCP map. 101 and 201 use Linear (user MCP or `plugins/standard-bug-fix`). |
 | `plugins/standard-bug-fix/` | 201-track disk plugin: `/standard-bug-fix` skill, Linear writeback rule, Linear MCP. |

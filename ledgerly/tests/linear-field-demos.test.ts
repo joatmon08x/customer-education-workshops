@@ -6,14 +6,23 @@ import {
   FIELD_DEMO_FILTER_TITLE,
   FIELD_DEMO_ISSUES,
   FIELD_DEMO_SUGGESTED_CREDIT_TITLE,
+  LINEAR_101_VIDEO_ISSUE_TITLE,
   LINEAR_FIELD_DEMOS_PROJECT,
   WCAG_CONTRAST_TEST,
   WCAG_KEYBOARD_WALKTHROUGH,
 } from "@/runbooks/linear-field-demos";
 
-describe("ce-field-demos Linear book", () => {
+describe("Fieldnote Linear book", () => {
+  it("matches 101 video showcase titles for reset extras only", () => {
+    expect(LINEAR_101_VIDEO_ISSUE_TITLE.test("15-second build summary video")).toBe(true);
+    expect(LINEAR_101_VIDEO_ISSUE_TITLE.test("Canvas video summarizing how we built it")).toBe(true);
+    expect(LINEAR_101_VIDEO_ISSUE_TITLE.test("Clicking Overdue or Needs review does not filter the queue")).toBe(
+      false,
+    );
+  });
+
   it("keeps the three scoped issues and catalog prices", () => {
-    expect(LINEAR_FIELD_DEMOS_PROJECT.name).toBe("ce-field-demos");
+    expect(LINEAR_FIELD_DEMOS_PROJECT).not.toHaveProperty("name");
     expect(LINEAR_FIELD_DEMOS_PROJECT.catalogPricesUsd).toEqual(["$49", "$99", "$249"]);
     expect(FIELD_DEMO_ISSUES.map((issue) => issue.slug)).toEqual([
       "suggested-credit-v1",
@@ -135,7 +144,7 @@ describe("ce-field-demos Linear book", () => {
     expect(WCAG_CONTRAST_TEST.description).toContain("Do not edit `tests/a11y/contrast.test.ts`");
     expect(WCAG_CONTRAST_TEST.description).toContain("7 failed / 83 passed");
     expect(WCAG_CONTRAST_TEST.description).toContain("0 failed / 90 passed");
-    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 33 passed");
+    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 35 passed");
     expect(WCAG_CONTRAST_TEST.title).not.toBe(WCAG_KEYBOARD_WALKTHROUGH.title);
     expect(FIELD_DEMO_ISSUES.some((issue) => issue.title === WCAG_CONTRAST_TEST.title)).toBe(false);
     expect(

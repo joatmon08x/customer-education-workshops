@@ -7,7 +7,7 @@ alwaysApply: true
 
 When working a Linear bug (for example `/standard-bug-fix Clicking Overdue or Needs review does not filter the queue`), use this plugin's Linear MCP (`https://mcp.linear.app/mcp`). Authenticate Linear if its tools are unavailable.
 
-Match the **ce-field-demos** issue by title from `FIELD_DEMO_ISSUES` in `runbooks/linear-field-demos.ts`. Do not assume `LY-003` is the filter bug. Write back to the **existing** issue. Do not open a duplicate. After the match, `save_issue` with `state`: `In Progress` on that issue only, before product edits. Do not mark it Done or Complete. Keep comments short. Use this template for Linear (fill only what you know at that step; the closing comment must be complete):
+Resolve the Linear project from this chat, or ask the user which project to use and wait — never guess. Match the Fieldnote issue by title from `FIELD_DEMO_ISSUES` in `runbooks/linear-field-demos.ts`. Do not assume `LY-003` is the filter bug. Write back to the **existing** issue. Do not open a duplicate. After the match, `save_issue` with `state`: `In Progress` on that issue only, before product edits. Do not mark it Done or Complete. Keep comments short. Use this template for Linear (fill only what you know at that step; the closing comment must be complete):
 
 ```markdown
 # Bug Fix Summary: [Service affected] - [Short Description]

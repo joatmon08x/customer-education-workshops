@@ -64,7 +64,7 @@ describe("runbook catalog", () => {
     expect(skill).toContain(track101?.description ?? "");
 
     expect(runbookBeatSequence("101")).toBe(
-      "Ask → Plan → Build in Agent mode → Debug → Check the models → Plan to fix the bug → Run Mode Allowlist → Verify the email feature → Redact (partial) → Stop the prompt → Interrupt and steer → Continue to the end → Review diffs → Restore from a checkpoint → Create a user rule → Test the rule → Create a user skill → Test the skill → Canvas → MCP / Figma",
+      "Ask → Plan → Build in Agent mode → Debug → Check the models → Plan to fix the bug → Run Mode Allowlist → Verify the email feature → Redact (partial) → Stop the prompt → Interrupt and steer → Continue to the end → Review diffs → Restore from a checkpoint → Create a user rule → Test the rule → Create a user skill → Test the skill → Canvas → MCP / Linear",
     );
 
     expect(beats101.map((beat) => beat.id)).toEqual([
@@ -179,17 +179,16 @@ describe("runbook catalog", () => {
     expect(beat("test-skill")?.detail).toBe("");
     expect(beat("test-skill")?.example).toBe("Use domain-driven design on this application. Do not edit files.");
     expect(beat("canvas")?.title).toBe("Canvas");
-    expect(beat("canvas")?.example).toBe("Create a canvas explaining what we did today.");
-    expect(beat("mcp")?.title).toBe("MCP / Figma");
+    expect(beat("canvas")?.example).toBe("Create a canvas explaining the feature we built.");
+    expect(beat("mcp")?.title).toBe("MCP / Linear");
     expect(beat("canvas")?.say).toBe(
       "Use Canvas to generate interactive artifacts that render next to the chat.",
     );
-    expect(beat("mcp")?.say).toBe("Ask Grok Build to create a slideshow in Figma using MCP Servers.");
-    expect(beat("mcp")?.detail).toBe(
-      "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
-    );
+    expect(beat("mcp")?.promptType).toBe("reusable");
+    expect(beat("mcp")?.say).toBe("Ask Grok Build to create a 15-second video and post it to an issue.");
+    expect(beat("mcp")?.detail).toBe("Go to Customize > MCPs > Linear.");
     expect(beat("mcp")?.example).toBe(
-      "Create three slides in Figma Slides outlining how I used Grok Build to develop a new feature. I want to use this as part of my demo showcase.",
+      "Create a Linear issue for this feature. Attach a 15-second video, made from the canvas, summarizing how we built it.",
     );
 
     expect(beats101.every((entry) => entry.promptType !== undefined)).toBe(true);
@@ -1450,6 +1449,12 @@ describe("runbook catalog", () => {
     expect(reset, "reset accepts a public team").toContain("Public and private teams are both valid");
     expect(reset, "reset accepts a public project").toContain("Public and private projects are both valid");
     expect(reset, "reset must not ban public-team teardown").not.toContain("Never cancel Linear issues on a public");
+    expect(stage, "stage must ask for the Linear project when it is missing from chat").toMatch(
+      /ask the user which project|If the project is not in the chat, ask/i,
+    );
+    expect(reset, "reset must ask for the Linear project when it is missing from chat").toMatch(
+      /ask the user which project|If the project is not in the chat, ask/i,
+    );
 
     const docs = {
       presenter: readFileSync(join(root, "PRESENTER.md"), "utf8"),
@@ -1460,6 +1465,24 @@ describe("runbook catalog", () => {
       expect(contents, `${name} must allow public projects`).toContain(
         "Public and private projects are both valid",
       );
+    }
+
+    const noHardcodedProject = {
+      stage,
+      reset,
+      agents: docs.agents,
+      rule: docs.rule,
+      catalog: readFileSync(join(root, "runbooks/linear-field-demos.ts"), "utf8"),
+      bugFixSkill: readFileSync(
+        join(root, "plugins/standard-bug-fix/skills/standard-bug-fix/SKILL.md"),
+        "utf8",
+      ),
+      bugFixRule: readFileSync(join(root, "plugins/standard-bug-fix/rules/standard-bug-fix.mdc"), "utf8"),
+      preflight: readFileSync(join(root, ".cursor/agents/preflight-checker.md"), "utf8"),
+      agentsCatalog: readFileSync(join(root, "runbooks/agents.ts"), "utf8"),
+    };
+    for (const [name, contents] of Object.entries(noHardcodedProject)) {
+      expect(contents, `${name} must not hardcode ce-field-demos`).not.toContain("ce-field-demos");
     }
 
     for (const [name, contents] of Object.entries({ stage, reset })) {
@@ -1497,6 +1520,16 @@ describe("runbook catalog", () => {
     expect(resetScript).toContain('".cursor/agents/accessibility-manual-reviewer.md"');
     expect(resetScript, "reset script must delete Linear comments before cancel").toContain(
       "commentDelete",
+    );
+    expect(
+      resetScript,
+      "reset must list issues on the recorded Linear project for video-title extras",
+    ).toContain("ResetProjectIssues");
+    expect(resetScript, "reset must narrow extras to the 101 video title pattern").toContain(
+      "LINEAR_101_VIDEO_ISSUE_TITLE",
+    );
+    expect(reset, "reset must cancel only recorded ids plus video-title matches").toContain(
+      "LINEAR_101_VIDEO_ISSUE_TITLE",
     );
     expect(reset, "reset must restore dispute queue pages").toContain("app/disputes/page.tsx");
 

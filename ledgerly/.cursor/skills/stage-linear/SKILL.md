@@ -1,6 +1,6 @@
 ---
 name: stage-linear
-description: Create or reconcile the ce-field-demos Linear board with its Fieldnote issues. Public and private teams and projects are both valid.
+description: Create or reconcile the operator-confirmed Linear board with its Fieldnote issues. Public and private teams and projects are both valid.
 ---
 
 # Stage Linear
@@ -55,16 +55,18 @@ Never **assume** which team to write to — not even when only one team exists, 
 4. If the operator has no teams, stop and point them at the team steps. Linear MCP cannot create teams.
 5. Pin the confirmed team for the rest of the run. Every `save_project` and `save_issue` uses only that confirmed team ID or name.
 
-## 2. Reconcile the project
+## 2. Resolve and reconcile the project
 
-Search `list_projects` with query `ce-field-demos`, scoped to the confirmed team. Public and private projects on that team are both candidates — do not skip a match because the project is public.
+Resolve the Linear project first: use the project from this chat (session report `projectId`, a pasted project URL/name, or an earlier confirmed board). If the project is not in the chat, ask the user which project to stage onto (or create) and wait — never assume or guess a project name.
+
+Once the project name (or ID) is known, search `list_projects` with that query, scoped to the confirmed team. Public and private projects on that team are both candidates — do not skip a match because the project is public.
 
 - Reuse a project **only** when its `teams` are exactly the confirmed team and `lead` is the operator (`me`). Project privacy (public vs private) does not block reuse.
-- If `ce-field-demos` already exists on a different team, do **not** reuse it. Create `ce-field-demos ({displayName})` on the confirmed team instead.
+- If a project with that name already exists on a different team, do **not** reuse it. Ask the user for a project name to create on the confirmed team instead, then wait.
 
 Create it with `save_project` only when it is missing. Otherwise update the existing project in place:
 
-- `name`: `ce-field-demos` (or the uniqued name above)
+- `name`: the confirmed project name (never invent a default)
 - `setTeams`: the confirmed team name or ID
 - `leadTeam`: that same team
 - `lead`: `"me"`
@@ -207,6 +209,7 @@ The reset script will use only this recorded board. If a demo beat creates a new
 
 - Never unarchive an issue. Create a new issue for an archived catalog title and leave the archived one archived.
 - Never stage onto a team the operator did not confirm.
+- Never assume a Linear project name when it is not in the chat — ask the user.
 - Never refuse a public project, and never force the project private unless the operator asks.
 - Never put the Collections Command Center slices on a second project, and never add them to `FIELD_DEMO_ISSUES` or a runbook beat.
 - Never create a workspace-wide label; the feature label is team-scoped or skipped.

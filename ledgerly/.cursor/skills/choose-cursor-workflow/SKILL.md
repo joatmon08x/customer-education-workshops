@@ -21,7 +21,7 @@ The beats live in `runbooks/meta.ts`, `runbooks.html`, and `runbooks.canvas.tsx`
 
 The named demo error is `dsp_1043` / the suggested-credit v1 client. Do not mention the invoice or dispute filter-pill `state=` seam unless the user is on that click path.
 
-Before a demo session, run `preflight-checker` with the track id (`preflight-checker track 101`, `201`, `301`, or `401`). It reports **Ready** when every required check for that track passed, and it does not install, seed, start the server, or stage Linear. If the track is missing, it asks which of `101`, `201`, `301`, or `401` and runs no checks. Then start the session with `npm run demo:session -- start`. Record every rule, skill, Canvas, Figma deck, Linear board, and demo branch it creates. Reset is script-first and clears every track at once; update the event record and reset script whenever a beat gains a new leftover.
+Before a demo session, run `preflight-checker` with the track id (`preflight-checker track 101`, `201`, `301`, or `401`). It reports **Ready** when every required check for that track passed, and it does not install, seed, start the server, or stage Linear. If the track is missing, it asks which of `101`, `201`, `301`, or `401` and runs no checks. Then start the session with `npm run demo:session -- start`. Record every rule, skill, Canvas, Linear board, and demo branch it creates. Reset lists issues on the recorded Linear project (including the 101 video issue) before canceling them. Update the event record and reset script whenever a beat gains a new leftover.
 
 ## 101 sections and beats
 
@@ -29,7 +29,7 @@ Before the session, run `preflight-checker` with the track id (`preflight-checke
 
 1. **What is Grok Build?** — Ask, Plan, Build in Agent mode, Debug, check the models, plan to fix the bug.
 2. **How do you work with an agent?** — Run Mode allowlist, verify the email feature, redact, stop, interrupt and steer, continue to the end, review diffs, restore from a checkpoint.
-3. **How do you govern an agent?** — create a user rule, test the rule, create a user skill, test the skill, Canvas, MCP / Figma.
+3. **How do you govern an agent?** — create a user rule, test the rule, create a user skill, test the skill, Canvas, MCP / Linear.
 
 ## 201 sections and beats
 

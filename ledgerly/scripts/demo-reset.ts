@@ -2,6 +2,7 @@ import { execFileSync, spawn } from "node:child_process";
 import { existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, isAbsolute, resolve } from "node:path";
+import { LINEAR_101_VIDEO_ISSUE_TITLE } from "@/runbooks/linear-field-demos";
 
 type SessionEvent = {
   version: 1;
@@ -551,11 +552,11 @@ function reseedAndStart(report: Report) {
 function verifyTests(report: Report) {
   if (skipVerify || dryRun) return "skipped";
   const output = command("npm", ["test"], { allowFailure: true });
-  if (!/1 failed[\s\S]*33 passed|33 passed[\s\S]*1 failed/i.test(output)) {
-    throw new Error("The reset suite did not report the expected 1 failed / 33 passed result.");
+  if (!/1 failed[\s\S]*35 passed|35 passed[\s\S]*1 failed/i.test(output)) {
+    throw new Error("The reset suite did not report the expected 1 failed / 35 passed result.");
   }
-  report.completed.push("Confirmed the expected 1 failed / 33 passed test result.");
-  return "1 failed / 33 passed";
+  report.completed.push("Confirmed the expected 1 failed / 35 passed test result.");
+  return "1 failed / 35 passed";
 }
 
 async function cancelWithLinearApi(event: SessionEvent, report: Report) {
@@ -579,17 +580,70 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
     const identity = await request(
       `query ResetIdentity($projectId: String!) {
         viewer { id teams { nodes { id name key } } }
-        project(id: $projectId) { id teams { nodes { id } } lead { id } }
+        project(id: $projectId) { id name teams { nodes { id } } lead { id } }
       }`,
       { projectId: event.linear.projectId },
     );
     const viewer = identity.viewer as { id: string; teams: { nodes: Array<{ id: string; name: string; key: string }> } };
-    const project = identity.project as { id: string; teams: { nodes: Array<{ id: string }> }; lead: { id: string } | null };
+    const project = identity.project as {
+      id: string;
+      name: string;
+      teams: { nodes: Array<{ id: string }> };
+      lead: { id: string } | null;
+    };
     const team = viewer.teams.nodes.find((candidate) => candidate.id === event.linear!.teamId);
     const projectTeams = project.teams.nodes.map((candidate) => candidate.id);
     if (!team || team.name !== event.linear.teamName || team.key !== event.linear.teamKey || projectTeams.length !== 1 || projectTeams[0] !== team.id || project.lead?.id !== viewer.id) {
       throw new Error("Recorded Linear board does not match the operator's exact team.");
     }
+
+    const recordedIssueIds = new Set(event.linear.issueIds);
+    const videoIssueIds: string[] = [];
+    const skippedExtras: Array<{ id: string; title: string }> = [];
+    let projectIssuesCursor: string | undefined;
+    for (;;) {
+      const projectIssues = await request(
+        projectIssuesCursor
+          ? `query ResetProjectIssues($projectId: String!, $after: String!) {
+              project(id: $projectId) {
+                issues(first: 50, after: $after) {
+                  nodes { id title state { type } }
+                  pageInfo { hasNextPage endCursor }
+                }
+              }
+            }`
+          : `query ResetProjectIssues($projectId: String!) {
+              project(id: $projectId) {
+                issues(first: 50) {
+                  nodes { id title state { type } }
+                  pageInfo { hasNextPage endCursor }
+                }
+              }
+            }`,
+        projectIssuesCursor
+          ? { projectId: event.linear.projectId, after: projectIssuesCursor }
+          : { projectId: event.linear.projectId },
+      );
+      const connection = (projectIssues.project as {
+        issues: {
+          nodes: Array<{ id: string; title: string; state: { type: string } }>;
+          pageInfo: { hasNextPage: boolean; endCursor: string | null };
+        };
+      }).issues;
+      for (const issue of connection.nodes) {
+        if (issue.state.type.toLowerCase() === "canceled") continue;
+        if (recordedIssueIds.has(issue.id)) continue;
+        if (LINEAR_101_VIDEO_ISSUE_TITLE.test(issue.title)) {
+          videoIssueIds.push(issue.id);
+          continue;
+        }
+        skippedExtras.push({ id: issue.id, title: issue.title });
+      }
+      if (!connection.pageInfo.hasNextPage || !connection.pageInfo.endCursor) break;
+      projectIssuesCursor = connection.pageInfo.endCursor;
+    }
+
+    const issueIds = [...new Set([...event.linear.issueIds, ...videoIssueIds])];
 
     const states = await request(
       `query ResetStates($teamId: String!) { team(id: $teamId) { states { nodes { id type } } } }`,
@@ -600,7 +654,7 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
     if (!canceledState) throw new Error("The confirmed Linear team has no Canceled workflow state.");
 
     let deletedComments = 0;
-    for (const issueId of event.linear.issueIds) {
+    for (const issueId of issueIds) {
       let cursor: string | undefined;
       for (;;) {
         const comments = await request(
@@ -640,7 +694,7 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
       }
     }
 
-    for (const issueId of event.linear.issueIds) {
+    for (const issueId of issueIds) {
       await request(
         `mutation CancelIssue($id: String!, $stateId: String!) {
           issueUpdate(id: $id, input: { stateId: $stateId }) { success }
@@ -655,8 +709,15 @@ async function cancelWithLinearApi(event: SessionEvent, report: Report) {
       { id: event.linear.projectId },
     );
     report.completed.push(
-      `Deleted ${deletedComments} comments and canceled recorded Linear board ${event.linear.projectId} through the Linear API.`,
+      `Deleted ${deletedComments} comments and canceled ${issueIds.length} issues (${event.linear.issueIds.length} recorded, ${videoIssueIds.length} 101 video-title matches) on Linear project ${project.name} (${event.linear.projectId}) through the Linear API.`,
     );
+    if (skippedExtras.length > 0) {
+      report.manual.push(
+        `Left ${skippedExtras.length} active Linear issue(s) on ${project.name} that are not recorded and do not match LINEAR_101_VIDEO_ISSUE_TITLE: ${skippedExtras
+          .map((issue) => `${issue.title} (${issue.id})`)
+          .join("; ")}.`,
+      );
+    }
   } catch (error) {
     report.skipped.push(`Linear API skipped: ${error instanceof Error ? error.message : String(error)}`);
   }
@@ -666,10 +727,15 @@ function remainingExternalActions(event: SessionEvent, report: Report) {
   for (const slide of event.figmaSlides) {
     report.remaining.push({ kind: "figma", detail: `Empty Figma Slides file ${slide.fileKey} with use_figma.` });
   }
-  if (event.linear && !report.completed.some((entry) => entry.includes(`Linear board ${event.linear!.projectId}`))) {
+  if (
+    event.linear &&
+    !report.completed.some(
+      (entry) => entry.includes(`Linear project`) && entry.includes(event.linear!.projectId),
+    )
+  ) {
     report.remaining.push({
       kind: "linear",
-      detail: `Delete comments on recorded Linear issues ${event.linear.issueIds.join(", ")} (\`list_comments\` then \`delete_comment\`), then cancel project ${event.linear.projectId} after confirming team ${event.linear.teamName} (${event.linear.teamKey}).`,
+      detail: `After confirming team ${event.linear.teamName} (${event.linear.teamKey}), on project ${event.linear.projectId} cancel recorded issues ${event.linear.issueIds.join(", ")} plus active extras whose titles match LINEAR_101_VIDEO_ISSUE_TITLE (101 video beat). Delete comments (\`list_comments\` then \`delete_comment\`) on those issues only, then cancel the project. Leave other active issues alone.`,
     });
   }
 }
@@ -770,7 +836,9 @@ async function reset() {
   remainingExternalActions(event, report);
   const suite = verifyTests(report);
   if (!dryRun) {
-    const linearCompleted = report.completed.some((entry) => entry.includes(`Linear board ${event.linear?.projectId}`));
+    const linearCompleted = report.completed.some(
+      (entry) => entry.includes("Linear project") && entry.includes(event.linear?.projectId ?? ""),
+    );
     writeEvent({
       ...defaultEvent(),
       userRules: event.userRules.filter((rule) => !rule.path),

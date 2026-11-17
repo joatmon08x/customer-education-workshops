@@ -35,12 +35,12 @@ export const PROJECT_SKILLS = [
   {
     name: "stage-linear",
     path: ".cursor/skills/stage-linear/SKILL.md",
-    when: "Reconcile Fieldnote issues on the ce-field-demos Linear project. Public and private teams and projects are both valid.",
+    when: "Reconcile Fieldnote issues on the operator-confirmed Linear project. Public and private teams and projects are both valid.",
   },
   {
     name: "standard-bug-fix",
     path: "plugins/standard-bug-fix/skills/standard-bug-fix/SKILL.md",
-    when: "/standard-bug-fix on one ce-field-demos Linear issue.",
+    when: "/standard-bug-fix on one Fieldnote Linear issue.",
   },
   {
     name: "dispatch-subagents",

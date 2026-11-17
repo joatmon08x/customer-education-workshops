@@ -1,7 +1,6 @@
 /** Ledgerly Linear board. Titles stay stable across per-operator setup. */
 
 export const LINEAR_FIELD_DEMOS_PROJECT = {
-  name: "ce-field-demos",
   summary:
     "Ledgerly board: three scoped Fieldnote issues plus the Collections Command Center slices.",
   workspace: "Fieldnote Workspace",
@@ -158,9 +157,10 @@ export const FIELD_DEMO_FILTER_TITLE = FIELD_DEMO_ISSUES.find(
 
 /**
  * Collections Command Center slices.
- * stage-linear stages these on the same ce-field-demos project, after the three
- * Fieldnote issues, tagged with COLLECTIONS_COMMAND_CENTER_LINEAR. They must not
- * join FIELD_DEMO_ISSUES: the 101/201 beats still name only those three titles.
+ * stage-linear stages these on the same operator-confirmed project, after the
+ * three Fieldnote issues, tagged with COLLECTIONS_COMMAND_CENTER_LINEAR. They
+ * must not join FIELD_DEMO_ISSUES: the 101/201 beats still name only those three
+ * titles.
  */
 export type CollectionsCommandCenterPattern = "Operations" | "Business rules";
 
@@ -411,7 +411,7 @@ export function collectionsCommandCenterDescription(issue: CollectionsCommandCen
 }
 
 /**
- * WCAG keyboard walkthrough on the ce-field-demos board.
+ * WCAG keyboard walkthrough on the operator-confirmed Linear board.
  * stage-linear stages this as the thirteenth issue (Todo, priority 3): creates
  * it when missing, reopens a match to Todo, and writes the catalog body in
  * place. reset-demo-state cancels the recorded identifier. It is not a
@@ -465,7 +465,7 @@ The manual keyboard walkthrough can show each of these. Reading the source witho
 } as const;
 
 /**
- * WCAG contrast check on the ce-field-demos board (Linear LY-37).
+ * WCAG contrast check on the operator-confirmed Linear board.
  * stage-linear stages this as the fourteenth issue (Todo, priority 2): creates
  * it when missing, reopens a match to Todo, and writes the catalog body in
  * place. reset-demo-state cancels the recorded identifier. Not a Fieldnote
@@ -505,7 +505,7 @@ Paid, Open, Overdue, and Disputed badges, muted text, and the up KPI still read 
 
 ## Proof
 
-\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 33 passed.
+\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 35 passed.
 
 http://127.0.0.1:43173/invoices — Paid, Open, and Overdue badge text in light and dark.
 
@@ -519,3 +519,11 @@ Before merging, pick which side of each pair moves (foreground vs \`-soft\` back
 
 The contrast test is the check, not a file to edit.`,
 } as const;
+
+/**
+ * 101 MCP / Linear beat may create a showcase issue with a canvas video.
+ * Reset cancels recorded catalog IDs plus active project issues whose titles
+ * match this pattern — not every other issue on the board.
+ */
+export const LINEAR_101_VIDEO_ISSUE_TITLE =
+  /15[- ]?second|video.*(canvas|feature|built)|canvas.*video|summariz(?:e|ing)? how we built/i;

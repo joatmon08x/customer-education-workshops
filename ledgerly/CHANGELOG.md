@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Synced 101 Show beats to the live Outline: Canvas asks for the feature we built, and MCP / Linear creates a Linear issue with a 15-second canvas video instead of Figma slides. `demo-reset` cancels recorded catalog issue IDs plus project extras whose titles match `LINEAR_101_VIDEO_ISSUE_TITLE`, not every active issue on the board. Linear staging, bug-fix, reset, and preflight resolve the Fieldnote project from chat or ask the operator — they never hardcode a project name. Shipped suite citations updated to **1 failed / 35 passed**.
 - Synced 101, 201, 301, and 401 Show beats to the live Outlines. 101 and 201 now split Say, Do, and Prompt the way 301 and 401 do. 401 hands contrast to a `/goal` Cloud Agent that finishes when the accessibility tests pass, names the Project Collections Command Center, reviews the Project model before workers launch, and uses straight quotes. 301 optional-feature checkboxes start unchecked.
 - Synced 301 Show beats to the live Outline. The Cloud Agents opener is one Do plus a /plan prompt, the subagent step uses the Outline title, and the Projects Do names the remaining prompts in this demo section.
 - `README.md`, `AGENTS.md`, and `choose-cursor-workflow` tell you to run `preflight-checker` with the track id before a demo.

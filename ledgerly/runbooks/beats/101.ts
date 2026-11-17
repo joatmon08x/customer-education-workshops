@@ -158,17 +158,16 @@ export const RUNBOOK_SECTIONS_101 = [
         promptType: "reusable",
         say: "Use Canvas to generate interactive artifacts that render next to the chat.",
         detail: "",
-        example: "Create a canvas explaining what we did today.",
+        example: "Create a canvas explaining the feature we built.",
       },
       {
         id: "mcp",
-        title: "MCP / Figma",
-        promptType: "adaptable",
-        say: "Ask Grok Build to create a slideshow in Figma using MCP Servers.",
-        detail:
-          "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma.",
+        title: "MCP / Linear",
+        promptType: "reusable",
+        say: "Ask Grok Build to create a 15-second video and post it to an issue.",
+        detail: "Go to Customize > MCPs > Linear.",
         example:
-          "Create three slides in Figma Slides outlining how I used Grok Build to develop a new feature. I want to use this as part of my demo showcase.",
+          "Create a Linear issue for this feature. Attach a 15-second video, made from the canvas, summarizing how we built it.",
       },
     ],
   },

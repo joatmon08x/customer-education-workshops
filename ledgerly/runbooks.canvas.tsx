@@ -334,28 +334,28 @@ const TRACKS: Track[] = [
               },
               {
                 "kind": "prompt",
-                "text": "Create a canvas explaining what we did today.",
+                "text": "Create a canvas explaining the feature we built.",
                 "label": "Paste in Grok Build"
               }
             ]
           },
           {
             "id": "mcp",
-            "title": "MCP / Figma",
+            "title": "MCP / Linear",
             "blocks": [
               {
                 "kind": "say",
-                "text": "Ask Grok Build to create a slideshow in Figma using MCP Servers."
+                "text": "Ask Grok Build to create a 15-second video and post it to an issue."
               },
               {
                 "kind": "steps",
                 "lines": [
-                  "Find an MCP server for slideshow generation in Grok Build. Go to Customize > MCPs > Figma."
+                  "Go to Customize > MCPs > Linear."
                 ]
               },
               {
                 "kind": "prompt",
-                "text": "Create three slides in Figma Slides outlining how I used Grok Build to develop a new feature. I want to use this as part of my demo showcase.",
+                "text": "Create a Linear issue for this feature. Attach a 15-second video, made from the canvas, summarizing how we built it.",
                 "label": "Paste in Grok Build"
               }
             ]

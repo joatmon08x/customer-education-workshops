@@ -1,11 +1,11 @@
 ---
 name: standard-bug-fix
-description: Pull one ce-field-demos Linear issue by title or identifier, fix only that Ledgerly bug, and write hypothesis, debug notes, and the fix PR back to Linear. Use when the user runs /standard-bug-fix with a field-demo title such as the Overdue or Needs review filter bug.
+description: Pull one Fieldnote Linear issue by title or identifier, fix only that Ledgerly bug, and write hypothesis, debug notes, and the fix PR back to Linear. Use when the user runs /standard-bug-fix with a field-demo title such as the Overdue or Needs review filter bug.
 ---
 
 # Standard bug fix
 
-Work one Linear issue from the operator’s **ce-field-demos** project. Keep Linear current. Do not invent a second issue. Do not expand scope to catalog migration, dispute resolution, or unrelated UI.
+Work one Linear issue from the operator’s confirmed Fieldnote project. Keep Linear current. Do not invent a second issue. Do not expand scope to catalog migration, dispute resolution, or unrelated UI.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ This plugin ships the Linear MCP server (`https://mcp.linear.app/mcp`). If Linea
 
 Call Linear MCP:
 
-1. `list_projects` query `ce-field-demos` — use the project on the confirmed team. Public and private teams are both valid. Public and private projects are both valid.
+1. Resolve the Linear project first: use the project from this chat (session report `projectId`, a pasted project URL/name, or an earlier confirmed board). If the project is not in the chat, ask the user which project to use and wait — never assume or guess a project name. Then `list_projects` with that query — use the project on the confirmed team. Public and private teams are both valid. Public and private projects are both valid.
 2. `list_issues` on that project. Match `FIELD_DEMO_ISSUES` titles in `runbooks/linear-field-demos.ts` when the user passed a title (the 201 paste uses titles).
 3. `get_issue` only when the user passed a real identifier (for example `CE-16`). Do **not** assume `LY-003` is the filter bug. After `stage-linear` on a `LY` team, identifiers follow create order: suggested-credit, then filter, then email — so `LY-003` is the email story.
 
