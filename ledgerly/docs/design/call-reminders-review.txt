@@ -1,0 +1,63 @@
+Design review: payment reminders by phone call
+Reviewed: 2026-11-10
+Reviewers: Workspace design
+Source: ledgerly/docs/product/prd-call-reminders.txt
+App checked against: http://localhost:43173
+
+This note covers three screens: the call flow, the call settings screen, and the transcript view on the invoice. Decisions are numbered DR-1 through DR-6. Grok Voice is mocked. The design has no phone number field and no audio file.
+
+Call flow
+
+The flow is the mocked call itself. Only one reminder call for an invoice is active at a time. A later attempt waits until the earlier call has an outcome.
+
+DR-1. Only one reminder call for an invoice is active at a time.
+
+The spoken steps stay in one order. The call does not skip the opt-out line. The call does not add a fee, and it does not threaten the customer.
+
+DR-2. The call uses these steps in order. Greeting. Invoice reminder. Pay prompt. Opt-out line. Goodbye.
+The greeting does not use a person name.
+The invoice reminder names <invoice id> and the amount due.
+The pay prompt says a <pay link> will follow the call.
+The opt-out line tells the customer they can refuse later calls.
+The goodbye is one short sentence.
+
+If the customer opts out, the call stops before the next step. Later reminder calls stay blocked until the customer opts in again. That rule is the same for a first call and for a retry.
+
+DR-3. A spoken opt-out ends the call before the next step and blocks later reminder calls until the customer opts in again.
+
+The days between a missed call and a retry are not set in this review. The design does not draw that wait.
+
+Call settings screen
+
+This screen is the target layout for workspace admins. It is not on the settings page in the running app at http://localhost:43173. The settings page today does not include lead times, quiet hours, tone, a retry cap, or a script preview.
+
+Fields on the target screen:
+Lead time for an upcoming invoice: three days before the due date.
+Lead time for an overdue invoice: one day after the due date.
+Quiet hours start and end, in the customer local time.
+Tone.
+Retry cap.
+Consent switch. When the switch is off, no call is placed.
+Script preview. It plays the mock for the selected tone and does not place a call.
+
+There is no phone number field.
+
+When the customer record has no local zone, the screen shows <zone missing> and the call is not placed. This review does not choose a fallback zone.
+
+DR-4. The default quiet hours run from eight in the evening until nine the next morning, in the customer local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
+
+DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee.
+
+The retry cap defaults to two attempts after the first call. The cap control sits on this screen. Enforcing the cap is tracked with the retry issues, not with a separate decision number.
+
+Transcript view on the invoice
+
+The transcript is text on the invoice the call was about. Place the card directly under the Customer card. The card title is Call transcript.
+
+The card shows three facts. The outcome, which is answered, no answer, or opt-out. The duration. A text replay of the lines spoken. There is no audio control and no phone number.
+
+DR-6. The Call transcript card sits under the Customer card. It shows the outcome, the duration, and a text replay. The outcome is answered, no answer, or opt-out.
+
+Current build. Open an invoice at http://localhost:43173. The Call transcript card is already under the Customer card. It shows the outcome, the duration, and a text replay.
+
+The script version and a text export are later additions. They are not on this card in the current build.

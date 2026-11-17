@@ -1,0 +1,31 @@
+LEDGERLY-100 Call scheduling and quiet hours
+
+Epic Summary:
+Reminder calls go out on a schedule, and quiet hours keep them out of the night. Upcoming invoices and overdue invoices can use different lead times. The clock is the customer local time.
+
+Objective:
+Place mocked reminder calls at the right time of day, and block a call that would fall in quiet hours.
+
+User Stories/Tasks:
+[LEDGERLY-101]: As a billing operator, I want a reminder call placed a set number of days before the due date, so that the customer hears about the invoice while there is still time to pay. Status: Done
+[LEDGERLY-102]: As a workspace admin, I want quiet hours on the call schedule, so that reminder calls stay out of the night. Status: Done
+[LEDGERLY-103]: As a billing operator, I want upcoming and overdue invoices to use different lead times, so that an overdue invoice does not use the same lead time as an upcoming one. Status: Done
+[LEDGERLY-104]: As a workspace admin, I want the schedule to follow the customer local time, so that quiet hours match the customer day. Status: Done
+[LEDGERLY-105]: As a workspace admin, I want to edit the lead time without placing a call, so that I can tune the schedule in the mock. Status: In Progress
+[LEDGERLY-106]: As a billing operator, I want a skipped-call reason when quiet hours block a call, so that I know why no call went out. Status: Todo
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call settings screen, DR-4
+
+Dependencies:
+None.
+
+Timeframe:
+Start Date: 2026-09-01
+End Date: 2026-11-20
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+Grok Voice is mocked. This epic does not dial a real line and does not store a phone number. The lead times in the design are three days before the due date for an upcoming invoice and one day after the due date for an overdue invoice. Quiet hours here are a schedule rule. The call settings screen that edits them is not on the settings page in the running app.

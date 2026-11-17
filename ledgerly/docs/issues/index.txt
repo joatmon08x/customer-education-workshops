@@ -1,0 +1,76 @@
+Call reminder issues
+Updated: 2026-11-17
+
+This index lists every epic and its issues. The epic file holds the full story. Status values are Done, In Progress, Todo, and Backlog.
+
+LEDGERLY-100 Call scheduling and quiet hours
+File: LEDGERLY-100-call-scheduling.txt
+Summary: Reminder calls go out on a schedule, and quiet hours keep them out of the night.
+Start Date: 2026-09-01
+End Date: 2026-11-20
+LEDGERLY-101 Status: Done. Place a reminder call a set number of days before the due date.
+LEDGERLY-102 Status: Done. Keep quiet hours on the call schedule.
+LEDGERLY-103 Status: Done. Use different lead times for upcoming and overdue invoices.
+LEDGERLY-104 Status: Done. Follow the customer local time.
+LEDGERLY-105 Status: In Progress. Edit the lead time without placing a call.
+LEDGERLY-106 Status: Todo. Record a skipped-call reason when quiet hours block a call.
+
+LEDGERLY-110 Call scripts and tone
+File: LEDGERLY-110-call-scripts.txt
+Summary: Each reminder call uses a short script with a chosen tone.
+Start Date: 2026-09-14
+End Date: 2026-11-27
+LEDGERLY-111 Status: Done. Use a default reminder script.
+LEDGERLY-112 Status: In Progress. End the script with an opt-out line.
+LEDGERLY-113 Status: Done. Preview a script before it is used on a call.
+LEDGERLY-114 Status: Todo. Include a pay prompt in the script.
+LEDGERLY-115 Status: Backlog. Offer a formal tone and a brief tone beside the calm default.
+
+LEDGERLY-120 Consent and opt-out
+File: LEDGERLY-120-consent-opt-out.txt
+Summary: A reminder call is placed only after consent, and a spoken opt-out is honored.
+Start Date: 2026-09-28
+End Date: 2026-11-27
+LEDGERLY-121 Status: Done. Record consent before the first reminder call.
+LEDGERLY-122 Status: In Progress. Let the customer opt out during the call.
+LEDGERLY-123 Status: Todo. Export the opt-out list.
+LEDGERLY-124 Status: Backlog. Let the customer opt back in from a written request.
+LEDGERLY-125 Status: Todo. Show the consent reason when a call is blocked.
+
+LEDGERLY-130 Call outcomes and transcripts
+File: LEDGERLY-130-call-outcomes.txt
+Summary: The outcome and the transcript of a reminder call are logged on the invoice.
+Start Date: 2026-10-20
+End Date: 2026-12-04
+LEDGERLY-131 Status: Done. Show a Call transcript card on the invoice page.
+LEDGERLY-132 Status: In Progress. Save the call outcome on the invoice.
+LEDGERLY-133 Status: Todo. Store the script version with the transcript.
+LEDGERLY-134 Status: Backlog. Export one transcript as a text file.
+
+LEDGERLY-140 Retry rules
+File: LEDGERLY-140-retry-rules.txt
+Summary: A missed reminder can be tried again, with a cap, and quiet hours still apply.
+Start Date: 2026-10-13
+End Date: 2026-12-18
+LEDGERLY-141 Status: Todo. Schedule a later retry when the first call is not answered.
+LEDGERLY-142 Status: Todo. Cap the number of retries per invoice.
+LEDGERLY-143 Status: Backlog. Keep retries inside quiet hours.
+LEDGERLY-144 Status: Backlog. Do not retry after an opt-out.
+
+LEDGERLY-150 Call results dashboard
+File: LEDGERLY-150-call-dashboard.txt
+Summary: Billing operators can see how many reminder calls the mock placed and how they ended.
+Start Date: 2026-12-08
+End Date: 2027-01-23
+LEDGERLY-151 Status: Backlog. Count the calls placed today.
+LEDGERLY-152 Status: Backlog. Group outcomes by answered, no answer, and opt-out.
+LEDGERLY-153 Status: Todo. Limit the results view to the mock book.
+
+LEDGERLY-160 Pay link after the call
+File: LEDGERLY-160-pay-link.txt
+Summary: After a reminder call, the customer receives a pay link for that invoice.
+Start Date: 2026-12-08
+End Date: 2027-01-30
+LEDGERLY-161 Status: Todo. Send a pay link after the reminder call.
+LEDGERLY-162 Status: Backlog. Tie the pay link to one invoice.
+LEDGERLY-163 Status: Backlog. Expire the pay link after a set number of days.

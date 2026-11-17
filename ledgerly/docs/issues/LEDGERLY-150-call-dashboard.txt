@@ -1,0 +1,28 @@
+LEDGERLY-150 Call results dashboard
+
+Epic Summary:
+Billing operators can see how many reminder calls the mock placed and how they ended. The view is limited to the mock book in this workspace.
+
+Objective:
+Show call volume and outcomes in one place for the billing operator.
+
+User Stories/Tasks:
+[LEDGERLY-151]: As a billing operator, I want a count of calls placed today, so that I can see whether the mock ran. Status: Backlog
+[LEDGERLY-152]: As a billing operator, I want outcomes grouped by answered, no answer, and opt-out, so that I can see the mix. Status: Backlog
+[LEDGERLY-153]: As a workspace admin, I want the results view limited to the mock book, so that the figures stay inside this workspace. Status: Todo
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call results dashboard
+
+Dependencies:
+LEDGERLY-132
+
+Timeframe:
+Start Date: 2026-12-08
+End Date: 2027-01-23
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+This view is not on the dashboard in the running app. Counts come from mocked calls only. The view does not list a phone number.

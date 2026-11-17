@@ -1,0 +1,125 @@
+Product requirements: payment reminders by phone call
+Product: Ledgerly
+Status: Draft for the demo
+Updated: 2026-11-17
+Owner: Product manager
+Voice provider: Grok Voice, mocked
+Related: ledgerly/docs/issues/index.txt
+Related: ledgerly/docs/design/call-reminders-review.txt
+Related: ledgerly/docs/product/project-update.txt
+
+Purpose
+Billing operators need a way to remind customers about invoices that are coming due or already overdue. This product adds an automated voice reminder. Grok Voice speaks the script. The provider is mocked, so the work can be reviewed with no live call, no phone number, and no provider key.
+
+The reminder names the invoice and the amount due. It stays inside quiet hours. It runs only after consent. The customer can opt out on the call. The outcome and a text transcript stay on the invoice.
+
+Background
+Ledgerly already holds the invoice, the due date, the amount due, and the customer record. Operators can open an invoice and read that record. A missed due date is easier to prevent when the customer hears a short reminder while there is still time to pay.
+
+Target users
+Billing operator. Runs the book, checks invoices, and reads call outcomes.
+Workspace admin. Sets lead times, quiet hours, tone, consent, and the retry cap.
+Customer. Hears the mocked reminder and can opt out.
+Finance lead. Reads call results after the results view exists. That view is not in the running app.
+
+Goals
+Place a mocked reminder three days before the due date.
+Place a mocked reminder one day after the due date when the invoice is overdue.
+Keep every placed call outside quiet hours, using the customer local time.
+Place a call only when consent is on file.
+End the call when the customer opts out, and block later reminders until the customer opts in again.
+Keep one active reminder call per invoice.
+Show the outcome and the transcript on the invoice.
+
+Non-goals
+Do not place a live call. Do not store a phone number. Do not ship a provider key. Grok Voice stays mocked.
+Sending a pay link is out of this release.
+Do not change the amount due on the call.
+Do not put a person on the call.
+Do not use the call for any topic other than an upcoming invoice or an overdue invoice.
+Do not store audio. The transcript is text.
+
+Assumptions
+The invoice already exists. This feature does not create invoices.
+The mock returns one outcome: answered, no answer, or opt-out.
+The mock returns the lines it spoke, as text.
+The customer local time is on the customer record when the zone is known.
+A missing zone does not get a fallback in this draft. See the open questions.
+
+User journey
+The workspace admin sets the two lead times, the quiet hours, and the tone.
+The billing operator confirms consent for the customer.
+The mock places one call for the invoice, inside the allowed hours.
+The customer hears the greeting, the invoice reminder, the pay prompt, the opt-out line, and the goodbye.
+If the customer opts out, the call ends and later reminders stay blocked.
+The outcome and the transcript land on the invoice, under the Customer card.
+A <pay link> follows a completed call.
+
+Current app
+The call settings screen is not on the settings page at http://localhost:43173. The results view is not on the dashboard. The transcript requirement below states what the invoice page shows today.
+
+Requirements
+
+Must. Upcoming invoices are called three days before the due date. Overdue invoices are called one day after the due date. Keys: LEDGERLY-101, LEDGERLY-103.
+
+Must. The default quiet hours run from nine in the evening until eight the next morning, in the customer local time. A call does not start inside that window. Keys: LEDGERLY-102, LEDGERLY-104. This matches DR-4.
+
+Must. Only one reminder call for an invoice is active at a time. Decision: DR-1.
+
+Must. Consent is recorded before the first reminder call. A missing consent record blocks the call. Key: LEDGERLY-121.
+
+Must. A spoken opt-out ends the call before the next step and blocks later reminder calls until the customer opts in again. Key: LEDGERLY-122. Decision: DR-3.
+
+Must. The invoice page shows a Call transcript card under the Customer card. The card shows the outcome, the duration, and a text replay. Key: LEDGERLY-131. Decision: DR-6. LEDGERLY-131 is Done. The running app at http://localhost:43173 already shows this card.
+
+Should. The workspace admin can preview a script in the mock before a call uses it. Key: LEDGERLY-113.
+
+Should. When nobody answers, the mock leaves a short voicemail that names the invoice and the amount due. Key: LEDGERLY-170.
+
+Should. After a completed reminder call, send the customer a <pay link> for that invoice. Key: LEDGERLY-161.
+
+Should. When quiet hours block a call, the invoice stores a skipped-call reason. Key: LEDGERLY-106.
+
+Should. Each call outcome is saved on the invoice as answered, no answer, or opt-out. Key: LEDGERLY-132.
+
+Could. The tone list includes brief and formal as well as the calm default. Key: LEDGERLY-115. Decision: DR-5.
+
+Could. A workspace admin can export one transcript as a text file. Key: LEDGERLY-134.
+
+Could. A results view counts calls placed today and groups them by answered, no answer, and opt-out. Keys: LEDGERLY-151, LEDGERLY-152. This view is not in the running app.
+
+Could. A workspace admin can export the opt-out list. Key: LEDGERLY-123.
+
+Success metrics
+
+On-time reminder rate
+Definition: the share of eligible invoices with a due date in the period that received a completed reminder call before the due date. A completed call has the outcome answered or opt-out. Eligible means consent is on file and the invoice is not void.
+Target: 80 percent of eligible invoices in the mock book.
+
+Call clarity score
+This metric is part of the launch readout.
+
+Quiet-hour compliance
+Definition: the share of placed calls whose start time falls outside the quiet-hour window.
+Target: 100 percent of placed calls in the mock.
+
+Opt-out honor rate
+Definition: the share of opt-out events after which no later reminder call is placed for that customer.
+Target: 100 percent of opt-out events in the mock.
+
+Release criteria
+The mock places no call inside the quiet hours on the schedule.
+Consent is on file before the first call to that customer.
+A spoken opt-out ends the current call and blocks the next one.
+The invoice page shows the Call transcript card under the Customer card, with the outcome, the duration, and a text replay.
+Upcoming invoices use a three-day lead time, and overdue invoices use a one-day lead time.
+A <pay link> is sent after a completed reminder call.
+No release build places a live call, stores a phone number, or contains a provider key.
+
+Open questions
+Question. When the customer record has no local zone, which zone should quiet hours use?
+Question. How many days should a <pay link> stay valid?
+Question. How many days should pass between a missed call and the retry?
+
+Stakeholders
+Billing operations. Voice platform. Workspace design. Finance ops.

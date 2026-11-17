@@ -1,0 +1,30 @@
+LEDGERLY-130 Call outcomes and transcripts
+
+Epic Summary:
+The outcome and the transcript of a reminder call are logged on the invoice. The invoice page shows a Call transcript card under the Customer card.
+
+Objective:
+Keep the result of each reminder call on the invoice the call was about.
+
+User Stories/Tasks:
+[LEDGERLY-131]: As a billing operator, I want the invoice page to show a Call transcript card under the Customer card, so that I can read the outcome, the duration, and a text replay without leaving the invoice. Status: Done
+[LEDGERLY-132]: As a billing operator, I want each call outcome saved on the invoice, so that answered, no answer, and opt-out stay visible later. Status: In Progress
+[LEDGERLY-133]: As a billing operator, I want the script version stored with the transcript, so that I know which words were used. Status: Todo
+[LEDGERLY-134]: As a workspace admin, I want to export one transcript as a text file, so that I can share it inside the workspace. Status: Backlog
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Transcript view on the invoice, DR-6
+
+Dependencies:
+LEDGERLY-111
+LEDGERLY-121
+
+Timeframe:
+Start Date: 2026-10-20
+End Date: 2026-12-04
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+The replay is text. The mock does not store audio. The Call transcript card is already under the Customer card on the invoice page in the running app. It shows the outcome, the duration, and a text replay.

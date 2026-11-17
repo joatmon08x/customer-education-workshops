@@ -1,0 +1,23 @@
+Project update draft
+Date: 2026-11-17
+Use: Linear project update for payment reminders by phone call
+Voice: Grok Voice is mocked. This update does not include a live call.
+
+Where the work stands
+
+LEDGERLY-100 Call scheduling and quiet hours. Start Date 2026-09-01. End Date 2026-11-20. Lead times and quiet hours are in place. LEDGERLY-105 is In Progress. LEDGERLY-106 is Todo.
+
+LEDGERLY-110 Call scripts and tone. Start Date 2026-09-14. End Date 2026-11-27. The default script is Done. LEDGERLY-112 and LEDGERLY-113 are In Progress. LEDGERLY-114 is Todo. LEDGERLY-115 is Backlog.
+
+LEDGERLY-120 Consent and opt-out. Start Date 2026-09-28. End Date 2026-11-27. Consent before the first call is Done. LEDGERLY-122 is In Progress. LEDGERLY-123 and LEDGERLY-125 are Todo. LEDGERLY-124 is Backlog.
+
+LEDGERLY-130 Call outcomes and transcripts. Start Date 2026-10-20. End Date 2026-12-04. LEDGERLY-131 is Done. The invoice page shows a Call transcript card under the Customer card, with the outcome, the duration, and a text replay. LEDGERLY-132 is In Progress. LEDGERLY-133 is Todo. LEDGERLY-134 is Backlog.
+
+LEDGERLY-140 Retry rules. Start Date 2026-10-13. End Date 2026-12-18. LEDGERLY-130 must finish before this epic starts. LEDGERLY-141 and LEDGERLY-142 are Todo. LEDGERLY-143 and LEDGERLY-144 are Backlog.
+
+LEDGERLY-150 Call results dashboard. Start Date 2026-12-08. End Date 2027-01-23. This view is not on the dashboard in the running app. LEDGERLY-151 and LEDGERLY-152 are Backlog. LEDGERLY-153 is Todo.
+
+LEDGERLY-160 Pay link after the call. Start Date 2026-12-08. End Date 2027-01-30. LEDGERLY-161 is Todo. LEDGERLY-162 and LEDGERLY-163 are Backlog.
+
+Next check
+Finish the script preview and the opt-out line. Keep saving outcomes on the invoice. Leave retries until LEDGERLY-130 is finished.
