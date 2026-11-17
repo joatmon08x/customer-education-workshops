@@ -19,11 +19,11 @@ Dependencies:
 Call scheduling and quiet hours, for the lead times and the quiet hours.
 
 Timeframe:
-Start Date: 2026-09-14
-End Date: 2026-11-27
+Start Date: 2027-01-18
+End Date: 2027-02-12
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.
 
 Notes/Additional Information:
-The script names the invoice and the amount due. It does not state a late fee, and it does not threaten the customer. Preview uses the Grok Voice mock and does not place a call. Calm is the default tone. Brief and formal are visible on the tone control and are not the default.
+The script names the invoice and the amount due. It does not state a late fee, and it does not threaten the customer. Preview uses the Grok Voice mock and does not place a call. The tone control follows DR-5. Calm is the default tone. Brief and formal are visible on the tone control and are not the default.

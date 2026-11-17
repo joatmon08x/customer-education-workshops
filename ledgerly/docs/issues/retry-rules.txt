@@ -15,12 +15,12 @@ ledgerly/docs/design/call-reminders-review.txt section: Call settings screen
 
 Dependencies:
 Call scheduling and quiet hours, for quiet hours.
-Call outcomes and transcripts must finish before this epic starts.
-Call routing.
+Blocked by Call outcomes and transcripts.
+Blocked by Call routing.
 
 Timeframe:
-Start Date: 2026-10-13
-End Date: 2026-12-18
+Start Date: 2027-02-09
+End Date: 2027-03-19
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.

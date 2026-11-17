@@ -46,7 +46,7 @@ When the customer record has no local zone, the screen shows <zone missing> and 
 
 DR-4. The default quiet hours run from eight in the evening until nine the next morning, in the customer's local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
 
-DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee.
+DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee. DR-5 is due on 2027-03-06.
 
 The retry cap defaults to two attempts after the first call. The cap control sits on this screen. Enforcing the cap is part of the Retry rules epic, not a separate decision number.
 

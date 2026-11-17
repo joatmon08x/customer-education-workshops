@@ -1,7 +1,9 @@
 Call reminder dependencies
 Updated: 2026-11-17
 
-This file shows the order of the epics, the blockers, and which epic must finish before another starts. It names epics and stories in plain text. The stories below are the full list for each epic. The drawing is the order of work. Only a blocker line means one epic must finish before the next starts.
+This file is the plan for 2027 Q1, January through March 2027. It is the planning source of truth. When this file and an epic file disagree, this file wins. A disagreement is a gap to find.
+
+It names epics and stories in plain text. The stories below are the full list for each epic. The drawing is the order of work. A blocked-by line means the blocking epic must finish before the blocked epic starts. Needs that can overlap are not blocked-by lines.
 
 Order
 
@@ -21,10 +23,10 @@ Call scheduling and quiet hours
 
 Blockers
 
-Blocker: Call outcomes and transcripts must finish before Retry rules starts.
-Blocker: Call outcomes and transcripts must finish before Call results dashboard starts.
-Blocker: Call scripts and tone must finish before Pay link after the call starts. The pay prompt story is the one this epic needs.
-Blocker: Retry rules is blocked by Call routing.
+Retry rules is blocked by Call outcomes and transcripts.
+Call results dashboard is blocked by Call outcomes and transcripts.
+Pay link after the call is blocked by Call scripts and tone. The pay prompt story is the one this epic needs.
+Retry rules is blocked by Call routing.
 
 Needs that can overlap
 
@@ -38,38 +40,38 @@ Timeframes
 
 Call scheduling and quiet hours
 File: call-scheduling.txt
-Start Date: 2026-09-01
-End Date: 2026-11-20
+Start Date: 2027-01-04
+End Date: 2027-01-29
 
 Call scripts and tone
 File: call-scripts.txt
-Start Date: 2026-09-14
-End Date: 2026-11-27
+Start Date: 2027-01-18
+End Date: 2027-02-12
 
 Consent and opt-out
 File: consent-opt-out.txt
-Start Date: 2026-09-28
-End Date: 2026-11-27
+Start Date: 2027-01-18
+End Date: 2027-02-12
 
 Call outcomes and transcripts
 File: call-outcomes.txt
-Start Date: 2026-10-20
-End Date: 2026-12-04
+Start Date: 2027-02-01
+End Date: 2027-02-26
 
 Retry rules
 File: retry-rules.txt
-Start Date: 2026-12-08
-End Date: 2027-01-16
+Start Date: 2027-03-01
+End Date: 2027-03-19
 
 Call results dashboard
 File: call-dashboard.txt
-Start Date: 2026-12-08
-End Date: 2027-01-23
+Start Date: 2027-03-01
+End Date: 2027-03-26
 
 Pay link after the call
 File: pay-link.txt
-Start Date: 2026-12-08
-End Date: 2027-01-30
+Start Date: 2027-02-15
+End Date: 2027-03-12
 
 Stories
 
@@ -85,6 +87,7 @@ As a billing operator, I want only one reminder call active for an invoice, so t
 Call scripts and tone
 As a billing operator, I want a default reminder script, so that every call states the invoice and the amount due.
 As a workspace admin, I want the script to end with an opt-out line, so that the customer can refuse later calls.
+As a workspace admin, I want to preview a script before it is used on a call, so that I can check the tone in the mock.
 As a billing operator, I want the script to include a pay prompt, so that the customer knows a pay link will follow the call.
 As a workspace admin, I want calm as the default tone, with brief and formal visible and not the default, so that the call can match the workspace voice.
 
@@ -108,9 +111,9 @@ As a billing operator, I want retries to obey quiet hours, so that a retry does 
 As a workspace admin, I want no retry after an opt-out, so that a refusal stays in force.
 
 Call results dashboard
-As a billing operator, I want a count of calls placed today, so that I can see whether the mock ran.
-As a billing operator, I want outcomes grouped by answered, no answer, and opt-out, so that I can see the mix.
-As a workspace admin, I want the results view limited to the mock book, so that the figures stay inside this workspace.
+As a finance lead, I want a count of calls placed today, so that I can see whether the mock ran.
+As a finance lead, I want outcomes grouped by answered, no answer, and opt-out, so that I can see the mix.
+As a finance lead, I want the results view limited to the mock book, so that the figures stay inside this workspace.
 
 Pay link after the call
 As a customer, I want a pay link after the reminder call, so that I can pay the invoice without searching for it.
@@ -120,7 +123,10 @@ As a workspace admin, I want the pay link to expire after a set number of days, 
 Staging map
 
 This file is tool-neutral. The same map works in Linear or in Jira.
-Epic = milestone or parent issue.
-User story = issue.
-Timeframe dates = milestone target dates.
+Epic = project milestone.
+The End Date is the milestone target date.
+The Start Date stays in the milestone description.
+Story = issue under that milestone.
+Blocker lines = blocked by relations.
+When the issues are created, start them in Backlog or Todo.
 The presenter stages the epics once from this file and the epic files.

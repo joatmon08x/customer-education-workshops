@@ -18,8 +18,8 @@ Dependencies:
 Call scheduling and quiet hours, so a call exists to gate on consent.
 
 Timeframe:
-Start Date: 2026-09-28
-End Date: 2026-11-27
+Start Date: 2027-01-18
+End Date: 2027-02-12
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.

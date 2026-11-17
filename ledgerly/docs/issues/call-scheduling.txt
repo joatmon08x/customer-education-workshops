@@ -20,11 +20,11 @@ Dependencies:
 None.
 
 Timeframe:
-Start Date: 2026-09-01
-End Date: 2026-11-20
+Start Date: 2027-01-04
+End Date: 2027-01-29
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.
 
 Notes/Additional Information:
-Grok Voice is mocked. This epic does not dial a real line and does not store a phone number. The lead times in the design are three days before the due date for an upcoming invoice and one day after the due date for an overdue invoice. Quiet hours here are a schedule rule. The call settings screen that edits them is not on the settings page in the running app.
+Grok Voice is mocked. This epic does not dial a real line and does not store a phone number. The lead times in the design are three days before the due date for an upcoming invoice and one day after the due date for an overdue invoice. The default quiet hours run from nine in the evening until eight the next morning, in the customer's local time. This matches DR-4. Quiet hours here are a schedule rule. The call settings screen that edits them is not on the settings page in the running app.

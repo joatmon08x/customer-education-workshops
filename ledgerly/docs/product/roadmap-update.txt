@@ -1,0 +1,47 @@
+Roadmap update
+Date: 2026-11-17
+Quarter: 2027 Q1, January through March 2027
+Use: Roadmap update for payment reminders by phone call. Post the Canvas roadmap and the video to the Linear project update for <project>.
+Voice: Grok Voice is mocked. This plan does not include a live call.
+
+Confidence: Medium
+
+What is planned
+Next quarter adds mocked reminder calls for upcoming invoices and overdue invoices. The plan covers scheduling and quiet hours, scripts and tone, consent and opt-out, outcomes and transcripts on the invoice, retry rules, a call results view for the Finance lead, and a pay link after the call.
+
+Order and why
+Call scheduling and quiet hours comes first. Later work needs the lead times and the quiet hours.
+Call scripts and tone, and Consent and opt-out, come next. They can overlap scheduling. Call outcomes and transcripts needs the default reminder script and consent recorded before the first call.
+Call outcomes and transcripts comes before Retry rules and before Call results dashboard. Those two are blocked until outcomes finishes.
+Pay link after the call is blocked by Call scripts and tone, because it needs the pay prompt in the script.
+Retry rules is also blocked by Call routing.
+
+Milestones by month
+January
+Call scheduling and quiet hours. Start Date 2027-01-04. Target date 2027-01-29.
+Call scripts and tone starts 2027-01-18.
+Consent and opt-out starts 2027-01-18.
+
+February
+Call scripts and tone. Target date 2027-02-12.
+Consent and opt-out. Target date 2027-02-12.
+Call outcomes and transcripts. Start Date 2027-02-01. Target date 2027-02-26.
+Pay link after the call starts 2027-02-15.
+
+March
+Pay link after the call. Target date 2027-03-12.
+Call results dashboard. Start Date 2027-03-01. Target date 2027-03-26.
+Retry rules. Start Date 2027-02-09. Target date 2027-03-19.
+
+The target date is the End Date. The Start Date above is the description of when the work begins.
+
+Risks and open decisions
+Confidence is Medium because three decisions are still unset. Which zone applies when the customer record has no local zone. How many days a <pay link> stays valid. How many days pass between a missed call and the retry.
+Grok Voice stays a mock, so the quarter does not prove a live call.
+Retry rules and Call results dashboard both sit in March, so review time in that month is tight.
+
+Out of scope
+No live call, no phone number, and no provider key.
+The call does not change the amount due.
+The mock does not store audio.
+The app's Collections and Disputes areas are out of scope.

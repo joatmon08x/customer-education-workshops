@@ -1,12 +1,12 @@
 Product requirements: payment reminders by phone call
 Product: Ledgerly
-Document state: Draft for the demo
+Document state: Roadmap for 2027 Q1
 Updated: 2026-11-17
 Owner: Product manager
 Voice provider: Grok Voice, mocked
 Related: ledgerly/docs/issues/dependencies.txt
 Related: ledgerly/docs/design/call-reminders-review.txt
-Related: ledgerly/docs/product/project-update.txt
+Related: ledgerly/docs/product/roadmap-update.txt
 
 Purpose
 Billing operators need a way to remind customers about invoices that are coming due or already overdue. This product adds an automated voice reminder. Grok Voice speaks the script. The provider is mocked, so the work can be reviewed with no live call, no phone number, and no provider key.
@@ -34,7 +34,7 @@ When the first call is not answered, try again within the retry cap.
 
 Non-goals
 Do not place a live call. Do not store a phone number. Do not ship a provider key. Grok Voice stays mocked.
-Sending a pay link is out of this release.
+Sending a pay link is out of the 2027 Q1 release.
 Do not change the amount due on the call.
 Do not put a person on the call.
 Do not use the call for any topic other than an upcoming invoice or an overdue invoice.
@@ -79,7 +79,7 @@ Must. The tone control offers calm, brief, and formal. Calm is the default. Brie
 
 Should. The workspace admin can preview a script in the mock before a call uses it.
 
-Should. When nobody answers, the mock leaves a short voicemail that names the invoice and the amount due. The voicemail does not replace the later retry.
+Must. When nobody answers, the mock leaves a short voicemail that names the invoice and the amount due. The voicemail does not replace the later retry.
 
 Should. After a completed reminder call, send the customer a <pay link> for that invoice.
 

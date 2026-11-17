@@ -18,8 +18,8 @@ Call scripts and tone, for the default reminder script.
 Consent and opt-out, for consent recorded before the first reminder call.
 
 Timeframe:
-Start Date: 2026-10-20
-End Date: 2026-12-04
+Start Date: 2027-02-01
+End Date: 2027-02-26
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.

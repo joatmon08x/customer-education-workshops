@@ -13,12 +13,12 @@ Mockups/Designs:
 ledgerly/docs/design/call-reminders-review.txt section: Call flow, pay prompt in DR-2 (design review decision)
 
 Dependencies:
-Call scripts and tone must finish before this epic starts.
+Blocked by Call scripts and tone.
 The needed story is the one that includes a pay prompt in the script.
 
 Timeframe:
-Start Date: 2026-12-08
-End Date: 2027-01-30
+Start Date: 2027-02-15
+End Date: 2027-03-12
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design. Finance lead.
