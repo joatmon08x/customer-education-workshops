@@ -127,6 +127,11 @@ Epic = project milestone.
 The End Date is the milestone target date.
 The Start Date stays in the milestone description.
 Story = issue under that milestone.
-Blocker lines = blocked by relations.
+Milestones cannot hold blocked-by links.
+A blocker line maps to a blocked-by link between the first story of the blocked epic and the last story of the blocking epic.
+Retry rules is blocked by Call outcomes and transcripts. Link the first Retry rules story, a later retry when the first call is not answered, to the last Call outcomes and transcripts story, export one transcript as a text file.
+Call results dashboard is blocked by Call outcomes and transcripts. Link the first Call results dashboard story, a count of calls placed today, to that same last outcomes story.
+Pay link after the call is blocked by Call scripts and tone. Link the first Pay link story, a pay link after the reminder call, to the last Call scripts and tone story, calm as the default tone, with brief and formal visible and not the default.
+A blocker that names an epic with no file and no milestone, such as Call routing, has nothing to link to. That is a gap to raise.
 When the issues are created, start them in Backlog or Todo.
 The presenter stages the epics once from this file and the epic files.

@@ -1,10 +1,12 @@
 Roadmap update
 Date: 2026-11-17
 Quarter: 2027 Q1, January through March 2027
-Use: Roadmap update for payment reminders by phone call. Post the Canvas roadmap and the video to the Linear project update for <project>.
+Use: Roadmap update for payment reminders by phone call. Add a link to the Canvas, or a screenshot if viewers can't open it, to the project update for <project>. Post the video on that same update.
+Replace <project> with your project in your tracker, for example your Ledgerly project in Linear.
 Voice: Grok Voice is mocked. This plan does not include a live call.
 
-Confidence: Medium
+Health: On track
+Milestone target dates for this plan fall inside January through March 2027.
 
 What is planned
 Next quarter adds mocked reminder calls for upcoming invoices and overdue invoices. The plan covers scheduling and quiet hours, scripts and tone, consent and opt-out, outcomes and transcripts on the invoice, retry rules, a call results view for the Finance lead, and a pay link after the call.
@@ -33,10 +35,8 @@ Pay link after the call. Target date 2027-03-12.
 Call results dashboard. Start Date 2027-03-01. Target date 2027-03-26.
 Retry rules. Start Date 2027-02-09. Target date 2027-03-19.
 
-The target date is the End Date. The Start Date above is the description of when the work begins.
-
 Risks and open decisions
-Confidence is Medium because three decisions are still unset. Which zone applies when the customer record has no local zone. How many days a <pay link> stays valid. How many days pass between a missed call and the retry.
+Three decisions are still unset. Which zone applies when the customer record has no local zone. How many days a <pay link> stays valid. How many days pass between a missed call and the retry.
 Grok Voice stays a mock, so the quarter does not prove a live call.
 Retry rules and Call results dashboard both sit in March, so review time in that month is tight.
 

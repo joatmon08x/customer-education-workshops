@@ -4,25 +4,29 @@ This folder is the source pack for the call reminder roadmap. The plan covers ne
 
 The app's Collections and Disputes areas are out of scope for this demo.
 
-The presenter stages the epics once, from issues/dependencies.txt and the epic files. Each person reads two files. The demo output is a Canvas roadmap, then a short video walkthrough of that canvas. The video is about two minutes long. Post both to the Linear project update for <project>.
+The presenter stages the epics once, from issues/dependencies.txt and the epic files. The staged board shows the plan in the tracker for the roadmap video. The docs are what you check.
 
-Who reads which two files
+Each person reads two sources. The demo output is a Canvas roadmap, then a short video walkthrough of that canvas. The video is about two minutes long.
+
+Who reads which two sources
 The project manager reads issues/dependencies.txt and product/roadmap-update.txt.
 The product manager reads product/prd-call-reminders.txt and issues/dependencies.txt.
-The designer reads design/call-reminders-review.txt and the epic files in issues/.
+The designer reads design/call-reminders-review.txt and the epic files in issues/: call-scheduling.txt, call-scripts.txt, consent-opt-out.txt, call-outcomes.txt, retry-rules.txt, call-dashboard.txt, and pay-link.txt.
+
+Replace <project> with your project in your tracker, for example your Ledgerly project in Linear.
 
 How to build the Canvas roadmap
-Read your two files.
+Read your two sources.
 Build a Canvas roadmap for 2027 Q1.
 Show the planned epics, the order, and the milestone target dates.
 
 How to record the video
 Start a screen recording after the canvas is up.
 Walk through the Canvas roadmap.
-Say which two files you read and what you compared.
+Say which two sources you read and what you compared.
 Go to http://localhost:43173 when a file describes the current screen. Go to an invoice, then go to Settings.
 Stop the recording at about two minutes.
-Post the canvas and the video to the Linear project update for <project>.
+Add a link to the Canvas, or a screenshot if viewers can't open it, to the project update for <project>. Post the video on that same update.
 
 What the files are
 issues/dependencies.txt is the planning source of truth for order, blockers, and dates. Each epic is one plain text file in issues/.
