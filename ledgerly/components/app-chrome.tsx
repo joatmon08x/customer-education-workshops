@@ -13,6 +13,7 @@ import {
   Search,
   Settings,
   Sparkles,
+  Users,
   X,
 } from "lucide-react";
 import { NoticeBell, type OpenDisputeNotice } from "@/components/notice-bell";
@@ -23,6 +24,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/customers", label: "Customers", icon: Users },
   { href: "/invoices", label: "Invoices", icon: FileText },
   { href: "/collections", label: "Collections", icon: Inbox },
   { href: "/disputes", label: "Disputes", icon: Scale },
