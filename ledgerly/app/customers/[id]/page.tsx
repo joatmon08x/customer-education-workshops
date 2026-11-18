@@ -18,6 +18,8 @@ import { overdueBook } from "@/lib/collections";
 import { getCustomer } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { paymentMethodLabel } from "@/lib/payment-methods";
+import { paymentFromPayload } from "@/lib/payments";
 import { planLabel } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
@@ -113,17 +115,25 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-muted-foreground">No activity on this account yet.</p>
           ) : (
             <ol className="space-y-3" aria-label="Account activity">
-              {activities.map((activity) => (
-                <li key={activity.id} className="text-sm">
-                  <p className="font-medium">
-                    {activity.type} · {activity.status}
-                    {activity.invoice ? ` · ${activity.invoice.number}` : ""}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {activity.actorName} · {formatDate(activity.occurredOn)}
-                  </p>
-                </li>
-              ))}
+              {activities.map((activity) => {
+                const payment = activity.type === "PAYMENT_RECORDED" ? paymentFromPayload(activity.payload) : null;
+                return (
+                  <li key={activity.id} className="text-sm">
+                    <p className="font-medium">
+                      {activity.type} · {activity.status}
+                      {activity.invoice ? ` · ${activity.invoice.number}` : ""}
+                    </p>
+                    {payment ? (
+                      <p>
+                        {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
+                      </p>
+                    ) : null}
+                    <p className="text-muted-foreground">
+                      {activity.actorName} · {formatDate(activity.occurredOn)}
+                    </p>
+                  </li>
+                );
+              })}
             </ol>
           )}
         </CardContent>

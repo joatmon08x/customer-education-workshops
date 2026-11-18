@@ -5,10 +5,13 @@ type BookInvoice = {
   status: string;
   dueOn: Date;
   totalCents: number;
+  payments?: { amountCents: number }[];
 };
 
-export function outstandingCents(invoice: Pick<BookInvoice, "totalCents">): number {
-  return invoice.totalCents;
+/** totalCents minus recorded payments, never below zero. */
+export function outstandingCents(invoice: Pick<BookInvoice, "totalCents" | "payments">): number {
+  const paid = (invoice.payments ?? []).reduce((total, payment) => total + payment.amountCents, 0);
+  return Math.max(0, invoice.totalCents - paid);
 }
 
 /** OVERDUE invoices only, most days past due first. Age against the demo clock. */
