@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileText } from "lucide-react";
+import { NoteBody } from "@/components/customers/note-body";
+import { NoteComposer } from "@/components/customers/note-composer";
 import { NudgeButton } from "@/components/nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge } from "@/components/status-badge";
@@ -13,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { canEditNote, formatNoteTime, getAccountNotes, noteIdFromPayload } from "@/lib/account-notes";
 import { getAccountActivities, lastActivityByInvoice } from "@/lib/activity";
 import { DEMO_AS_OF } from "@/lib/clock";
 import { overdueBook } from "@/lib/collections";
@@ -41,6 +44,8 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
   const book = overdueBook(customer.invoices, DEMO_AS_OF);
   const lastActivity = lastActivityByInvoice(activities);
   const accountNudge = accountNudgeTarget(customer.invoices, DEMO_AS_OF);
+  const notes = new Map((await getAccountNotes(customer.id)).map((note) => [note.id, note]));
+  const now = new Date();
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -125,7 +130,11 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
           <CardTitle>Activity</CardTitle>
           <CardDescription>Notes, Nudges, and payments on this account, newest first.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-5">
+          <NoteComposer
+            customerId={customer.id}
+            invoices={customer.invoices.map((invoice) => ({ id: invoice.id, number: invoice.number }))}
+          />
           {activities.length === 0 ? (
             <p className="text-sm text-muted-foreground">No activity on this account yet.</p>
           ) : (
@@ -133,8 +142,9 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
               {activities.map((activity) => {
                 const nudge = activity.type === "NUDGE_SENT" ? parseNudgePayload(activity.payload) : null;
                 const payment = activity.type === "PAYMENT_RECORDED" ? paymentFromPayload(activity.payload) : null;
+                const note = activity.type === "NOTE_ADDED" ? notes.get(noteIdFromPayload(activity.payload) ?? "") : undefined;
                 return (
-                  <li key={activity.id} className="text-sm">
+                  <li key={activity.id} className="space-y-1 text-sm">
                     <p className="font-medium">
                       {activity.type} ·{" "}
                       <span className={activity.status === "failed" ? "text-danger" : undefined}>
@@ -148,9 +158,11 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                         {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
                       </p>
                     ) : null}
+                    {note ? <NoteBody noteId={note.id} body={note.body} editable={canEditNote(note, now)} /> : null}
                     <p className="text-muted-foreground">
                       {activity.actorName} · {formatDate(activity.occurredOn)}
                       {nudge?.to ? ` · to ${nudge.to}` : ""}
+                      {note ? ` · saved ${formatNoteTime(note.createdAt)} UTC` : ""}
                     </p>
                     {nudge ? <p className="mt-1">{nudge.body}</p> : null}
                     {nudge?.error ? <p className="mt-1 text-danger">Not sent: {nudge.error}</p> : null}
