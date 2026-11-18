@@ -141,6 +141,20 @@ export async function getOpenDisputeNotices() {
   }));
 }
 
+export async function getCustomers() {
+  return prisma.customer.findMany({
+    include: { invoices: true },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getCustomer(id: string) {
+  return prisma.customer.findUnique({
+    where: { id },
+    include: { invoices: true },
+  });
+}
+
 export async function getWorkspace() {
   return prisma.workspace.findUniqueOrThrow({ where: { id: "ws_fieldnote" } });
 }
