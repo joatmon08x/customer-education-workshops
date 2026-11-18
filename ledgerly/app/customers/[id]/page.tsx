@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileText } from "lucide-react";
+import { NoteBody } from "@/components/customers/note-body";
+import { NoteComposer } from "@/components/customers/note-composer";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge } from "@/components/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { canEditNote, formatNoteTime, getAccountNotes, noteIdFromPayload } from "@/lib/account-notes";
 import { getAccountActivities, lastActivityByInvoice } from "@/lib/activity";
 import { DEMO_AS_OF } from "@/lib/clock";
 import { overdueBook } from "@/lib/collections";
@@ -36,6 +39,8 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
   const activities = await getAccountActivities(customer.id);
   const book = overdueBook(customer.invoices, DEMO_AS_OF);
   const lastActivity = lastActivityByInvoice(activities);
+  const notes = new Map((await getAccountNotes(customer.id)).map((note) => [note.id, note]));
+  const now = new Date();
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -108,22 +113,31 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
           <CardTitle>Activity</CardTitle>
           <CardDescription>Notes, Nudges, and payments on this account, newest first.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-5">
+          <NoteComposer
+            customerId={customer.id}
+            invoices={customer.invoices.map((invoice) => ({ id: invoice.id, number: invoice.number }))}
+          />
           {activities.length === 0 ? (
             <p className="text-sm text-muted-foreground">No activity on this account yet.</p>
           ) : (
             <ol className="space-y-3" aria-label="Account activity">
-              {activities.map((activity) => (
-                <li key={activity.id} className="text-sm">
-                  <p className="font-medium">
-                    {activity.type} · {activity.status}
-                    {activity.invoice ? ` · ${activity.invoice.number}` : ""}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {activity.actorName} · {formatDate(activity.occurredOn)}
-                  </p>
-                </li>
-              ))}
+              {activities.map((activity) => {
+                const note = activity.type === "NOTE_ADDED" ? notes.get(noteIdFromPayload(activity.payload) ?? "") : undefined;
+                return (
+                  <li key={activity.id} className="space-y-1 text-sm">
+                    <p className="font-medium">
+                      {activity.type} · {activity.status}
+                      {activity.invoice ? ` · ${activity.invoice.number}` : ""}
+                    </p>
+                    {note ? <NoteBody noteId={note.id} body={note.body} editable={canEditNote(note, now)} /> : null}
+                    <p className="text-muted-foreground">
+                      {activity.actorName} · {formatDate(activity.occurredOn)}
+                      {note ? ` · saved ${formatNoteTime(note.createdAt)} UTC` : ""}
+                    </p>
+                  </li>
+                );
+              })}
             </ol>
           )}
         </CardContent>
