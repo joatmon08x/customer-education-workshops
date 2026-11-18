@@ -4,7 +4,7 @@ This folder is the source pack for the call reminder roadmap. The plan covers ne
 
 The app's Collections and Disputes areas are out of scope for this demo.
 
-The presenter stages the epics once, from issues/dependencies.txt and the epic files. The staged board shows the plan in the tracker for the roadmap video. The docs are what you check.
+Each learner stages their own project from issues/dependencies.txt and the epic files, or brings their own. The staged board shows the plan in the tracker for the roadmap video. The docs are what you check.
 
 Each person reads two sources. The demo output is a Canvas roadmap, then a short video walkthrough of that canvas. The video is about two minutes long.
 
@@ -13,7 +13,7 @@ The project manager reads issues/dependencies.txt and product/roadmap-update.txt
 The product manager reads product/prd-call-reminders.txt and issues/dependencies.txt.
 The designer reads design/call-reminders-review.txt and the epic files in issues/: call-scheduling.txt, call-scripts.txt, consent-opt-out.txt, call-outcomes.txt, retry-rules.txt, call-dashboard.txt, and pay-link.txt.
 
-Replace <project> with your project in your tracker, for example your Ledgerly project in Linear.
+<project> means the Linear project you staged or brought.
 
 How to build the Canvas roadmap
 Read your two sources.

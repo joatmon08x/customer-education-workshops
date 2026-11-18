@@ -2,7 +2,6 @@ Roadmap update
 Date: 2026-11-17
 Quarter: 2027 Q1, January through March 2027
 Use: Roadmap update for payment reminders by phone call. Add a link to the Canvas, or a screenshot if viewers can't open it, to the project update for <project>. Post the video on that same update.
-Replace <project> with your project in your tracker, for example your Ledgerly project in Linear.
 Voice: Grok Voice is mocked. This plan does not include a live call.
 
 Health: On track
