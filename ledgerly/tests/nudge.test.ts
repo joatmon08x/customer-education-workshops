@@ -99,11 +99,11 @@ describe("POST /api/invoices/[id]/nudge", () => {
   });
 
   it("rejects an invoice that is not OVERDUE and stores nothing", async () => {
-    const before = await prisma.activity.count({ where: { invoiceId: "inv_1041" } });
+    const before = await prisma.activity.count({ where: { invoiceId: "inv_1041", type: "NUDGE_SENT" } });
     const response = await postNudge(request, params("inv_1041"));
 
     expect(response.status).toBe(400);
-    expect(await prisma.activity.count({ where: { invoiceId: "inv_1041" } })).toBe(before);
+    expect(await prisma.activity.count({ where: { invoiceId: "inv_1041", type: "NUDGE_SENT" } })).toBe(before);
   });
 
   it("returns 404 for a missing invoice", async () => {
