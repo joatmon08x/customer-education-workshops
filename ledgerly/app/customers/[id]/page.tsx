@@ -20,6 +20,8 @@ import { getCustomer } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
 import { accountNudgeTarget, parseNudgePayload } from "@/lib/nudge";
+import { paymentMethodLabel } from "@/lib/payment-methods";
+import { paymentFromPayload } from "@/lib/payments";
 import { planLabel } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
@@ -130,6 +132,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             <ol className="space-y-3" aria-label="Account activity">
               {activities.map((activity) => {
                 const nudge = activity.type === "NUDGE_SENT" ? parseNudgePayload(activity.payload) : null;
+                const payment = activity.type === "PAYMENT_RECORDED" ? paymentFromPayload(activity.payload) : null;
                 return (
                   <li key={activity.id} className="text-sm">
                     <p className="font-medium">
@@ -140,6 +143,11 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                       {activity.channel ? ` · ${activity.channel}` : ""}
                       {activity.invoice ? ` · ${activity.invoice.number}` : ""}
                     </p>
+                    {payment ? (
+                      <p>
+                        {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
+                      </p>
+                    ) : null}
                     <p className="text-muted-foreground">
                       {activity.actorName} · {formatDate(activity.occurredOn)}
                       {nudge?.to ? ` · to ${nudge.to}` : ""}

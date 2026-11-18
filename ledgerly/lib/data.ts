@@ -107,7 +107,7 @@ export async function getInvoices(filters?: { status?: string; q?: string }) {
 export async function getInvoice(id: string) {
   return prisma.invoice.findUnique({
     where: { id },
-    include: invoiceInclude,
+    include: { ...invoiceInclude, payments: { orderBy: { recordedAt: "desc" } } },
   });
 }
 
@@ -161,7 +161,7 @@ export async function getCustomers() {
 export async function getCustomer(id: string) {
   return prisma.customer.findUnique({
     where: { id },
-    include: { invoices: true },
+    include: { invoices: { include: { payments: true } } },
   });
 }
 
