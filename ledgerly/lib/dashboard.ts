@@ -1,4 +1,5 @@
 import { DEMO_AS_OF, DEMO_PRIOR_END, DEMO_PRIOR_START, DEMO_WINDOW_START } from "@/lib/clock";
+import { outstandingCents } from "@/lib/collections";
 import { sumCents } from "@/lib/money";
 import { planPriceCents } from "@/lib/plans";
 
@@ -59,6 +60,39 @@ export function disputeCentsAt(disputes: DisputeLike[], asOf: Date) {
   return sumCents(
     disputes.filter((dispute) => isActiveDisputeAt(dispute, asOf)).map((dispute) => dispute.disputedAmountCents),
   );
+}
+
+function utcDay(value: Date) {
+  return value.toISOString().slice(0, 10);
+}
+
+export function collectionsOverdueTotals(invoices: { status: string; totalCents: number }[]) {
+  const overdue = invoices.filter((invoice) => invoice.status === "OVERDUE");
+  return {
+    invoiceCount: overdue.length,
+    balanceCents: sumCents(overdue.map((invoice) => outstandingCents(invoice))),
+  };
+}
+
+export function activityCountOnDay(activities: { occurredOn: Date }[], day: Date) {
+  const key = utcDay(day);
+  return activities.filter((activity) => utcDay(activity.occurredOn) === key).length;
+}
+
+/** Inclusive window of `days` calendar days ending on `end` (demo clock, not Date.now()). */
+export function activityCountInDaysEnding(
+  activities: { occurredOn: Date }[],
+  end: Date,
+  days: number,
+) {
+  const endKey = utcDay(end);
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - (days - 1));
+  const startKey = utcDay(start);
+  return activities.filter((activity) => {
+    const key = utcDay(activity.occurredOn);
+    return key >= startKey && key <= endKey;
+  }).length;
 }
 
 export function revenueSeries(invoices: InvoiceLike[], start: Date, end: Date) {

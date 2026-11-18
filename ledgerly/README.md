@@ -81,7 +81,7 @@ npm test
 Expected result:
 
 ```text
-1 failed / 39 passed
+1 failed / 42 passed
 ```
 
 The failing test is part of the workshop. It doesn't mean setup failed.
