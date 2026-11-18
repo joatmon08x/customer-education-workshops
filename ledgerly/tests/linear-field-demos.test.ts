@@ -144,7 +144,7 @@ describe("Fieldnote Linear book", () => {
     expect(WCAG_CONTRAST_TEST.description).toContain("Do not edit `tests/a11y/contrast.test.ts`");
     expect(WCAG_CONTRAST_TEST.description).toContain("7 failed / 83 passed");
     expect(WCAG_CONTRAST_TEST.description).toContain("0 failed / 90 passed");
-    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 39 passed");
+    expect(WCAG_CONTRAST_TEST.description).toContain("1 failed / 42 passed");
     expect(WCAG_CONTRAST_TEST.title).not.toBe(WCAG_KEYBOARD_WALKTHROUGH.title);
     expect(FIELD_DEMO_ISSUES.some((issue) => issue.title === WCAG_CONTRAST_TEST.title)).toBe(false);
     expect(
