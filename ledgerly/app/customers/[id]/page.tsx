@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileText } from "lucide-react";
+import { NudgeButton } from "@/components/nudge-button";
 import { PageHeader } from "@/components/page-header";
 import { InvoiceStatusBadge } from "@/components/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +19,7 @@ import { overdueBook } from "@/lib/collections";
 import { getCustomer } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
+import { accountNudgeTarget, parseNudgePayload } from "@/lib/nudge";
 import { planLabel } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +38,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
   const activities = await getAccountActivities(customer.id);
   const book = overdueBook(customer.invoices, DEMO_AS_OF);
   const lastActivity = lastActivityByInvoice(activities);
+  const accountNudge = accountNudgeTarget(customer.invoices, DEMO_AS_OF);
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6">
@@ -46,11 +49,19 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
       />
 
       <Card className="overflow-hidden py-0">
-        <CardHeader className="px-5 pt-5">
-          <CardTitle>Overdue Book</CardTitle>
-          <CardDescription>
-            OVERDUE invoices for this account, most days past due first. Aged against 23 Aug 2026.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-start justify-between gap-4 px-5 pt-5">
+          <div className="grid gap-1.5">
+            <CardTitle>Overdue Book</CardTitle>
+            <CardDescription>
+              OVERDUE invoices for this account, most days past due first. Aged against 23 Aug 2026.
+            </CardDescription>
+          </div>
+          <NudgeButton
+            label="Nudge account"
+            invoiceId={accountNudge?.id}
+            invoiceNumber={accountNudge?.number}
+            disabled={!accountNudge}
+          />
         </CardHeader>
         <CardContent className="px-0 pb-2">
           {book.length === 0 ? (
@@ -66,6 +77,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                   <TableHead className="text-right">Outstanding</TableHead>
                   <TableHead>Last activity</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Nudge</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -94,6 +106,9 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                       <TableCell>
                         <InvoiceStatusBadge status={invoice.status} />
                       </TableCell>
+                      <TableCell className="text-right">
+                        <NudgeButton invoiceId={invoice.id} invoiceNumber={invoice.number} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -113,17 +128,27 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-muted-foreground">No activity on this account yet.</p>
           ) : (
             <ol className="space-y-3" aria-label="Account activity">
-              {activities.map((activity) => (
-                <li key={activity.id} className="text-sm">
-                  <p className="font-medium">
-                    {activity.type} · {activity.status}
-                    {activity.invoice ? ` · ${activity.invoice.number}` : ""}
-                  </p>
-                  <p className="text-muted-foreground">
-                    {activity.actorName} · {formatDate(activity.occurredOn)}
-                  </p>
-                </li>
-              ))}
+              {activities.map((activity) => {
+                const nudge = activity.type === "NUDGE_SENT" ? parseNudgePayload(activity.payload) : null;
+                return (
+                  <li key={activity.id} className="text-sm">
+                    <p className="font-medium">
+                      {activity.type} ·{" "}
+                      <span className={activity.status === "failed" ? "text-danger" : undefined}>
+                        {activity.status}
+                      </span>
+                      {activity.channel ? ` · ${activity.channel}` : ""}
+                      {activity.invoice ? ` · ${activity.invoice.number}` : ""}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {activity.actorName} · {formatDate(activity.occurredOn)}
+                      {nudge?.to ? ` · to ${nudge.to}` : ""}
+                    </p>
+                    {nudge ? <p className="mt-1">{nudge.body}</p> : null}
+                    {nudge?.error ? <p className="mt-1 text-danger">Not sent: {nudge.error}</p> : null}
+                  </li>
+                );
+              })}
             </ol>
           )}
         </CardContent>
