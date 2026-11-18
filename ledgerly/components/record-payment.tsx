@@ -6,15 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formatUsd } from "@/lib/money";
 import { PAYMENT_METHODS, paymentMethodLabel, type PaymentMethod } from "@/lib/payment-methods";
+import { AMOUNTS_MASKED_LABEL } from "@/lib/plans";
 
 type RecordPaymentProps = {
   invoiceId: string;
   invoiceNumber: string;
   outstandingCents: number;
+  amountsVisible: boolean;
 };
 
-/** The only amount offered is the full outstanding balance; there is no amount field. */
-export function RecordPayment({ invoiceId, invoiceNumber, outstandingCents }: RecordPaymentProps) {
+/**
+ * The only amount offered is the full outstanding balance; there is no amount field.
+ * The confirm step always shows that amount, even off the paid catalog, so the rep records what they took.
+ */
+export function RecordPayment({ invoiceId, invoiceNumber, outstandingCents, amountsVisible }: RecordPaymentProps) {
   const router = useRouter();
   const [method, setMethod] = useState<PaymentMethod>("check");
   const [confirming, setConfirming] = useState(false);
@@ -81,7 +86,9 @@ export function RecordPayment({ invoiceId, invoiceNumber, outstandingCents }: Re
           ))}
         </select>
       </div>
-      <p className="text-sm text-muted-foreground">Full outstanding balance: {amount}</p>
+      <p className="text-sm text-muted-foreground">
+        Full outstanding balance: {amountsVisible ? amount : AMOUNTS_MASKED_LABEL}
+      </p>
       <Button type="button" onClick={() => setConfirming(true)}>
         Record payment
       </Button>

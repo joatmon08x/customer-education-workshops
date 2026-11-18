@@ -14,7 +14,7 @@ import { getInvoice } from "@/lib/data";
 import { daysBetween, formatDate } from "@/lib/dates";
 import { formatUsd } from "@/lib/money";
 import { paymentMethodLabel } from "@/lib/payment-methods";
-import { isPlanId, planLabel } from "@/lib/plans";
+import { amountsVisible, formatPlanAmount, isPlanId, planLabel } from "@/lib/plans";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -106,7 +106,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           <Card>
             <CardHeader>
               <CardTitle>Payments</CardTitle>
-              <CardDescription>Outstanding {formatUsd(outstanding)}</CardDescription>
+              <CardDescription>Outstanding {formatPlanAmount(invoice.customer.plan, outstanding)}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {invoice.payments.length === 0 ? (
@@ -117,7 +117,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                     <li key={payment.id} className="text-sm">
                       <div className="flex justify-between gap-2">
                         <span>{paymentMethodLabel(payment.method)}</span>
-                        <span className="font-medium">{formatUsd(payment.amountCents)}</span>
+                        <span className="font-medium">{formatPlanAmount(invoice.customer.plan, payment.amountCents)}</span>
                       </div>
                       <p className="text-muted-foreground">
                         {payment.recordedBy} · {formatDate(payment.recordedAt)}
@@ -127,7 +127,12 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </ul>
               )}
               {payable ? (
-                <RecordPayment invoiceId={invoice.id} invoiceNumber={invoice.number} outstandingCents={outstanding} />
+                <RecordPayment
+                  invoiceId={invoice.id}
+                  invoiceNumber={invoice.number}
+                  outstandingCents={outstanding}
+                  amountsVisible={amountsVisible(invoice.customer.plan)}
+                />
               ) : null}
             </CardContent>
           </Card>

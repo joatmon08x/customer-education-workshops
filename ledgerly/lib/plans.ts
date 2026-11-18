@@ -1,3 +1,5 @@
+import { formatUsd } from "./money";
+
 export const PLAN_IDS = ["STARTER", "GROWTH", "SCALE"] as const;
 
 export type PlanId = (typeof PLAN_IDS)[number];
@@ -27,6 +29,22 @@ export function planPriceCents(plan: string): number {
     throw new Error(`Unknown plan "${plan}". Catalog is Starter $49, Growth $99, Scale $249.`);
   }
   return PLAN_PRICE_CENTS[plan];
+}
+
+export const AMOUNTS_MASKED_LABEL = "Upgrade to view amounts";
+
+/** Dollar figures in collections are shown only on the paid catalog. */
+export function amountsVisible(plan: string): boolean {
+  return isPlanId(plan);
+}
+
+export function formatPlanAmount(plan: string, cents: number): string {
+  return amountsVisible(plan) ? formatUsd(cents) : AMOUNTS_MASKED_LABEL;
+}
+
+/** Masks formatUsd figures inside stored copy, such as a sent Nudge body. */
+export function maskPlanAmounts(plan: string, text: string): string {
+  return amountsVisible(plan) ? text : text.replace(/-?\$[\d,]+\.\d{2}/g, AMOUNTS_MASKED_LABEL);
 }
 
 export function planLabel(plan: string): string {

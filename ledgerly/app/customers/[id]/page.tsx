@@ -21,11 +21,10 @@ import { DEMO_AS_OF } from "@/lib/clock";
 import { overdueBook } from "@/lib/collections";
 import { getCustomer } from "@/lib/data";
 import { formatDate } from "@/lib/dates";
-import { formatUsd } from "@/lib/money";
 import { accountNudgeTarget, parseNudgePayload } from "@/lib/nudge";
 import { paymentMethodLabel } from "@/lib/payment-methods";
 import { paymentFromPayload } from "@/lib/payments";
-import { planLabel } from "@/lib/plans";
+import { formatPlanAmount, isPlanId, maskPlanAmounts, planLabel } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +51,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
       <PageHeader
         eyebrow="Account"
         title={customer.name}
-        description={`${planLabel(customer.plan)} · ${customer.contactName} · ${customer.email}`}
+        description={`${isPlanId(customer.plan) ? planLabel(customer.plan) : customer.plan} · ${customer.contactName} · ${customer.email}`}
       />
 
       <Card className="overflow-hidden py-0">
@@ -107,7 +106,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                       <TableCell className="text-muted-foreground">{formatDate(invoice.dueOn)}</TableCell>
                       <TableCell className="text-right">{invoice.daysPastDue}</TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatUsd(invoice.outstandingCents)}
+                        {formatPlanAmount(customer.plan, invoice.outstandingCents)}
                       </TableCell>
                       <TableCell className="text-muted-foreground">{last ? formatDate(last) : "—"}</TableCell>
                       <TableCell>
@@ -155,7 +154,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                     </p>
                     {payment ? (
                       <p>
-                        {formatUsd(payment.amountCents)} · {paymentMethodLabel(payment.method)}
+                        {formatPlanAmount(customer.plan, payment.amountCents)} · {paymentMethodLabel(payment.method)}
                       </p>
                     ) : null}
                     {note ? <NoteBody noteId={note.id} body={note.body} editable={canEditNote(note, now)} /> : null}
@@ -164,7 +163,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                       {nudge?.to ? ` · to ${nudge.to}` : ""}
                       {note ? ` · saved ${formatNoteTime(note.createdAt)} UTC` : ""}
                     </p>
-                    {nudge ? <p className="mt-1">{nudge.body}</p> : null}
+                    {nudge ? <p className="mt-1">{maskPlanAmounts(customer.plan, nudge.body)}</p> : null}
                     {nudge?.error ? <p className="mt-1 text-danger">Not sent: {nudge.error}</p> : null}
                   </li>
                 );

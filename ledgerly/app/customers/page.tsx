@@ -12,8 +12,8 @@ import {
 import { DEMO_AS_OF } from "@/lib/clock";
 import { overdueBook } from "@/lib/collections";
 import { getCustomers } from "@/lib/data";
-import { formatUsd, sumCents } from "@/lib/money";
-import { planLabel } from "@/lib/plans";
+import { sumCents } from "@/lib/money";
+import { formatPlanAmount, isPlanId, planLabel } from "@/lib/plans";
 
 export const metadata = {
   title: "Customers",
@@ -53,10 +53,10 @@ export default async function CustomersPage() {
                         {customer.name}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{planLabel(customer.plan)}</TableCell>
+                    <TableCell className="text-muted-foreground">{isPlanId(customer.plan) ? planLabel(customer.plan) : customer.plan}</TableCell>
                     <TableCell className="text-right">{book.length}</TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatUsd(sumCents(book.map((invoice) => invoice.outstandingCents)))}
+                      {formatPlanAmount(customer.plan, sumCents(book.map((invoice) => invoice.outstandingCents)))}
                     </TableCell>
                   </TableRow>
                 );

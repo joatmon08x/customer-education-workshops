@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDashboard } from "@/lib/data";
 import { formatUsd } from "@/lib/money";
+import { AMOUNTS_MASKED_LABEL } from "@/lib/plans";
 
 export const metadata = {
   title: "Dashboard",
@@ -68,7 +69,7 @@ export default async function DashboardPage() {
         />
         <KpiCard
           label="Collections"
-          value={formatUsd(kpis.collectionsOverdueCents)}
+          value={kpis.collectionsAmountsVisible ? formatUsd(kpis.collectionsOverdueCents) : AMOUNTS_MASKED_LABEL}
           hint={`${kpis.collectionsOverdueCount} overdue invoices · ${kpis.collectionsActivityToday} today · ${kpis.collectionsActivityWeek} in 7 days`}
           icon={Wallet}
           tone="indigo"
