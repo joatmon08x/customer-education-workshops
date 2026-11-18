@@ -505,7 +505,7 @@ Paid, Open, Overdue, and Disputed badges, muted text, and the up KPI still read 
 
 ## Proof
 
-\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 42 passed.
+\`npm run test:a11y\` goes from 7 failed / 83 passed to 0 failed / 90 passed. \`npm test\` stays 1 failed / 67 passed.
 
 http://127.0.0.1:43173/invoices — Paid, Open, and Overdue badge text in light and dark.
 
