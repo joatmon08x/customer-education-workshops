@@ -16,9 +16,10 @@ Dependencies:
 Blocked by Call outcomes and transcripts.
 The needed story is the one that saves each call outcome on the invoice.
 
-Timeframe:
-Start Date: 2027-03-01
-End Date: 2027-03-26
+Status:
+Status: Not started
+When: Upcoming
+Owner: none
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design. Finance lead.

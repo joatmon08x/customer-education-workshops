@@ -1,0 +1,30 @@
+Status update
+Date: 2026-11-13
+Week: Week of 2026-11-09
+Use: Last week's posted status update for payment reminders by phone call. The voice is mocked. There is no live call.
+
+Health: On track
+
+Done this week
+Call scheduling and quiet hours.
+Consent and opt-out.
+Call outcomes and transcripts. The invoice page shows the Call transcript card under the Customer card.
+
+Next week
+Call scripts and tone.
+Retry rules.
+
+Upcoming
+Pay link after the call.
+Call results dashboard.
+
+Blockers and risks
+Retry rules waits on Call outcomes and transcripts, which is done.
+Three decisions are still unset. Which zone applies when the customer record has no local zone. How many days a <pay link> stays valid. How many days pass between a missed call and the retry.
+The voice stays a mock, so this work does not prove a live call.
+
+Out of scope
+No live call, no phone number, and no provider key.
+The call does not change the amount due.
+The mock does not store audio.
+The app's Collections and Disputes areas are out of scope.

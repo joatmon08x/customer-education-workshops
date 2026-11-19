@@ -4,7 +4,7 @@ Reviewers: Workspace design
 Source: ledgerly/docs/product/prd-call-reminders.txt
 App checked against: http://localhost:43173
 
-This note covers three screens: the call flow, the call settings screen, and the transcript view on the invoice. Decisions are numbered DR-1 through DR-6. DR means design review decision. Grok Voice is mocked. The design has no phone number field and no audio file.
+This note covers three screens: the call flow, the call settings screen, and the transcript view on the invoice. Decisions are numbered DR-1 through DR-6. DR means design review decision. The voice is mocked. The design has no phone number field and no audio file.
 
 Call flow
 
@@ -44,9 +44,9 @@ There is no phone number field.
 
 When the customer record has no local zone, the screen shows <zone missing> and the call is not placed. This review does not choose a fallback zone.
 
-DR-4. The default quiet hours run from eight in the evening until nine the next morning, in the customer's local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
+DR-4. The default quiet hours run from nine in the evening until eight the next morning, in the customer's local time. The screen shows both ends of the window. A call that would start inside the window is not placed.
 
-DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee. DR-5 sign-off is due on 2027-03-06.
+DR-5. The tone control offers calm, brief, and formal. Calm is the default. Brief and formal are visible and are not the default. Script copy does not threaten the customer and does not mention a late fee. DR-5 sign-off status: Not started. Planned: Upcoming.
 
 The retry cap defaults to two attempts after the first call. The cap control sits on this screen. Enforcing the cap is part of the Retry rules epic, not a separate decision number.
 

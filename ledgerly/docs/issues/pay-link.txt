@@ -16,9 +16,10 @@ Dependencies:
 Blocked by Call scripts and tone.
 The needed story is the one that includes a pay prompt in the script.
 
-Timeframe:
-Start Date: 2027-02-15
-End Date: 2027-03-12
+Status:
+Status: Not started
+When: Upcoming
+Owner: Engineering lead
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design. Finance lead.

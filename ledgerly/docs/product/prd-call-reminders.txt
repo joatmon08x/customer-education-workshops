@@ -1,15 +1,15 @@
 Product requirements: payment reminders by phone call
 Product: Ledgerly
-Document state: Roadmap for 2027 Q1
+Document state: In progress
 Updated: 2026-11-17
 Owner: Product manager
-Voice provider: Grok Voice, mocked
+Voice provider: mocked
 Related: ledgerly/docs/issues/dependencies.txt
 Related: ledgerly/docs/design/call-reminders-review.txt
-Related: ledgerly/docs/product/roadmap-update.txt
+Related: ledgerly/docs/product/status-update.txt
 
 Purpose
-Billing operators need a way to remind customers about invoices that are coming due or already overdue. This product adds an automated voice reminder. Grok Voice speaks the script. The provider is mocked, so the work can be reviewed with no live call, no phone number, and no provider key.
+Billing operators need a way to remind customers about invoices that are coming due or already overdue. This product adds an automated voice reminder. A mocked voice speaks the script. The provider is mocked, so the work can be reviewed with no live call, no phone number, and no provider key.
 
 The reminder names the invoice and the amount due. It stays inside quiet hours. It runs only after consent. The customer can opt out on the call. The outcome and a text transcript stay on the invoice.
 
@@ -33,8 +33,8 @@ Show the outcome and the transcript on the invoice.
 When the first call is not answered, try again within the retry cap.
 
 Non-goals
-Do not place a live call. Do not store a phone number. Do not ship a provider key. Grok Voice stays mocked.
-Sending a pay link is out of the 2027 Q1 release.
+Do not place a live call. Do not store a phone number. Do not ship a provider key. The voice stays mocked.
+Sending a pay link is out of this release.
 Do not change the amount due on the call.
 Do not put a person on the call.
 Do not use the call for any topic other than an upcoming invoice or an overdue invoice.
@@ -100,7 +100,8 @@ Definition: the share of eligible invoices with a due date in the period that re
 Target: 80 percent of eligible invoices in the mock book.
 
 Call clarity score
-This metric is part of the launch readout.
+Definition: the share of answered calls in the mock where the transcript states the invoice and the amount due.
+Target: 95 percent of answered calls in the mock.
 
 Quiet-hour compliance
 Definition: the share of placed calls whose start time falls outside the quiet-hour window.

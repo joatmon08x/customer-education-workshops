@@ -17,9 +17,10 @@ ledgerly/docs/design/call-reminders-review.txt section: Call flow, DR-3 (design 
 Dependencies:
 Call scheduling and quiet hours, so a call exists to gate on consent.
 
-Timeframe:
-Start Date: 2027-01-18
-End Date: 2027-02-12
+Status:
+Status: In progress
+When: This week
+Owner: Engineering lead
 
 Stakeholders:
 Billing operations. Voice platform. Workspace design.

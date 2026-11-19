@@ -1,39 +1,37 @@
-Ledgerly docs for the call reminder roadmap
+Ledgerly docs for the weekly status update
 
-This folder is the source pack for the call reminder roadmap. The plan covers next quarter, 2027 Q1, from January through March 2027. The feature is payment reminders by phone call. Ledgerly places an automated voice call to remind a customer about an upcoming invoice or an overdue invoice. The voice is Grok Voice, and it is mocked. There is no live call, no phone number, and no provider key in this pack.
+This folder is the source pack for a weekly status update. Ledgerly is a fictional billing operations product. The sample work is payment reminders by phone call. The voice is mocked. There is no live call, no phone number, and no provider key in this pack.
 
 The app's Collections and Disputes areas are out of scope for this demo.
 
-Each learner stages their own project from issues/dependencies.txt and the epic files, or brings their own. The staged board shows the plan in the tracker for the roadmap video. The docs are what you check.
+The status week is the week of 2026-11-16. Last week means the week of 2026-11-09. The status update has three sections: Last week (what you did), This week (what you'll do), and Upcoming.
 
-Each person reads the files for their role. The project manager and the product manager each read two files. The designer reads the design review and the seven epic files. The demo output is a Canvas roadmap, then a short video walkthrough of that canvas. The video is about two minutes long.
+Each person reads the files for their kind of work. The demo output is a one-page Canvas status update, then a 30-second walkthrough video of that Canvas.
 
 Who reads which files
-The project manager reads issues/dependencies.txt and product/roadmap-update.txt.
-The product manager reads product/prd-call-reminders.txt and issues/dependencies.txt.
-The designer reads design/call-reminders-review.txt and the epic files in issues/: call-scheduling.txt, call-scripts.txt, consent-opt-out.txt, call-outcomes.txt, retry-rules.txt, call-dashboard.txt, and pay-link.txt.
+The project manager reads the project docs: issues/dependencies.txt and product/status-update.txt.
+The product manager reads the product docs: product/prd-call-reminders.txt, checked against issues/dependencies.txt.
+The designer reads the design docs: design/call-reminders-review.txt, checked against the epic files in issues/: call-scheduling.txt, call-scripts.txt, consent-opt-out.txt, call-outcomes.txt, retry-rules.txt, call-dashboard.txt, and pay-link.txt.
 
 <project> means the Linear project you staged or brought.
-<plan> is roadmap for the project manager, product plan for the product manager, and design plan for the designer.
-The delivery issue in <project> is titled Deliver <plan> walkthrough video.
+<plan> is project status for the project manager, product status for the product manager, and design status for the designer.
+The delivery issue in <project> is titled Deliver status update walkthrough video.
 
-How to build the Canvas roadmap
+How to build the Canvas status update
 Read the files for your role.
-Build a Canvas roadmap for 2027 Q1.
-Show the planned epics, the order, and the milestone target dates.
+Check them against each other, and against the app when a file describes a current screen.
+Build a one-page Canvas <plan> update with three sections: Last week, This week, and Upcoming.
+Keep every work item, status, and gap.
 
-How to record the video
-Start a screen recording after the canvas is up.
-Walk through the Canvas roadmap.
-Say which files you read and what you compared.
-Go to http://localhost:43173 when a file describes the current screen. Go to an invoice, then go to Settings.
-Stop the recording at about two minutes.
-Add a link to the Canvas, or a screenshot if viewers can't open it, to the Deliver <plan> walkthrough video issue and to the project update for <project>. Post the video on both.
+How the video is made
+The agent records a 30-second walkthrough of the Canvas status update: Last week, This week, then Upcoming.
+Add a link to the Canvas, or a screenshot if viewers can't open it, to the Deliver status update walkthrough video issue and to the project update for <project>. Post the video on both.
 
 What the files are
-issues/dependencies.txt is the planning source of truth for order, blockers, and dates. Each epic is one plain text file in issues/.
-product/prd-call-reminders.txt is the product requirements document for call reminders on Grok Voice.
-product/roadmap-update.txt is the next-quarter roadmap update.
+issues/dependencies.txt is the work list and the source of truth for status, owner, week, and blockers. Each work item is one plain text epic file in issues/.
+Status values are Done, In progress, Blocked, and Not started. Week values are Last week, This week, and Upcoming.
+product/prd-call-reminders.txt is the product requirements document for call reminders.
+product/status-update.txt is last week's posted status update, dated 2026-11-13.
 design/call-reminders-review.txt covers the call flow, the call settings screen, and the transcript view on the invoice. Numbered decisions use DR (design review decision), starting at DR-1.
 
 How to check the app
