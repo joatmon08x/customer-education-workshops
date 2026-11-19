@@ -6,7 +6,7 @@ The app's Collections and Disputes areas are out of scope for this demo.
 
 The status week is the week of 2026-11-16. Last week means the week of 2026-11-09. The status update has three sections: Last week (what you did), This week (what you'll do), and Upcoming.
 
-Each person reads the files for their kind of work. The demo output is a one-page Canvas status update, then a 30-second walkthrough video of that Canvas.
+Each person reads the files for their kind of work. The demo output is a one-page Canvas status update, then a three-slide deck of that Canvas, status-update.pptx.
 
 Who reads which files
 The project manager reads the project docs: issues/dependencies.txt and product/status-update.txt.
@@ -15,7 +15,7 @@ The designer reads the design docs: design/call-reminders-review.txt, checked ag
 
 <project> means the Linear project you staged or brought.
 <plan> is project status for the project manager, product status for the product manager, and design status for the designer.
-The delivery issue in <project> is titled Deliver status update walkthrough video.
+The delivery issue in <project> is titled Deliver status update deck.
 
 How to build the Canvas status update
 Read the files for your role.
@@ -23,9 +23,11 @@ Check them against each other, and against the app when a file describes a curre
 Build a one-page Canvas <plan> update with three sections: Last week, This week, and Upcoming.
 Keep every work item, status, and gap.
 
-How the video is made
-The agent records a 30-second walkthrough of the Canvas status update: Last week, This week, then Upcoming.
-Add a link to the Canvas, or a screenshot if viewers can't open it, to the Deliver status update walkthrough video issue and to the project update for <project>. Post the video on both.
+How the deck is made and shared
+The agent writes and runs a short Python script, using python-pptx, that turns the Canvas status update into status-update.pptx. It has three slides: Last week, This week, and Upcoming.
+After you approve, the agent attaches status-update.pptx to the Deliver status update deck issue in <project>.
+After you approve, the agent posts the project update for <project> from project-update.md, with a link to the deck on that issue.
+If an upload fails, upload status-update.pptx by hand to the issue and to the project update.
 
 What the files are
 issues/dependencies.txt is the work list and the source of truth for status, owner, week, and blockers. Each work item is one plain text epic file in issues/.
