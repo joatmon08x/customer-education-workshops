@@ -1,0 +1,30 @@
+Epic Summary:
+A missed reminder can be tried again, with a cap, and quiet hours still apply. An opt-out cancels any retry still on the schedule.
+
+Objective:
+Try a missed reminder again without calling past the cap or outside quiet hours.
+
+User Stories/Tasks:
+As a billing operator, I want a later retry when the first call is not answered, so that one missed call does not end the reminder.
+As a workspace admin, I want a cap on retries per invoice, so that a customer is not called without a limit.
+As a billing operator, I want retries to obey quiet hours, so that a retry does not land at night.
+As a workspace admin, I want no retry after an opt-out, so that a refusal stays in force.
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call settings screen
+
+Dependencies:
+Call scheduling and quiet hours, for quiet hours.
+Blocked by Call outcomes and transcripts.
+Blocked by Call routing.
+
+Status:
+Status: In progress
+When: This week
+Owner: Engineering lead
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+A retry uses the same script as the first call. The design default for the cap is two attempts after the first call. The gap between attempts is still unset in this epic.

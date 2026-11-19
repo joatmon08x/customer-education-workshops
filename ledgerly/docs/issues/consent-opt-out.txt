@@ -1,0 +1,29 @@
+Epic Summary:
+A reminder call is placed only after consent, and a spoken opt-out is honored. Opt-out ends the current call and blocks later reminder calls until the customer opts in again.
+
+Objective:
+Call only customers who have agreed, and stop when they opt out.
+
+User Stories/Tasks:
+As a workspace admin, I want consent recorded before the first reminder call, so that the mock calls only customers who have agreed.
+As a customer, I want to opt out during the call, so that the rest of the reminder stops and later calls stay blocked.
+As a workspace admin, I want an opt-out list I can export, so that another workspace tool can honor the same choice.
+As a customer, I want to opt back in from a written request, so that reminders can resume after I ask.
+As a billing operator, I want a blocked call to show the consent reason, so that I do not schedule that customer again by mistake.
+
+Mockups/Designs:
+ledgerly/docs/design/call-reminders-review.txt section: Call flow, DR-3 (design review decision)
+
+Dependencies:
+Call scheduling and quiet hours, so a call exists to gate on consent.
+
+Status:
+Status: In progress
+When: This week
+Owner: Engineering lead
+
+Stakeholders:
+Billing operations. Voice platform. Workspace design.
+
+Notes/Additional Information:
+Consent is a workspace record. It is not a phone number. A missing consent record blocks the call and stores the reason on that blocked call.

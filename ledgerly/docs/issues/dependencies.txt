@@ -1,0 +1,152 @@
+Call reminder work list and dependencies
+Updated: 2026-11-16
+
+This file is the work list for the week of 2026-11-16. It is the source of truth for status, owner, week, and blockers. When this file and an epic file or an update disagree, this file wins. A disagreement is a gap to find.
+
+It names epics and stories in plain text. The stories below are the full list for each epic. The drawing is the order of work. A blocked-by line means the blocking epic must finish before the blocked epic starts. Needs that can overlap are not blocked-by lines.
+
+Order
+
+Call scheduling and quiet hours
+    |
+    +-- Call scripts and tone
+    |       |
+    |       +-- Pay link after the call
+    |
+    +-- Consent and opt-out
+            |
+            +-- Call outcomes and transcripts
+                    |
+                    +-- Call results dashboard
+                    |
+                    +-- Retry rules
+
+Blockers
+
+Retry rules is blocked by Call outcomes and transcripts.
+Call results dashboard is blocked by Call outcomes and transcripts.
+Pay link after the call is blocked by Call scripts and tone. The pay prompt story is the one this epic needs.
+Retry rules is blocked by Call routing.
+Call routing is Not started. It has no epic file.
+
+Needs that can overlap
+
+Call scripts and tone needs the lead times and quiet hours from Call scheduling and quiet hours.
+Consent and opt-out needs a scheduled call from Call scheduling and quiet hours.
+Call outcomes and transcripts needs the default reminder script from Call scripts and tone.
+Call outcomes and transcripts needs consent recorded before the first reminder call, from Consent and opt-out.
+Retry rules needs quiet hours from Call scheduling and quiet hours.
+
+Status
+
+Call scheduling and quiet hours
+File: call-scheduling.txt
+Status: Done
+When: Last week
+Owner: Engineering lead
+
+Call outcomes and transcripts
+File: call-outcomes.txt
+Status: Done
+When: Last week
+Owner: Engineering lead
+Note: The invoice page shows the Call transcript card under the Customer card.
+
+Call scripts and tone
+File: call-scripts.txt
+Status: In progress
+When: This week
+Owner: Engineering lead
+
+Consent and opt-out
+File: consent-opt-out.txt
+Status: In progress
+When: This week
+Owner: Engineering lead
+
+Retry rules
+File: retry-rules.txt
+Status: In progress
+When: This week
+Owner: Engineering lead
+
+Pay link after the call
+File: pay-link.txt
+Status: Not started
+When: Upcoming
+Owner: Engineering lead
+
+Call results dashboard
+File: call-dashboard.txt
+Status: Not started
+When: Upcoming
+Owner: none
+
+Call routing
+File: none
+Status: Not started
+When: Upcoming
+Owner: Voice platform team
+
+Stories
+
+Call scheduling and quiet hours
+As a billing operator, I want a reminder call placed a set number of days before the due date, so that the customer hears about the invoice while there is still time to pay.
+As a workspace admin, I want quiet hours on the call schedule, so that reminder calls stay out of the night.
+As a billing operator, I want upcoming and overdue invoices to use different lead times, so that an overdue invoice does not use the same lead time as an upcoming one.
+As a workspace admin, I want the schedule to follow the customer's local time, so that quiet hours match the customer's day.
+As a workspace admin, I want to edit the lead time without placing a call, so that I can tune the schedule in the mock.
+As a billing operator, I want a skipped-call reason when quiet hours block a call, so that I know why no call went out.
+As a billing operator, I want only one reminder call active for an invoice, so that a second call does not start while the first one is still going.
+
+Call scripts and tone
+As a billing operator, I want a default reminder script, so that every call states the invoice and the amount due.
+As a workspace admin, I want the script to end with an opt-out line, so that the customer can refuse later calls.
+As a workspace admin, I want to preview a script before it is used on a call, so that I can check the tone in the mock.
+As a billing operator, I want the script to include a pay prompt, so that the customer knows a pay link will follow the call.
+As a workspace admin, I want calm as the default tone, with brief and formal visible and not the default, so that the call can match the workspace voice.
+
+Consent and opt-out
+As a workspace admin, I want consent recorded before the first reminder call, so that the mock calls only customers who have agreed.
+As a customer, I want to opt out during the call, so that the rest of the reminder stops and later calls stay blocked.
+As a workspace admin, I want an opt-out list I can export, so that another workspace tool can honor the same choice.
+As a customer, I want to opt back in from a written request, so that reminders can resume after I ask.
+As a billing operator, I want a blocked call to show the consent reason, so that I do not schedule that customer again by mistake.
+
+Call outcomes and transcripts
+As a billing operator, I want the invoice page to show a Call transcript card under the Customer card, so that I can read the outcome, the duration, and a text replay without leaving the invoice.
+As a billing operator, I want each call outcome saved on the invoice, so that answered, no answer, and opt-out stay visible later.
+As a billing operator, I want the script version stored with the transcript, so that I know which words were used.
+As a workspace admin, I want to export one transcript as a text file, so that I can share it inside the workspace.
+
+Retry rules
+As a billing operator, I want a later retry when the first call is not answered, so that one missed call does not end the reminder.
+As a workspace admin, I want a cap on retries per invoice, so that a customer is not called without a limit.
+As a billing operator, I want retries to obey quiet hours, so that a retry does not land at night.
+As a workspace admin, I want no retry after an opt-out, so that a refusal stays in force.
+
+Call results dashboard
+As a finance lead, I want a count of calls placed today, so that I can see whether the mock ran.
+As a finance lead, I want outcomes grouped by answered, no answer, and opt-out, so that I can see the mix.
+As a finance lead, I want the results view limited to the mock book, so that the figures stay inside this workspace.
+
+Pay link after the call
+As a customer, I want a pay link after the reminder call, so that I can pay the invoice without searching for it.
+As a billing operator, I want the pay link tied to <invoice id>, so that the payment lands on the right invoice.
+As a workspace admin, I want the pay link to expire after a set number of days, so that an old link does not remain valid.
+
+Staging map
+
+This file is tool-neutral. The same map works in Linear or in Jira.
+Epic = project milestone.
+Milestones have no target dates in this pack.
+Story = issue under that milestone.
+Milestones cannot hold blocked-by links.
+Status maps to issue status: Done to Done, In progress to In Progress, Not started to Todo. Put the When value and the Owner in the milestone description.
+A blocker line maps to a blocked-by link between the first story of the blocked epic and the last story of the blocking epic.
+Retry rules is blocked by Call outcomes and transcripts. Link the first Retry rules story, a later retry when the first call is not answered, to the last Call outcomes and transcripts story, export one transcript as a text file.
+Call results dashboard is blocked by Call outcomes and transcripts. Link the first Call results dashboard story, a count of calls placed today, to that same last outcomes story.
+Pay link after the call is blocked by Call scripts and tone. Link the first Pay link story, a pay link after the reminder call, to the last Call scripts and tone story, calm as the default tone, with brief and formal visible and not the default.
+A blocker that names an epic with no file and no milestone, such as Call routing, has nothing to link to. That is a gap to raise.
+When the issues are created, set each issue to its epic's status.
+The presenter stages the epics once from this file and the epic files.
